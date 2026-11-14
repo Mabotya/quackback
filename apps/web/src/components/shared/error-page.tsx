@@ -195,6 +195,20 @@ export function EntitlementRequiredPage({
   )
 }
 
+/** Reload only when a lazy module request failed; a React reset reuses the
+ * failed module promise and cannot recover after a deployment replaces chunks. */
+export function retryPageError(error: unknown, reset: () => void, reload: () => void): void {
+  if (
+    /failed to fetch dynamically imported module|importing a module script failed|unable to preload css|loading chunk .* failed/i.test(
+      errorMessage(error)
+    )
+  ) {
+    reload()
+  } else {
+    reset()
+  }
+}
+
 export function DefaultErrorPage({ error, reset, fullPage = true }: ErrorPageProps) {
   if (isAuthorizationError(error)) {
     return <PermissionDeniedPage fullPage={fullPage} />
@@ -238,7 +252,10 @@ export function DefaultErrorPage({ error, reset, fullPage = true }: ErrorPagePro
 
             <div className="mt-6 flex items-center justify-center gap-3">
               {reset && (
-                <Button onClick={reset} variant="default">
+                <Button
+                  onClick={() => retryPageError(error, reset, () => window.location.reload())}
+                  variant="default"
+                >
                   {copy({ id: 'common.errorPage.tryAgain', defaultMessage: 'Try again' })}
                 </Button>
               )}

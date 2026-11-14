@@ -15,11 +15,19 @@
    @font-face and breaks SSR hydration; self-host everything instead, and keep
    the family name matching the value FONT_OPTIONS/presets.ts store. */
 @import "@fontsource-variable/inter/index.css";
+/* Keep Japanese typography self-hosted, with browser-selected Unicode subsets. */
+@import "@fontsource-variable/noto-sans-jp/index.css";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme {
   --font-family-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Apply only to Japanese documents; other languages retain the chosen theme. */
+html[lang="ja"] body {
+  --font-sans: 'Noto Sans JP Variable', 'Noto Sans JP', sans-serif;
+  font-family: var(--font-sans);
 }
 
 /* ==============================================

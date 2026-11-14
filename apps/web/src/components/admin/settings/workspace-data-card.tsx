@@ -27,6 +27,16 @@ export function WorkspaceDataCard({ locale }: { locale?: string }) {
           }
         />
       </SettingRows>
+      <div className="px-4 pb-4 text-xs text-muted-foreground">
+        <a
+          href="https://github.com/Mabotya/quackback"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:underline"
+        >
+          {ja ? 'ソースコード・ライセンス' : 'Source code and license'}
+        </a>
+      </div>
     </SettingsCard>
   )
 }

@@ -13,6 +13,7 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-libra
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { IntlProvider } from 'react-intl'
 import type { ConversationId } from '@quackback/ids'
+import ja from '@/locales/ja.json'
 
 interface EditorDocumentStub {
   json(): unknown
@@ -173,6 +174,7 @@ async function renderThread({
   helpSearch,
   linkPreviews = false,
   initialDraft,
+  japanese = false,
   queryClient = new QueryClient(),
 }: {
   queryClient?: QueryClient
@@ -180,11 +182,18 @@ async function renderThread({
   helpSearch?: (q: string) => Promise<Array<{ slug: string; title: string }>>
   linkPreviews?: boolean
   initialDraft?: string
+  japanese?: boolean
 } = {}) {
   const rpc = makeRpc(existing)
   render(
     <QueryClientProvider client={queryClient}>
-      <IntlProvider locale="en" messages={{}} onError={() => {}}>
+      <IntlProvider
+        locale={japanese ? 'ja' : 'en'}
+        messages={japanese ? ja : {}}
+        onError={(error) => {
+          if (japanese) throw error
+        }}
+      >
         <VisitorSurfaceRpcProvider value={rpc as unknown as VisitorSurfaceRpc}>
           <VisitorConversationThread
             conversationTarget={existing ? CONVERSATION_ID : 'new'}
@@ -213,6 +222,10 @@ async function renderThread({
 const sendButton = () => screen.getByRole('button', { name: 'Send' })
 
 describe('VisitorConversationThread composer', () => {
+  it('opens a new conversation with the Japanese catalogue', async () => {
+    await renderThread({ japanese: true })
+    expect(screen.getByTestId('editor')).toBeInTheDocument()
+  })
   it('starts with an initial draft that sends as typed and then clears', async () => {
     const rpc = await renderThread({ initialDraft: 'Hi! Is anyone there?' })
     expect(probe.editorValue).toEqual(doc('Hi! Is anyone there?'))

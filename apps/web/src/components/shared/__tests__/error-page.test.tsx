@@ -11,7 +11,26 @@ import {
   NotFoundPage,
   isAuthorizationError,
   isEntitlementError,
+  retryPageError,
 } from '../error-page'
+
+describe('retryPageError', () => {
+  it('reloads after a route module failed to load', () => {
+    const reset = vi.fn()
+    const reload = vi.fn()
+    retryPageError(new TypeError('Failed to fetch dynamically imported module'), reset, reload)
+    expect(reload).toHaveBeenCalledOnce()
+    expect(reset).not.toHaveBeenCalled()
+  })
+
+  it('keeps the ordinary in-place retry for other failures', () => {
+    const reset = vi.fn()
+    const reload = vi.fn()
+    retryPageError(new Error('Network request failed'), reset, reload)
+    expect(reset).toHaveBeenCalledOnce()
+    expect(reload).not.toHaveBeenCalled()
+  })
+})
 
 describe('isAuthorizationError', () => {
   it('flags the role-gate failures thrown by requireAuth', () => {
