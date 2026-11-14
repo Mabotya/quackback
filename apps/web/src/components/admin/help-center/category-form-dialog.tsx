@@ -48,6 +48,7 @@ import type { KbCategoryId } from '@quackback/ids'
 import type { SupportedLocale } from '@/lib/shared/i18n'
 
 const LOCALE_LABELS: Record<string, string> = {
+  ja: '日本語',
   de: 'Deutsch',
   fr: 'Français',
   es: 'Español',

@@ -2,6 +2,7 @@ export const DEFAULT_LOCALE = 'en' as const
 
 export const SUPPORTED_LOCALES = [
   'en',
+  'ja',
   'de',
   'fr',
   'es',
@@ -17,6 +18,11 @@ export const SUPPORTED_LOCALES = [
 ] as const
 
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number]
+
+/** A visitor's explicit portal selection, shared by SSR and client navigation. */
+export function portalLocaleCookie(cookie: string | null | undefined): string | undefined {
+  return cookie?.split(';').map((part) => part.trim()).find((part) => part.startsWith('td_locale='))?.slice('td_locale='.length)
+}
 
 const RTL_LOCALES = new Set(['ar', 'he', 'fa', 'ur'])
 

@@ -28,7 +28,7 @@
 
 services:
   app:
-    image: ghcr.io/quackbackio/quackback:${QUACKBACK_TAG:-latest}
+    image: ghcr.io/mabotya/quackback-td:td-ja-v1
     container_name: quackback-app
     restart: unless-stopped
     init: true

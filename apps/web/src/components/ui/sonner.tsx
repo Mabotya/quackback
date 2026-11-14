@@ -16,6 +16,7 @@ import { normalizeLocale, type SupportedLocale } from '@/lib/shared/i18n'
  */
 const REGION_LABEL: Record<SupportedLocale, string> = {
   en: 'Notifications',
+  ja: '通知',
   de: 'Benachrichtigungen',
   fr: 'Notifications',
   es: 'Notificaciones',

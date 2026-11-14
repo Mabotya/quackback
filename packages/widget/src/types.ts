@@ -10,6 +10,7 @@ export type InstanceUrl = string
  */
 export const WIDGET_LOCALES = [
   'en',
+  'ja',
   'fr',
   'de',
   'es',

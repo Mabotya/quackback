@@ -1,6 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import {
   resolveLocale,
+  portalLocaleCookie,
   loadPortalMessages,
   loadUnsubscribeMessages,
   type SupportedLocale,
@@ -15,8 +16,8 @@ import {
  */
 export const getPortalLocaleFn = createServerFn({ method: 'GET' }).handler(async () => {
   const { getRequestHeaders } = await import('@tanstack/react-start/server')
-  const acceptLanguage = getRequestHeaders().get('accept-language')
-  return resolveLocale(acceptLanguage)
+  const headers = getRequestHeaders()
+  return resolveLocale(headers.get('accept-language') || 'ja', portalLocaleCookie(headers.get('cookie')))
 })
 
 /**

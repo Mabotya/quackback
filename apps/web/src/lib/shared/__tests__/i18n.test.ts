@@ -3,6 +3,7 @@ import { readdirSync, readFileSync } from 'node:fs'
 import { join, relative } from 'node:path'
 import {
   normalizeLocale,
+  portalLocaleCookie,
   resolveLocale,
   isRtlLocale,
   SUPPORTED_LOCALES,
@@ -34,6 +35,14 @@ import {
   SETUP_WIZARD_MESSAGE_PREFIXES,
 } from '../i18n'
 
+describe('portal language selection', () => {
+  it('uses a saved selection ahead of the browser language', () => {
+    expect(resolveLocale('en-US,en;q=0.9', portalLocaleCookie('a=1; td_locale=ja'))).toBe('ja')
+    expect(resolveLocale('ja-JP', portalLocaleCookie('td_locale=zh-tw'))).toBe('zh-tw')
+    expect(resolveLocale('ja-JP', portalLocaleCookie('td_locale=invalid'))).toBe('ja')
+  })
+})
+
 describe('normalizeLocale', () => {
   it('returns exact match for supported locale', () => {
     expect(normalizeLocale('en')).toBe('en')
@@ -46,7 +55,7 @@ describe('normalizeLocale', () => {
     expect(normalizeLocale('ru-RU')).toBe('ru')
   })
   it('returns null for locales without message catalogs', () => {
-    expect(normalizeLocale('ja-JP')).toBeNull()
+    expect(normalizeLocale('ja-JP')).toBe('ja')
     expect(normalizeLocale('it')).toBeNull()
   })
   it('returns null for unsupported locale', () => {

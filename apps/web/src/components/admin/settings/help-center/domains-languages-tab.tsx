@@ -45,6 +45,7 @@ import { useBillingEnabled } from '@/lib/client/hooks/use-root-context'
 
 const LOCALE_LABELS: Record<string, string> = {
   en: 'English',
+  ja: '日本語',
   de: 'Deutsch',
   fr: 'Français',
   es: 'Español',

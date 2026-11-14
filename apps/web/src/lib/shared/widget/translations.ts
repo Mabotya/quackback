@@ -14,6 +14,7 @@ export type WidgetTranslations = Record<string, WidgetContentTranslation>
 /** Display names for admin translation pickers (messenger). */
 export const WIDGET_LOCALE_LABELS: Record<string, string> = {
   en: 'English',
+  ja: '日本語',
   de: 'German',
   fr: 'French',
   es: 'Spanish',
