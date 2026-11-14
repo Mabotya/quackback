@@ -345,7 +345,7 @@ export function PortalHeader({
     >
       {/* Row 1: Logo + Name + Auth */}
       <div>
-        <div className="max-w-6xl mx-auto w-full px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto w-full px-4 sm:px-6">
           <div className="flex h-12 items-center justify-between">
             <Link to="/" className="portal-header__logo flex items-center gap-2">
               {orgLogo ? (
@@ -373,7 +373,7 @@ export function PortalHeader({
 
       {/* Row 2: Navigation */}
       <div className="mt-2 overflow-x-auto scrollbar-none">
-        <div className="max-w-6xl mx-auto w-full px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto w-full px-4 sm:px-6">
           <Navigation
             navItems={navItems}
             helpHeaderLinks={settings?.helpCenterConfig?.headerLinks}
