@@ -1,4 +1,8 @@
 {
+  "portal.translation.translate": "Vertalen naar {language}",
+  "portal.translation.original": "Origineel bekijken",
+  "portal.translation.loading": "Vertalen…",
+  "portal.translation.error": "Vertalen mislukt. Probeer het opnieuw.",
   "ui.editor.heading1": "Kop 1",
   "ui.editor.heading2": "Kop 2",
   "ui.editor.heading3": "Kop 3",

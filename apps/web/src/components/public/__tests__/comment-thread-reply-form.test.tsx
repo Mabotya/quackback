@@ -95,4 +95,25 @@ describe('CommentThread reply composers', () => {
     fireEvent.click(reply)
     expect(composers()).toEqual(['root', 'comment_b'])
   })
+
+  it('offers translation only for visible public comments', () => {
+    const comments = [
+      comment('public', 'Public comment'),
+      { ...comment('private', 'Team note'), isPrivate: true },
+      { ...comment('pending', 'Pending comment'), moderationState: 'pending' as const },
+      { ...comment('deleted', 'Deleted comment'), deletedAt: new Date() },
+    ]
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <IntlProvider locale="en" messages={{}} onError={() => {}}>
+          <CommentThread postId={POST_ID} comments={comments} allowCommenting isTeamMember />
+        </IntlProvider>
+      </QueryClientProvider>
+    )
+    const translate = (id: string) => within(document.getElementById(`comment-${id}`)!).queryByRole('button', { name: 'Translate to English' })
+    expect(translate('public')).toBeInTheDocument()
+    expect(translate('private')).not.toBeInTheDocument()
+    expect(translate('pending')).not.toBeInTheDocument()
+    expect(translate('deleted')).not.toBeInTheDocument()
+  })
 })

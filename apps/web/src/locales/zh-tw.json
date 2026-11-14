@@ -1,4 +1,8 @@
 {
+  "portal.translation.translate": "翻譯成{language}",
+  "portal.translation.original": "查看原文",
+  "portal.translation.loading": "翻譯中…",
+  "portal.translation.error": "無法翻譯，請再試一次。",
   "ui.editor.heading1": "標題1",
   "ui.editor.heading2": "標題2",
   "ui.editor.heading3": "標題3",

@@ -1,4 +1,8 @@
 {
+  "portal.translation.translate": "Traducir a {language}",
+  "portal.translation.original": "Ver original",
+  "portal.translation.loading": "Traduciendo…",
+  "portal.translation.error": "No se pudo traducir. Inténtalo de nuevo.",
   "ui.editor.heading1": "Encabezado 1",
   "ui.editor.heading2": "Encabezado 2",
   "ui.editor.heading3": "Encabezado 3",

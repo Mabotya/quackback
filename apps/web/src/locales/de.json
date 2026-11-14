@@ -1,4 +1,8 @@
 {
+  "portal.translation.translate": "In {language} übersetzen",
+  "portal.translation.original": "Original ansehen",
+  "portal.translation.loading": "Übersetzung läuft…",
+  "portal.translation.error": "Übersetzung fehlgeschlagen. Bitte erneut versuchen.",
   "ui.editor.heading1": "Überschrift 1",
   "ui.editor.heading2": "Überschrift 2",
   "ui.editor.heading3": "Überschrift 3",

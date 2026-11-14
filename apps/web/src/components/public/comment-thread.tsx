@@ -26,6 +26,7 @@ import type { PublicCommentView } from '@/lib/client/queries/portal-detail'
 import { cn } from '@/lib/shared/utils'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { CommentContent, useCommentDoc } from '@/components/public/comment-content'
+import { useContentTranslation } from '@/components/public/content-translation'
 import { AuthorHoverCard } from '@/components/public/author-hover-card'
 import { AdminAuthorHoverCard } from '@/components/admin/admin-author-hover-card'
 import { CommentForm, type CreateCommentMutation } from './comment-form'
@@ -390,6 +391,11 @@ function CommentItem({
   canModerate = false,
 }: CommentItemProps) {
   const intl = useIntl()
+  const translation = useContentTranslation({
+    kind: 'comment',
+    id: comment.id,
+    sourceKey: JSON.stringify([comment.content, comment.contentJson]),
+  })
   const approveComment = useApproveComment(postId)
   const rejectComment = useRejectComment(postId)
   const [showReplyForm, setShowReplyForm] = useState(false)
@@ -799,11 +805,16 @@ function CommentItem({
               </div>
             </div>
           ) : (
-            <CommentContent
-              content={comment.content}
-              contentJson={comment.contentJson ?? null}
-              className="text-sm mt-1.5 ms-10 text-foreground/90 leading-relaxed"
-            />
+            <>
+              <CommentContent
+                content={translation.translated?.content ?? comment.content}
+                contentJson={translation.translated ? translation.translated.contentJson : comment.contentJson ?? null}
+                className="text-sm mt-1.5 ms-10 text-foreground/90 leading-relaxed"
+              />
+              {!comment.isPrivate && !isDeleted && comment.moderationState !== 'pending' && (
+                <div className="ms-10">{translation.control}</div>
+              )}
+            </>
           )}
           {comment.moderationState === 'pending' && (
             <InlineModerationActions

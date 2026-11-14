@@ -5,6 +5,7 @@ import { useIntl, FormattedMessage } from 'react-intl'
 import { useKeyboardSubmit } from '@/lib/client/hooks/use-keyboard-submit'
 import type { JSONContent } from '@tiptap/react'
 import { PostContent } from '@/components/public/post-content'
+import { useContentTranslation } from '@/components/public/content-translation'
 import { Button } from '@/components/ui/button'
 import type { EditorDocument, EditorFeatures } from '@/components/ui/rich-text-editor'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -131,6 +132,11 @@ export function PostContentSection({
   onReject,
 }: PostContentSectionProps): React.ReactElement {
   const intl = useIntl()
+  const translation = useContentTranslation({
+    kind: 'post',
+    id: post.id,
+    sourceKey: JSON.stringify([post.title, post.content, post.contentJson]),
+  })
   const [editTitle, setEditTitle] = useState(post.title)
   const [editContentJson, setEditContentJson] = useState<JSONContent | null>(
     getInitialContentJson(post)
@@ -266,7 +272,7 @@ export function PostContentSection({
         </div>
       </div>
 
-      <h1 className="text-xl sm:text-2xl font-semibold text-foreground mb-4">{post.title}</h1>
+      <h1 className="text-xl sm:text-2xl font-semibold text-foreground mb-4">{translation.translated?.title ?? post.title}</h1>
 
       {post.moderationState === 'pending' && (
         <InlineModerationActions
@@ -280,10 +286,11 @@ export function PostContentSection({
       )}
 
       <PostContent
-        content={post.content}
-        contentJson={post.contentJson}
+        content={translation.translated?.content ?? post.content}
+        contentJson={translation.translated ? translation.translated.contentJson : post.contentJson}
         className="prose prose-sm prose-neutral dark:prose-invert max-w-none text-foreground/90"
       />
+      {post.moderationState !== 'pending' && translation.control}
 
       {!isEditing && (
         <SimilarPostsSection postTitle={post.title} currentPostId={post.id as PostId} />

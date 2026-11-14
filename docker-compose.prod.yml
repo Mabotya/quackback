@@ -50,6 +50,7 @@ services:
       # MinIO has no public port, so the browser can't reach it directly:
       # serve uploads through the app's /api/storage proxy.
       S3_PROXY: 'true'
+      LIBRETRANSLATE_URL: http://libretranslate:5000
     ports:
       - '${APP_PORT:-3000}:3000'
     depends_on:
@@ -71,6 +72,18 @@ services:
       timeout: 5s
       retries: 5
       start_period: 40s
+
+  # Translation stays on the private compose network; no host port is exposed.
+  libretranslate:
+    image: libretranslate/libretranslate:v1.9.6
+    restart: unless-stopped
+    cpus: 1.0
+    mem_limit: 1536m
+    environment:
+      LT_LOAD_ONLY: en,ja,ko,zh,zt
+      LT_UPDATE_MODELS: 'true'
+    volumes:
+      - libretranslate_models:/home/libretranslate/.local
 
   postgres:
     build:
@@ -142,3 +155,4 @@ services:
 volumes:
   postgres_data:
   minio_data:
+  libretranslate_models:

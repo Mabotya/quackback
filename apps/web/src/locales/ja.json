@@ -1,4 +1,8 @@
 {
+  "portal.translation.translate": "{language}に翻訳",
+  "portal.translation.original": "原文を見る",
+  "portal.translation.loading": "翻訳中…",
+  "portal.translation.error": "翻訳できませんでした。もう一度お試しください。",
   "ui.editor.heading1": "見出し1",
   "ui.editor.heading2": "見出し2",
   "ui.editor.heading3": "見出し3",
