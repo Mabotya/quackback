@@ -190,66 +190,66 @@ export function RoadmapBuilderForm({
         <div className="space-y-5 pe-3">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="roadmap-name">Name</Label>
+              <Label htmlFor="roadmap-name">名前</Label>
               <Input
                 id="roadmap-name"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
-                placeholder="Product roadmap"
+                placeholder="製品ロードマップ"
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="roadmap-type">Layout</Label>
+              <Label htmlFor="roadmap-type">レイアウト</Label>
               <select
                 id="roadmap-type"
                 className={selectClass}
                 value={type}
                 onChange={(event) => setType(event.target.value as RoadmapType)}
               >
-                <option value="column">Status columns</option>
-                <option value="date">Date periods</option>
+                <option value="column">ステータス別</option>
+                <option value="date">時期別</option>
               </select>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="roadmap-description">Description</Label>
+            <Label htmlFor="roadmap-description">説明</Label>
             <Input
               id="roadmap-description"
               value={description}
               onChange={(event) => setDescription(event.target.value)}
-              placeholder="What this view communicates"
+              placeholder="ロードマップの説明"
             />
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             {type === 'date' && (
               <div className="space-y-2">
-                <Label htmlFor="roadmap-frequency">Frequency</Label>
+                <Label htmlFor="roadmap-frequency">期間</Label>
                 <select
                   id="roadmap-frequency"
                   className={selectClass}
                   value={frequency}
                   onChange={(event) => setFrequency(event.target.value as RoadmapFrequency)}
                 >
-                  <option value="monthly">Monthly</option>
-                  <option value="quarterly">Quarterly</option>
-                  <option value="semiannual">Semiannual</option>
+                  <option value="monthly">月ごと</option>
+                  <option value="quarterly">四半期ごと</option>
+                  <option value="semiannual">半年ごと</option>
                 </select>
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="roadmap-visibility">Visibility</Label>
+              <Label htmlFor="roadmap-visibility">公開範囲</Label>
               <select
                 id="roadmap-visibility"
                 className={selectClass}
                 value={visibility}
                 onChange={(event) => setVisibility(event.target.value as RoadmapVisibility)}
               >
-                <option value="public">Public</option>
-                <option value="team">Team only</option>
-                <option value="segment">Customer segments</option>
+                <option value="public">公開</option>
+                <option value="team">チームのみ</option>
+                <option value="segment">顧客セグメント</option>
               </select>
             </div>
           </div>
@@ -257,39 +257,39 @@ export function RoadmapBuilderForm({
           {visibility === 'segment' && (
             <div className="rounded-lg border border-border/60 p-3">
               <FilterOptions
-                label="Visible to"
+                label="公開先"
                 options={segments}
                 selected={visibleSegmentIds}
                 onChange={setVisibleSegmentIds}
               />
               {!visibleSegmentIds.length && (
-                <p className="mt-2 text-xs text-destructive">Select at least one segment.</p>
+                <p className="mt-2 text-xs text-destructive">セグメントを1つ以上選択してください。</p>
               )}
             </div>
           )}
 
           <div className="space-y-3 rounded-lg border border-border/60 p-3">
             <div>
-              <h3 className="text-sm font-medium">Base filter</h3>
+              <h3 className="text-sm font-medium">基本フィルター</h3>
               <p className="text-xs text-muted-foreground">
-                Posts must match these constraints before placement.
+                条件に一致する投稿だけが表示されます。
               </p>
             </div>
             <FilterOptions
-              label="Statuses"
+              label="ステータス"
               options={statuses}
               selected={statusIds}
               onChange={setStatusIds}
             />
             <FilterOptions
-              label="Boards"
+              label="ボード"
               options={boards}
               selected={boardIds}
               onChange={setBoardIds}
             />
-            <FilterOptions label="Tags" options={tags} selected={tagIds} onChange={setTagIds} />
+            <FilterOptions label="タグ" options={tags} selected={tagIds} onChange={setTagIds} />
             <FilterOptions
-              label="Author segments"
+              label="投稿者のセグメント"
               options={segments}
               selected={segmentIds}
               onChange={setSegmentIds}
@@ -299,9 +299,9 @@ export function RoadmapBuilderForm({
           {type === 'column' && (
             <div className="space-y-3 rounded-lg border border-border/60 p-3">
               <div>
-                <h3 className="text-sm font-medium">Columns</h3>
+                <h3 className="text-sm font-medium">列</h3>
                 <p className="text-xs text-muted-foreground">
-                  Each status can appear once. Dragging a card changes only its status.
+                  各ステータスは1回だけ追加できます。カードを移動するとステータスが変わります。
                 </p>
               </div>
               <div className="space-y-2">
@@ -326,7 +326,7 @@ export function RoadmapBuilderForm({
                         <div className="mt-2 grid grid-cols-[1fr_90px_auto] gap-2 ps-6">
                           <Input
                             value={column.name}
-                            aria-label={`${status.name} column name`}
+                            aria-label={`${status.name} の列名`}
                             onChange={(event) =>
                               setColumns((current) =>
                                 current.map((item, index) =>
@@ -339,8 +339,8 @@ export function RoadmapBuilderForm({
                           />
                           <Input
                             value={column.icon ?? ''}
-                            aria-label={`${status.name} column icon`}
-                            placeholder="Icon"
+                            aria-label={`${status.name} の列アイコン`}
+                            placeholder="アイコン"
                             onChange={(event) =>
                               setColumns((current) =>
                                 current.map((item, index) =>
@@ -355,7 +355,7 @@ export function RoadmapBuilderForm({
                             <input
                               type="color"
                               value={column.color}
-                              aria-label={`${status.name} column color`}
+                              aria-label={`${status.name} の列の色`}
                               onChange={(event) =>
                                 setColumns((current) =>
                                   current.map((item, index) =>
@@ -373,7 +373,7 @@ export function RoadmapBuilderForm({
                               size="icon-sm"
                               disabled={columnIndex === 0}
                               onClick={() => moveColumn(columnIndex, -1)}
-                              aria-label={`Move ${status.name} left`}
+                              aria-label={`${status.name} を左に移動`}
                             >
                               <ChevronLeftIcon className="size-3.5" />
                             </Button>
@@ -383,7 +383,7 @@ export function RoadmapBuilderForm({
                               size="icon-sm"
                               disabled={columnIndex === columns.length - 1}
                               onClick={() => moveColumn(columnIndex, 1)}
-                              aria-label={`Move ${status.name} right`}
+                              aria-label={`${status.name} を右に移動`}
                             >
                               <ChevronRightIcon className="size-3.5" />
                             </Button>
@@ -401,7 +401,7 @@ export function RoadmapBuilderForm({
 
       <div className="flex justify-end gap-2">
         <Button type="button" variant="outline" onClick={onCancel}>
-          Cancel
+          キャンセル
         </Button>
         <Button
           type="submit"

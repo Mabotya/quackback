@@ -22,8 +22,8 @@ afterEach(() => {
 describe('board Data tab sections', () => {
   it('import links to the Imports & exports hub', () => {
     render(<BoardImportSection boardId="board_1" />)
-    expect(screen.getByText('Import posts')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /imports & exports/i }).getAttribute('href')).toBe(
+    expect(screen.getByText('投稿をインポート')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /インポート・エクスポート/ }).getAttribute('href')).toBe(
       '/admin/settings/imports'
     )
   })
@@ -35,8 +35,8 @@ describe('board Data tab sections', () => {
     })
     vi.stubGlobal('fetch', fetchMock)
     render(<BoardExportSection boardId="board_1" />)
-    expect(screen.getByText('Export posts')).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('button', { name: 'Export CSV' }))
+    expect(screen.getByText('投稿をエクスポート')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'CSVをエクスポート' }))
     await waitFor(() => expect(fetchMock).toHaveBeenCalledWith('/api/export?boardId=board_1'))
     expect(await screen.findByText('Export failed')).toBeInTheDocument()
   })

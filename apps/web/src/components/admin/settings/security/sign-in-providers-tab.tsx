@@ -203,18 +203,18 @@ export function SignInProvidersTab({
       {noAuthEnabled && (
         <WarningBox
           variant="warning"
-          title="No sign-in method enabled"
-          description="Visitors and team admins can't sign in. Enable at least one provider or configure an identity provider below."
+          title="ログイン方法が有効になっていません"
+          description="訪問者とチームの管理者がログインできません。ログイン方法を有効にするか、下で認証プロバイダーを設定してください。"
         />
       )}
 
       {/* Card 1: Built-in (password + magic link). Single toggle per row;
           writes to authConfig.oauth for both portal and team sign-in. */}
-      <SettingsCard title="Email" description="Built-in sign-in for users.">
+      <SettingsCard title="メール" description="標準のログイン方法を設定します。">
         <SettingRows>
           <MethodRow
-            label="Password"
-            description="Sign in with email and password."
+            label="パスワード"
+            description="メールアドレスとパスワードでログインします。"
             checked={passwordEnabled}
             onCheckedChange={(v) => saveBuiltin('password', v)}
             disabled={busy || isLastMethod('password')}
@@ -225,11 +225,11 @@ export function SignInProvidersTab({
           <div className="ml-1 border-l-2 border-border/60 pl-4">
             <MethodRow
               muted={!passwordEnabled}
-              label="Require two-factor authentication"
+              label="2要素認証を必須にする"
               description={
                 passwordEnabled
-                  ? 'Users must enter a code from their authenticator app after their password.'
-                  : 'Turn on Password sign-in to require a second factor.'
+                  ? 'パスワードの入力後、認証アプリのコードを入力する必要があります。'
+                  : '2要素認証を必須にするには、パスワードログインを有効にしてください。'
               }
               checked={twoFactorRequired}
               onCheckedChange={(v) => saveTwoFactor(v)}
@@ -237,11 +237,11 @@ export function SignInProvidersTab({
             />
           </div>
           <MethodRow
-            label="Email magic link"
+            label="メールのログインリンク"
             description={
               emailConfigured
-                ? 'One-click link or 6-digit code by email.'
-                : 'Configure SMTP, Amazon SES or Resend to enable email delivery.'
+                ? 'メールで届くリンクまたは6桁のコードでログインします。'
+                : 'メールを送信するには、SMTP、Amazon SES、またはResendを設定してください。'
             }
             checked={magicLinkEnabled}
             onCheckedChange={(v) => saveBuiltin('magicLink', v)}
@@ -253,8 +253,8 @@ export function SignInProvidersTab({
       {/* Card 2: Social sign-in. Configure credentials once; the toggle
           enables the provider on both portal and admin sign-in screens. */}
       <SettingsCard
-        title="Social sign-in"
-        description="Let users sign in with Google, GitHub, and more."
+        title="外部サービスでのログイン"
+        description="GoogleやGitHubなどを使ったログインを設定します。"
       >
         <OAuthProviderGrid
           enabled={oauthState}

@@ -215,7 +215,7 @@ export function FilterAddButton({
       {...props}
     >
       <PlusIcon className="size-3.5" aria-hidden />
-      {children ?? 'Filter'}
+      {children ?? 'フィルター'}
     </Button>
   )
 }

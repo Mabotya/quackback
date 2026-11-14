@@ -19,11 +19,11 @@ import type { ImportRunListItem } from '@/lib/server/functions/data-runs'
 const IN_FLIGHT_STATUSES = new Set(['pending', 'dry_run', 'running'])
 
 const STATUS_LABEL: Record<ImportRunListItem['status'], string> = {
-  pending: 'Queued',
-  dry_run: 'Validating',
-  running: 'Importing',
-  completed: 'Completed',
-  failed: 'Failed',
+  pending: '待機中',
+  dry_run: '検証中',
+  running: 'インポート中',
+  completed: '完了',
+  failed: '失敗',
 }
 
 const STATUS_VARIANT: Record<
@@ -66,15 +66,15 @@ export function ImportHistoryList() {
   })
 
   if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading import history...</p>
+    return <p className="text-sm text-muted-foreground">インポート履歴を読み込み中...</p>
   }
 
   if (!runs || runs.length === 0) {
     return (
       <EmptyState
         icon={ArchiveBoxIcon}
-        title="No imports yet"
-        description="Runs you start above show up here with their status and counts."
+        title="インポート履歴はありません"
+        description="インポートを開始すると、ここに状態と件数が表示されます。"
         className="py-8"
       />
     )
@@ -85,12 +85,12 @@ export function ImportHistoryList() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Source</TableHead>
-            <TableHead>File</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Counts</TableHead>
-            <TableHead>Started</TableHead>
-            <TableHead className="text-right">Errors</TableHead>
+            <TableHead>インポート元</TableHead>
+            <TableHead>ファイル</TableHead>
+            <TableHead>状態</TableHead>
+            <TableHead>件数</TableHead>
+            <TableHead>開始日時</TableHead>
+            <TableHead className="text-right">エラー</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -110,9 +110,9 @@ export function ImportHistoryList() {
               <TableCell className="text-sm text-muted-foreground">
                 {run.totals ? (
                   <>
-                    {run.totals.created} created
-                    {run.totals.updated > 0 && `, ${run.totals.updated} updated`}
-                    {run.totals.skipped > 0 && `, ${run.totals.skipped} skipped`}
+                    {run.totals.created}件作成
+                    {run.totals.updated > 0 && `、${run.totals.updated}件更新`}
+                    {run.totals.skipped > 0 && `、${run.totals.skipped}件スキップ`}
                   </>
                 ) : (
                   '-'

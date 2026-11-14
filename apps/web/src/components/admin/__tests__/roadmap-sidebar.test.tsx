@@ -33,8 +33,8 @@ function renderSidebar() {
 describe('RoadmapSidebar', () => {
   it('labels the add control New roadmap and opens the create dialog from it', async () => {
     renderSidebar()
-    await userEvent.setup().click(screen.getByRole('button', { name: 'New roadmap' }))
-    expect(screen.getByRole('heading', { name: 'Create roadmap' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Create roadmap' })).toBeInTheDocument()
+    await userEvent.setup().click(screen.getByRole('button', { name: 'ロードマップを追加' }))
+    expect(screen.getByRole('heading', { name: 'ロードマップを作成' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'ロードマップを作成' })).toBeInTheDocument()
   })
 })

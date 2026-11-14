@@ -164,7 +164,7 @@ export function RoadmapAdmin() {
             // Restore the two column caches we hand-moved above.
             if (previousSource) queryClient.setQueryData(sourceKey, previousSource)
             if (previousTarget) queryClient.setQueryData(targetKey, previousTarget)
-            toast.error('Could not move the post. Try again.')
+            toast.error('投稿を移動できませんでした。もう一度お試しください。')
           },
         }
       )
@@ -174,7 +174,7 @@ export function RoadmapAdmin() {
       if (bucket && (bucket.targetMonth ?? null) !== currentEta) {
         setEta.mutate(
           { postId: active.id as PostId, eta: bucket.targetMonth },
-          { onError: () => toast.error('Could not update the ETA. Try again.') }
+          { onError: () => toast.error('予定時期を更新できませんでした。もう一度お試しください。') }
         )
       }
     }
@@ -262,12 +262,12 @@ export function RoadmapAdmin() {
                         title={bucket.label}
                         subtitle={
                           bucket.targetMonth
-                            ? `Sets ETA to ${new Intl.DateTimeFormat('en-US', {
+                            ? `予定時期を ${new Intl.DateTimeFormat('ja-JP', {
                                 month: 'short',
                                 year: 'numeric',
                                 timeZone: 'UTC',
-                              }).format(new Date(bucket.targetMonth))}`
-                            : 'Clears ETA'
+                              }).format(new Date(bucket.targetMonth))} に設定`
+                            : '予定時期を解除'
                         }
                         color={bucket.noEta ? '#6b7280' : '#3b82f6'}
                         filters={filters}
@@ -303,7 +303,7 @@ export function RoadmapAdmin() {
                 }
               />
             ) : (
-              <EmptyState icon={MapIcon} title="No roadmap selected" />
+              <EmptyState icon={MapIcon} title="ロードマップが選択されていません" />
             )}
           </div>
         )}

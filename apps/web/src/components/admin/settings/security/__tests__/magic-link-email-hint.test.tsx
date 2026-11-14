@@ -50,12 +50,12 @@ describe('Email magic link hint', () => {
   it('names SMTP, Amazon SES and Resend when email is not configured', () => {
     renderTab(false)
     expect(
-      screen.getByText('Configure SMTP, Amazon SES or Resend to enable email delivery.')
+      screen.getByText('メールを送信するには、SMTP、Amazon SES、またはResendを設定してください。')
     ).toBeInTheDocument()
   })
 
   it('describes the method when email is configured', () => {
     renderTab(true)
-    expect(screen.getByText('One-click link or 6-digit code by email.')).toBeInTheDocument()
+    expect(screen.getByText('メールで届くリンクまたは6桁のコードでログインします。')).toBeInTheDocument()
   })
 })

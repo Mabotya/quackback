@@ -114,7 +114,7 @@ describe('<UsersList> toolbar', () => {
     const changes: Array<Partial<UsersFilters>> = []
     renderList(USERS, { onFiltersChange: (u) => changes.push(u) })
     expect(screen.queryByRole('button', { name: 'Oldest' })).toBeNull()
-    fireEvent.click(screen.getByRole('button', { name: /Sort: Newest/ }))
+    fireEvent.click(screen.getByRole('button', { name: /並び順：Newest/ }))
     fireEvent.click(await screen.findByRole('menuitemradio', { name: 'Most active' }))
     expect(changes).toContainEqual({ sort: 'most_active' })
   })
@@ -123,7 +123,7 @@ describe('<UsersList> toolbar', () => {
     renderList(USERS, { onNewPerson: () => {} })
     const toolbar = document.querySelector('[data-slot="admin-list-search"]')!.parentElement!
     const labels = Array.from(toolbar.querySelectorAll('button')).map((b) => b.textContent?.trim())
-    expect(labels.slice(0, 2)).toEqual(['Sort: Newest', 'Filter'])
+    expect(labels.slice(0, 2)).toEqual(['並び順：Newest', 'フィルター'])
     expect(screen.queryByText('Add filter')).toBeNull()
   })
 

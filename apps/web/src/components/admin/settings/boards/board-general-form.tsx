@@ -76,7 +76,7 @@ export function BoardGeneralForm({ board }: BoardGeneralFormProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>名前</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -90,7 +90,7 @@ export function BoardGeneralForm({ board }: BoardGeneralFormProps) {
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>説明</FormLabel>
               <FormControl>
                 <Textarea rows={3} {...field} />
               </FormControl>

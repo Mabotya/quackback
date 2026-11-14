@@ -32,16 +32,16 @@ afterEach(cleanup)
 describe('<DeleteBoardForm>', () => {
   it('shows one delete button and no type-to-confirm field until asked', () => {
     render(<DeleteBoardForm board={board} />)
-    expect(screen.getByRole('button', { name: 'Delete board' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'ボードを削除' })).toBeInTheDocument()
     expect(screen.queryByPlaceholderText('Bug Reports')).toBeNull()
   })
 
-  it('keeps Delete board disabled in the dialog until the name is typed', () => {
+  it('keeps ボードを削除 disabled in the dialog until the name is typed', () => {
     render(<DeleteBoardForm board={board} />)
-    fireEvent.click(screen.getByRole('button', { name: 'Delete board' }))
-    expect(screen.getByText('Delete board?')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'ボードを削除' }))
+    expect(screen.getByText('ボードを削除しますか？')).toBeInTheDocument()
 
-    const confirm = screen.getAllByRole('button', { name: 'Delete board' }).at(-1)!
+    const confirm = screen.getAllByRole('button', { name: 'ボードを削除' }).at(-1)!
     expect(confirm).toBeDisabled()
 
     fireEvent.change(screen.getByPlaceholderText('Bug Reports'), { target: { value: 'Bug' } })
@@ -54,11 +54,11 @@ describe('<DeleteBoardForm>', () => {
 
   it('deletes the board and returns to the list once the name matches', () => {
     render(<DeleteBoardForm board={board} />)
-    fireEvent.click(screen.getByRole('button', { name: 'Delete board' }))
+    fireEvent.click(screen.getByRole('button', { name: 'ボードを削除' }))
     fireEvent.change(screen.getByPlaceholderText('Bug Reports'), {
       target: { value: 'Bug Reports' },
     })
-    fireEvent.click(screen.getAllByRole('button', { name: 'Delete board' }).at(-1)!)
+    fireEvent.click(screen.getAllByRole('button', { name: 'ボードを削除' }).at(-1)!)
 
     expect(mutate).toHaveBeenCalledTimes(1)
     expect(mutate.mock.calls[0]![0]).toEqual({ id: board.id })
@@ -70,21 +70,21 @@ describe('<DeleteBoardForm>', () => {
 
   it('never deletes when the name does not match', () => {
     render(<DeleteBoardForm board={board} />)
-    fireEvent.click(screen.getByRole('button', { name: 'Delete board' }))
+    fireEvent.click(screen.getByRole('button', { name: 'ボードを削除' }))
     fireEvent.change(screen.getByPlaceholderText('Bug Reports'), { target: { value: 'nope' } })
-    fireEvent.click(screen.getAllByRole('button', { name: 'Delete board' }).at(-1)!)
+    fireEvent.click(screen.getAllByRole('button', { name: 'ボードを削除' }).at(-1)!)
     expect(mutate).not.toHaveBeenCalled()
   })
 
   it('says so when the delete fails', () => {
     render(<DeleteBoardForm board={board} />)
-    fireEvent.click(screen.getByRole('button', { name: 'Delete board' }))
+    fireEvent.click(screen.getByRole('button', { name: 'ボードを削除' }))
     fireEvent.change(screen.getByPlaceholderText('Bug Reports'), {
       target: { value: 'Bug Reports' },
     })
-    fireEvent.click(screen.getAllByRole('button', { name: 'Delete board' }).at(-1)!)
+    fireEvent.click(screen.getAllByRole('button', { name: 'ボードを削除' }).at(-1)!)
     const opts = mutate.mock.calls[0]![1] as { onError: () => void }
     act(() => opts.onError())
-    expect(toastError).toHaveBeenCalledWith("Couldn't delete the board. Try again.")
+    expect(toastError).toHaveBeenCalledWith("ボードを削除できませんでした。もう一度お試しください。")
   })
 })

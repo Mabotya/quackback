@@ -28,17 +28,17 @@ function BoardAccessBadge({ access }: { access: BoardAccess }) {
       {teamOnly ? (
         <>
           <LockClosedIcon />
-          Team only
+          チームのみ
         </>
       ) : (
-        'Segments'
+        'セグメント'
       )}
     </Badge>
   )
 }
 
 function postCountLabel(count: number): string {
-  return count === 1 ? '1 post' : `${count} posts`
+  return `${count} 件の投稿`
 }
 
 export function BoardsList({ boards }: { boards: BoardRow[] }) {

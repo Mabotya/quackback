@@ -31,7 +31,7 @@ export function BoardExportSection({ boardId }: BoardExportSectionProps) {
 
       if (!response.ok) {
         const data = errorResponseSchema.parse(await response.json())
-        throw new Error(data.error || 'Export failed')
+        throw new Error(data.error || 'エクスポートに失敗しました')
       }
 
       const contentDisposition = response.headers.get('Content-Disposition')
@@ -46,7 +46,7 @@ export function BoardExportSection({ boardId }: BoardExportSectionProps) {
       a.click()
       URL.revokeObjectURL(url)
     } catch (err) {
-      setError(errorText(err, 'Export failed'))
+      setError(errorText(err, 'エクスポートに失敗しました'))
     } finally {
       setIsExporting(false)
     }
@@ -56,19 +56,19 @@ export function BoardExportSection({ boardId }: BoardExportSectionProps) {
     <div>
       <SettingRows>
         <SettingRow
-          label="Export posts"
-          description="Download this board's posts as a CSV file."
+          label="投稿をエクスポート"
+          description="このボードの投稿をCSVファイルとしてダウンロードします。"
           control={
             <Button variant="outline" size="sm" onClick={handleExport} disabled={isExporting}>
               {isExporting ? (
                 <>
                   <ArrowPathIcon className="size-4 animate-spin" />
-                  Exporting...
+                  エクスポート中...
                 </>
               ) : (
                 <>
                   <ArrowDownTrayIcon className="size-4" />
-                  Export CSV
+                  CSVをエクスポート
                 </>
               )}
             </Button>

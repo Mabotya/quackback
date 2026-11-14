@@ -24,11 +24,11 @@ function renderBar(onFiltersChange = vi.fn(), filters = {}) {
 describe('RoadmapFiltersBar', () => {
   it('shows a search field, a sort menu and a Filter control on one row', () => {
     renderBar()
-    const search = screen.getByPlaceholderText('Search posts...')
+    const search = screen.getByPlaceholderText('投稿を検索...')
     const row = search.closest('[data-slot="admin-list-search"]')!.parentElement!
     const labels = Array.from(row.querySelectorAll('button')).map((b) => b.textContent?.trim())
-    expect(labels).toContain('Sort: Votes')
-    expect(labels).toContain('Filter')
+    expect(labels).toContain('並び順：投票数順')
+    expect(labels).toContain('フィルター')
     expect(screen.queryByText('Add filter')).toBeNull()
     expect(screen.queryByRole('button', { name: 'Search' })).toBeNull()
   })
@@ -36,15 +36,15 @@ describe('RoadmapFiltersBar', () => {
   it('changes the sort from the menu', async () => {
     const onFiltersChange = renderBar()
     const user = userEvent.setup()
-    await user.click(screen.getByRole('button', { name: 'Sort: Votes' }))
-    await user.click(screen.getByRole('menuitemradio', { name: 'Oldest' }))
+    await user.click(screen.getByRole('button', { name: '並び順：投票数順' }))
+    await user.click(screen.getByRole('menuitemradio', { name: '古い順' }))
     expect(onFiltersChange).toHaveBeenCalledWith({ sort: 'oldest' })
   })
 
   it('sends typed search to the filters', async () => {
     vi.useFakeTimers()
     const onFiltersChange = renderBar()
-    fireEvent.change(screen.getByPlaceholderText('Search posts...'), { target: { value: 'dark' } })
+    fireEvent.change(screen.getByPlaceholderText('投稿を検索...'), { target: { value: 'dark' } })
     vi.advanceTimersByTime(400)
     vi.useRealTimers()
     expect(onFiltersChange).toHaveBeenCalledWith({ search: 'dark' })

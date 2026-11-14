@@ -83,26 +83,26 @@ interface TierMeta {
 const TIERS: readonly TierMeta[] = [
   {
     id: 'anonymous',
-    label: 'Everyone',
-    blurb: 'No sign-in needed',
+    label: '全員',
+    blurb: 'ログイン不要',
     icon: GlobeAltIcon,
   },
   {
     id: 'authenticated',
-    label: 'Signed-in users',
-    blurb: 'Any signed-in user',
+    label: 'ログイン済みユーザー',
+    blurb: 'ログインしたユーザー',
     icon: UsersIcon,
   },
   {
     id: 'segments',
-    label: 'Specific segments',
-    blurb: 'Specific audiences',
+    label: '特定のセグメント',
+    blurb: '指定した対象者',
     icon: TagIcon,
   },
   {
     id: 'team',
-    label: 'Team only',
-    blurb: 'Workspace members',
+    label: 'チームのみ',
+    blurb: 'ワークスペースのメンバー',
     icon: LockClosedIcon,
   },
 ] as const
@@ -115,10 +115,10 @@ interface ActionMeta {
 }
 
 const ACTIONS: readonly ActionMeta[] = [
-  { id: 'view', label: 'View', sub: 'See posts and discussion', icon: EyeIcon },
-  { id: 'vote', label: 'Vote', sub: 'Upvote posts to signal interest', icon: HandThumbUpIcon },
-  { id: 'comment', label: 'Comment', sub: 'Reply on existing posts', icon: ChatBubbleLeftIcon },
-  { id: 'submit', label: 'Submit posts', sub: 'Create new feedback', icon: PaperAirplaneIcon },
+  { id: 'view', label: '閲覧', sub: '投稿とコメントの閲覧', icon: EyeIcon },
+  { id: 'vote', label: '投票', sub: '投稿への投票', icon: HandThumbUpIcon },
+  { id: 'comment', label: 'コメント', sub: '投稿へのコメント', icon: ChatBubbleLeftIcon },
+  { id: 'submit', label: '投稿', sub: '新しいフィードバックの作成', icon: PaperAirplaneIcon },
 ] as const
 
 type ActionId = (typeof ACTIONS)[number]['id']
@@ -147,15 +147,15 @@ function tiersForPreset(id: Exclude<PresetName, 'custom'>): Record<ActionId, Acc
 export const PRESET_META: readonly PresetMeta[] = [
   {
     id: 'public',
-    label: 'Everyone',
-    description: 'Anyone can view. Sign-in is required to vote, comment, or submit.',
+    label: '全員',
+    description: '誰でも閲覧できます。投票・コメント・投稿にはログインが必要です。',
     icon: GlobeAltIcon,
     tiers: tiersForPreset('public'),
   },
   {
     id: 'private',
-    label: 'Team only',
-    description: 'Only workspace members can access this board. Hidden from the portal.',
+    label: 'チームのみ',
+    description: 'ワークスペースのメンバーだけがアクセスできます。ポータルには表示されません。',
     icon: LockClosedIcon,
     tiers: tiersForPreset('private'),
   },
@@ -212,7 +212,7 @@ const AUTOSAVE_DELAY_MS = 400
  * not a tier: the Comment row still decides who may comment at all, and this
  * narrows that set per post.
  */
-const REPLY_POLICY_LABEL = 'Only the post author and team members can reply'
+const REPLY_POLICY_LABEL = '投稿者とチームメンバーのみ返信できる'
 
 // ─── Main form ────────────────────────────────────────────────────────
 
@@ -406,14 +406,14 @@ export function BoardAccessForm({ board }: BoardAccessFormProps) {
     <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
       <div className="space-y-4">
         <p className="text-[13px] text-muted-foreground">
-          Pick a preset, or change any cell to fine-tune.
+          プリセットを選ぶか、各項目を変更して細かく設定できます。
         </p>
 
         <PresetGrid active={activePreset} onSelect={handlePresetClick} />
       </div>
 
       <div className="space-y-4">
-        <span className="block text-sm font-semibold">Per-action permissions</span>
+        <span className="block text-sm font-semibold">操作ごとの権限</span>
 
         <Matrix
           values={values}
@@ -431,19 +431,18 @@ export function BoardAccessForm({ board }: BoardAccessFormProps) {
           <div className="flex items-center gap-2 rounded-lg border bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
             <GlobeAltIcon className="h-3 w-3 shrink-0" />
             <span>
-              Workspace policy disables the <span className="text-foreground">Everyone</span> tier
-              for:{' '}
+              ワークスペースの設定により、次の操作は <span className="text-foreground">全員</span> に許可できません：{' '}
               <span className="text-foreground">
                 {wsBlockedActions.map((a) => a.label).join(', ')}
               </span>
-              .
+
             </span>
             <Link
               to="/admin/settings/security/authentication"
               search={{ tab: 'portal-access' }}
               className={`${INLINE_LINK} ml-auto whitespace-nowrap`}
             >
-              Workspace access →
+              ワークスペースのアクセス設定 →
             </Link>
           </div>
         )}
@@ -463,12 +462,12 @@ export function BoardAccessForm({ board }: BoardAccessFormProps) {
 
       <p className="flex items-center gap-2 text-xs text-muted-foreground">
         <ShieldCheckIcon className="h-3 w-3" />
-        Team members and admins always have full access. They bypass these rules.
+        チームメンバーと管理者は、これらのルールにかかわらずすべての操作ができます。
       </p>
 
       {segsError && (
         <p role="alert" className="text-xs text-destructive">
-          Some rules use Segments but no segments are selected.
+          セグメントを指定した操作で、対象が選択されていません。
         </p>
       )}
     </form>
@@ -541,9 +540,9 @@ function CustomStatusCard({ active }: CustomStatusCardProps) {
   return (
     <div
       role="status"
-      aria-label="Custom"
+      aria-label="カスタム"
       aria-pressed={active}
-      title="Tweak any cell below to enter Custom."
+      title="下の項目を変更するとカスタム設定になります。"
       className={cn(
         'flex cursor-default flex-col items-stretch gap-1 rounded-lg border border-dashed px-3 py-2.5 text-left transition-colors',
         active ? 'border-primary bg-primary/10' : 'border-border bg-transparent opacity-60'
@@ -553,11 +552,11 @@ function CustomStatusCard({ active }: CustomStatusCardProps) {
         <span className={active ? 'text-primary' : 'text-muted-foreground'}>
           <PencilSquareIcon className="h-3 w-3" />
         </span>
-        <span className={cn('text-xs font-semibold', active && 'text-primary')}>Custom</span>
+        <span className={cn('text-xs font-semibold', active && 'text-primary')}>カスタム</span>
         {active && <CheckIcon className="ml-auto h-3 w-3 text-primary" />}
       </div>
       <span className="text-xs leading-snug text-muted-foreground">
-        Set when any cell deviates from a preset.
+        プリセットと異なる設定にすると適用されます。
       </span>
     </div>
   )
@@ -596,13 +595,13 @@ function Matrix({
       <div
         className="min-w-[560px] overflow-hidden rounded-lg border bg-muted/20"
         role="grid"
-        aria-label="Permissions matrix"
+        aria-label="権限一覧"
       >
         <div
           className="grid min-w-[560px] bg-muted/40 border-b text-xs text-muted-foreground"
           style={{ gridTemplateColumns: '1.5fr repeat(4, 1fr)' }}
         >
-          <div className="px-4 py-2.5 font-medium">Action</div>
+          <div className="px-4 py-2.5 font-medium">操作</div>
           {TIERS.map((t) => (
             <div
               key={t.id}
@@ -705,9 +704,9 @@ function MatrixRow({
         const isSegmentsCell = tier.id === 'segments'
 
         const tooltip = wsBlocked
-          ? 'Anonymous interaction is disabled workspace-wide. Manage in Access & Security → Portal access.'
+          ? 'ワークスペース全体で匿名操作が無効です。アクセスとセキュリティのポータルアクセスから変更できます。'
           : hierarchyBlocked
-            ? `Can't be more open than View (${TIERS.find((x) => ACCESS_TIER_RANK[x.id] === minRank)?.label}).`
+            ? `閲覧権限（${TIERS.find((x) => ACCESS_TIER_RANK[x.id] === minRank)?.label}）より広く公開できません。`
             : undefined
 
         const disabledStyle: CSSProperties = disabled
@@ -801,7 +800,7 @@ function SegmentCellPreview({ empty, selected, reach }: SegmentCellPreviewProps)
     return (
       <span className="flex flex-col items-center gap-0.5 text-xs font-medium text-destructive">
         <InformationCircleIcon className="h-3 w-3" />
-        Pick segments
+        セグメントを選択
       </span>
     )
   }
@@ -897,7 +896,7 @@ function SegmentPicker({
     <div
       ref={popRef}
       role="dialog"
-      aria-label="Pick segments"
+      aria-label="セグメントを選択"
       style={{
         position: 'fixed',
         top: pos.top,
@@ -914,8 +913,8 @@ function SegmentPicker({
           ref={inputRef}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search or create…"
-          aria-label="Search segments"
+          placeholder="検索または作成…"
+          aria-label="セグメントを検索"
           className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
         />
         {selected.length > 0 && (
@@ -924,14 +923,14 @@ function SegmentPicker({
             onClick={() => onChange([])}
             className="text-xs text-muted-foreground hover:text-foreground"
           >
-            Clear
+            クリア
           </button>
         )}
       </div>
 
       <div className="max-h-[280px] overflow-y-auto p-1">
         {loading && (
-          <div className="px-3 py-4 text-xs text-muted-foreground">Loading segments…</div>
+          <div className="px-3 py-4 text-xs text-muted-foreground">セグメントを読み込み中…</div>
         )}
         {!loading &&
           filtered.map((s) => {
@@ -967,8 +966,8 @@ function SegmentPicker({
           >
             <PlusIcon className="h-3 w-3" />
             <span>
-              Create segment{' '}
-              <span className="font-medium text-primary">&quot;{search || 'new'}&quot;</span>
+              セグメントを作成{' '}
+              <span className="font-medium text-primary">&quot;{search || '新規'}&quot;</span>
             </span>
           </Link>
         )}
@@ -977,15 +976,15 @@ function SegmentPicker({
       <div className="flex items-center justify-between border-t bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
         <span className="flex items-center gap-1.5">
           <UsersIcon className="h-2.5 w-2.5" />
-          <span>Reach:</span>
+          <span>対象人数：</span>
           <span className="font-mono font-medium text-foreground">≈ {totalReach}</span>
           <span className="opacity-50">·</span>
           <span>
-            {selected.length}/{allSegments.length} selected
+            {selected.length}/{allSegments.length} 件選択
           </span>
         </span>
         <Link to="/admin/users" className={INLINE_LINK}>
-          Manage →
+          管理 →
         </Link>
       </div>
     </div>,

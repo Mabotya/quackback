@@ -66,7 +66,7 @@ describe('MembersTab add people', () => {
     expect(screen.queryByRole('button', { name: /invite member/i })).toBeNull()
     // The seat count sits next to the button.
     expect(screen.getByText('1 of 5 seats')).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('button', { name: 'Add people' }))
+    fireEvent.click(screen.getByRole('button', { name: 'メンバーを追加' }))
     const dialog = await screen.findByRole('dialog')
     expect(dialog).toHaveAttribute('data-can-grant-admin', canGrant)
     expect(dialog).toHaveTextContent('Add people to Acme')

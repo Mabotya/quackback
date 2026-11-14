@@ -14,11 +14,11 @@ export function BoardImportSection(_props: BoardImportSectionProps) {
   return (
     <SettingRows>
       <SettingRow
-        label="Import posts"
-        description="Bring posts into this board from a CSV file."
+        label="投稿をインポート"
+        description="CSVファイルからこのボードに投稿を取り込みます。"
         control={
           <Button asChild variant="outline" size="sm">
-            <Link to="/admin/settings/imports">Go to Imports &amp; exports</Link>
+            <Link to="/admin/settings/imports">インポート・エクスポートを開く</Link>
           </Button>
         }
       />

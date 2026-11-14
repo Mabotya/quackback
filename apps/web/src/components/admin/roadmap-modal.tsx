@@ -107,7 +107,7 @@ function RoadmapModalContent({ postId, currentUser, onClose }: RoadmapModalConte
     <div className="flex flex-col h-full bg-background">
       {/* Header */}
       <ModalHeader
-        section="Roadmap"
+        section="ロードマップ"
         title={post.title}
         onClose={onClose}
         viewUrl={`/b/${post.board.slug}/posts/${post.id}`}
@@ -157,7 +157,7 @@ function RoadmapModalContent({ postId, currentUser, onClose }: RoadmapModalConte
 
         {/* Pinned comment section */}
         {post.pinnedComment && (
-          <PinnedCommentSection comment={post.pinnedComment} workspaceName="Team" />
+          <PinnedCommentSection comment={post.pinnedComment} workspaceName="チーム" />
         )}
 
         {/* Comments section */}
@@ -191,7 +191,7 @@ export function RoadmapModal({ postId: urlPostId, currentUser }: RoadmapModalPro
     <UrlModalShell
       open={open}
       onOpenChange={(o) => !o && close()}
-      srTitle="View post"
+      srTitle="投稿を表示"
       hasValidId={!!validatedId}
     >
       {validatedId && (

@@ -79,8 +79,8 @@ function BoardSettingsPage() {
     <SettingsPage
       title={currentBoard.name}
       crumbs={[
-        moduleCrumb('/admin/settings/feedback'),
-        { label: 'Boards', to: '/admin/settings/boards' },
+        { ...moduleCrumb('/admin/settings/feedback'), label: 'フィードバックとロードマップ' },
+        { label: 'ボード', to: '/admin/settings/boards' },
       ]}
     >
       <Tabs
@@ -96,10 +96,10 @@ function BoardSettingsPage() {
         className="space-y-6"
       >
         <TabsList>
-          <TabsTrigger value="general">General</TabsTrigger>
-          <TabsTrigger value="access">Access</TabsTrigger>
-          <TabsTrigger value="moderation">Moderation</TabsTrigger>
-          <TabsTrigger value="data">Data</TabsTrigger>
+          <TabsTrigger value="general">一般</TabsTrigger>
+          <TabsTrigger value="access">アクセス</TabsTrigger>
+          <TabsTrigger value="moderation">モデレーション</TabsTrigger>
+          <TabsTrigger value="data">データ</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="space-y-6">
@@ -107,7 +107,7 @@ function BoardSettingsPage() {
             <BoardGeneralForm key={currentBoard.id} board={currentBoard} />
           </SettingsCard>
 
-          <SettingsCard title="Danger zone" variant="danger">
+          <SettingsCard title="削除" variant="danger">
             <DeleteBoardForm key={currentBoard.id} board={currentBoard} />
           </SettingsCard>
         </TabsContent>
@@ -125,10 +125,10 @@ function BoardSettingsPage() {
         </TabsContent>
 
         <TabsContent value="data" className="space-y-6">
-          <SettingsCard title="Import">
+          <SettingsCard title="インポート">
             <BoardImportSection boardId={currentBoard.id} />
           </SettingsCard>
-          <SettingsCard title="Export">
+          <SettingsCard title="エクスポート">
             <BoardExportSection boardId={currentBoard.id} />
           </SettingsCard>
         </TabsContent>

@@ -74,7 +74,7 @@ beforeEach(() => {
 describe('2FA nested under Password in <SignInProvidersTab>', () => {
   it('renders the "Require two-factor authentication" row when password is enabled', () => {
     renderTab(baseTeamAuth)
-    expect(screen.getByText(/require two-factor authentication/i)).toBeInTheDocument()
+    expect(screen.getByText('2要素認証を必須にする')).toBeInTheDocument()
   })
 
   it('2FA switch is enabled when password is on', () => {

@@ -51,13 +51,13 @@ function renderModal() {
 }
 
 function getPublicTile() {
-  return screen.getByRole('button', { name: 'Everyone' })
+  return screen.getByRole('button', { name: '全員' })
 }
 function getPrivateTile() {
-  return screen.getByRole('button', { name: 'Team only' })
+  return screen.getByRole('button', { name: 'チームのみ' })
 }
 function getCustomizeCheckbox() {
-  return screen.getByRole('checkbox', { name: 'Customize access after create' })
+  return screen.getByRole('checkbox', { name: '作成後にアクセス権限を設定する' })
 }
 
 describe('<CreateBoardDialog> preset tiles', () => {
@@ -87,11 +87,11 @@ describe('<CreateBoardDialog> submit', () => {
   it('submits with preset: "public" by default', async () => {
     renderModal()
 
-    fireEvent.change(screen.getByLabelText('Board name'), {
+    fireEvent.change(screen.getByLabelText('ボード名'), {
       target: { value: 'Feature Requests' },
     })
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Create board' }))
+      fireEvent.click(screen.getByRole('button', { name: 'ボードを作成' }))
     })
 
     expect(mutate).toHaveBeenCalledTimes(1)
@@ -102,12 +102,12 @@ describe('<CreateBoardDialog> submit', () => {
   it('submits with preset: "private" when Private tile is selected', async () => {
     renderModal()
 
-    fireEvent.change(screen.getByLabelText('Board name'), {
+    fireEvent.change(screen.getByLabelText('ボード名'), {
       target: { value: 'Internal Roadmap' },
     })
     fireEvent.click(getPrivateTile())
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Create board' }))
+      fireEvent.click(screen.getByRole('button', { name: 'ボードを作成' }))
     })
 
     expect(mutate).toHaveBeenCalledTimes(1)
@@ -117,11 +117,11 @@ describe('<CreateBoardDialog> submit', () => {
 
   it('navigates to the board (no tab) by default on success', async () => {
     renderModal()
-    fireEvent.change(screen.getByLabelText('Board name'), {
+    fireEvent.change(screen.getByLabelText('ボード名'), {
       target: { value: 'Feedback' },
     })
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Create board' }))
+      fireEvent.click(screen.getByRole('button', { name: 'ボードを作成' }))
     })
 
     // Trigger the mutation's onSuccess callback with a synthetic created board.
@@ -139,12 +139,12 @@ describe('<CreateBoardDialog> submit', () => {
 
   it('routes to the Access tab when "Customize after create" is checked', async () => {
     renderModal()
-    fireEvent.change(screen.getByLabelText('Board name'), {
+    fireEvent.change(screen.getByLabelText('ボード名'), {
       target: { value: 'Locked Board' },
     })
     fireEvent.click(getCustomizeCheckbox())
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Create board' }))
+      fireEvent.click(screen.getByRole('button', { name: 'ボードを作成' }))
     })
 
     const opts = mutate.mock.calls[0]![1] as { onSuccess: (b: { slug: string }) => void }

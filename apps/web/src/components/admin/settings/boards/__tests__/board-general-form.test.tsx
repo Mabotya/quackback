@@ -48,7 +48,7 @@ describe('<BoardGeneralForm> autosave', () => {
 
   it('saves when a field loses focus after an edit', async () => {
     render(<BoardGeneralForm board={board} />)
-    await edit('Description', 'Updated description')
+    await edit('説明', 'Updated description')
     expect(mutate).toHaveBeenCalledTimes(1)
     expect(mutate.mock.calls[0]![0]).toEqual({
       id: board.id,
@@ -60,14 +60,14 @@ describe('<BoardGeneralForm> autosave', () => {
   it('does not save when nothing changed', async () => {
     render(<BoardGeneralForm board={board} />)
     await act(async () => {
-      fireEvent.blur(screen.getByLabelText('Name'))
+      fireEvent.blur(screen.getByLabelText('名前'))
     })
     expect(mutate).not.toHaveBeenCalled()
   })
 
   it('does not save an empty name', async () => {
     render(<BoardGeneralForm board={board} />)
-    await edit('Name', '')
+    await edit('名前', '')
     expect(mutate).not.toHaveBeenCalled()
   })
 })
@@ -75,7 +75,7 @@ describe('<BoardGeneralForm> autosave', () => {
 describe('<BoardGeneralForm> rename navigation', () => {
   it('navigates to the new slug when a rename changes it', async () => {
     render(<BoardGeneralForm board={board} />)
-    await edit('Name', 'Issue Tracker')
+    await edit('名前', 'Issue Tracker')
 
     expect(mutate).toHaveBeenCalledTimes(1)
     const opts = mutate.mock.calls[0]![1] as { onSuccess: (b: { slug: string }) => void }
@@ -93,7 +93,7 @@ describe('<BoardGeneralForm> rename navigation', () => {
 
   it('does not navigate when the slug is unchanged', async () => {
     render(<BoardGeneralForm board={board} />)
-    await edit('Description', 'Updated description')
+    await edit('説明', 'Updated description')
 
     const opts = mutate.mock.calls[0]![1] as { onSuccess: (b: { slug: string }) => void }
     act(() => {

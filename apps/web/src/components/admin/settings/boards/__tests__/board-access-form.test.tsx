@@ -7,9 +7,9 @@
  *   - Preset is derived from grid (no sticky state)
  *   - "Public" preset is asymmetric (view=anon, vote/comment/submit=auth)
  *   - "Private" preset locks everything to team
- *   - Custom tile is a non-interactive status indicator
- *   - Tier hierarchy: raising View auto-clamps Vote/Comment/Submit
- *   - Workspace anonymous-* feature flags block the Everyone cell + banner
+ *   - カスタム tile is a non-interactive status indicator
+ *   - Tier hierarchy: raising 閲覧 auto-clamps 投票/コメント/Submit
+ *   - Workspace anonymous-* feature flags block the 全員 cell + banner
  *   - Auto-bump when workspace flips off while a cell sits on Anonymous
  *   - Changes autosave; the payload preserves `moderation` round-trip (passthrough only;
  *     editing moderation lives in `<BoardModerationForm>`)
@@ -166,21 +166,21 @@ beforeEach(() => {
 describe('<BoardAccessForm> matrix visibility', () => {
   it('matrix is always visible, even for a preset-matching board', () => {
     renderForm(PUBLIC_ACCESS)
-    expect(screen.getByRole('button', { name: 'View: Everyone' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Vote: Signed-in users' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Comment: Signed-in users' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '閲覧: 全員' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '投票: ログイン済みユーザー' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'コメント: ログイン済みユーザー' })).toBeInTheDocument()
     expect(
-      screen.getByRole('button', { name: 'Submit posts: Signed-in users' })
+      screen.getByRole('button', { name: '投稿: ログイン済みユーザー' })
     ).toBeInTheDocument()
   })
 
   it('exposes all four action rows in the matrix', () => {
     renderForm(PUBLIC_ACCESS)
-    // Each action × Everyone column should exist
-    expect(screen.getByRole('button', { name: 'View: Everyone' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Vote: Everyone' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Comment: Everyone' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Submit posts: Everyone' })).toBeInTheDocument()
+    // Each action × 全員 column should exist
+    expect(screen.getByRole('button', { name: '閲覧: 全員' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '投票: 全員' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'コメント: 全員' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '投稿: 全員' })).toBeInTheDocument()
   })
 })
 
@@ -191,7 +191,7 @@ describe('<BoardAccessForm> matrix visibility', () => {
 describe('<BoardAccessForm> presets', () => {
   it('renders Public preset as active for asymmetric Public access', () => {
     renderForm(PUBLIC_ACCESS)
-    const publicBtn = screen.getByRole('button', { name: 'Everyone' })
+    const publicBtn = screen.getByRole('button', { name: '全員' })
     expect(publicBtn.getAttribute('aria-pressed')).toBe('true')
   })
 
@@ -204,7 +204,7 @@ describe('<BoardAccessForm> presets', () => {
       segments: { view: [], vote: [], comment: [], submit: [] },
       moderation: { anonPosts: 'inherit', signedPosts: 'inherit', comments: 'inherit' },
     })
-    const privateBtn = screen.getByRole('button', { name: 'Team only' })
+    const privateBtn = screen.getByRole('button', { name: 'チームのみ' })
     expect(privateBtn.getAttribute('aria-pressed')).toBe('true')
   })
 
@@ -217,11 +217,11 @@ describe('<BoardAccessForm> presets', () => {
       segments: { view: [], vote: [], comment: [], submit: [] },
       moderation: { anonPosts: 'inherit', signedPosts: 'inherit', comments: 'inherit' },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Everyone' }))
-    expect(isCellSelected('View', 'Everyone')).toBe(true)
-    expect(isCellSelected('Vote', 'Signed-in users')).toBe(true)
-    expect(isCellSelected('Comment', 'Signed-in users')).toBe(true)
-    expect(isCellSelected('Submit posts', 'Signed-in users')).toBe(true)
+    fireEvent.click(screen.getByRole('button', { name: '全員' }))
+    expect(isCellSelected('閲覧', '全員')).toBe(true)
+    expect(isCellSelected('投票', 'ログイン済みユーザー')).toBe(true)
+    expect(isCellSelected('コメント', 'ログイン済みユーザー')).toBe(true)
+    expect(isCellSelected('投稿', 'ログイン済みユーザー')).toBe(true)
   })
 
   it('clicking a preset marks the form dirty so it autosaves', () => {
@@ -239,7 +239,7 @@ describe('<BoardAccessForm> presets', () => {
         moderation: { anonPosts: 'inherit', signedPosts: 'inherit', comments: 'inherit' },
       })
       expect(mutate).not.toHaveBeenCalled()
-      fireEvent.click(screen.getByRole('button', { name: 'Everyone' }))
+      fireEvent.click(screen.getByRole('button', { name: '全員' }))
       act(() => {
         vi.advanceTimersByTime(1000)
       })
@@ -249,46 +249,46 @@ describe('<BoardAccessForm> presets', () => {
     }
   })
 
-  it('preset flips to Custom after editing a cell, and back to Public when restored', () => {
+  it('preset flips to カスタム after editing a cell, and back to Public when restored', () => {
     renderForm(PUBLIC_ACCESS)
     // Start in Public
-    expect(screen.getByRole('button', { name: 'Everyone' }).getAttribute('aria-pressed')).toBe(
+    expect(screen.getByRole('button', { name: '全員' }).getAttribute('aria-pressed')).toBe(
       'true'
     )
-    // Tweak Vote → Team only ⇒ Custom
-    clickTierCell('Vote', 'Team only')
-    expect(screen.getByRole('button', { name: 'Everyone' }).getAttribute('aria-pressed')).toBe(
+    // Tweak 投票 → チームのみ ⇒ カスタム
+    clickTierCell('投票', 'チームのみ')
+    expect(screen.getByRole('button', { name: '全員' }).getAttribute('aria-pressed')).toBe(
       'false'
     )
-    // Restore Vote → Signed-in ⇒ Public again
-    clickTierCell('Vote', 'Signed-in users')
-    expect(screen.getByRole('button', { name: 'Everyone' }).getAttribute('aria-pressed')).toBe(
+    // Restore 投票 → Signed-in ⇒ Public again
+    clickTierCell('投票', 'ログイン済みユーザー')
+    expect(screen.getByRole('button', { name: '全員' }).getAttribute('aria-pressed')).toBe(
       'true'
     )
   })
 
-  it('Custom tile is non-interactive (role=status, not button)', () => {
+  it('カスタム tile is non-interactive (role=status, not button)', () => {
     renderForm({
       view: 'anonymous',
       vote: 'authenticated',
-      comment: 'team', // divergent ⇒ Custom
+      comment: 'team', // divergent ⇒ カスタム
       submit: 'team',
       segments: { view: [], vote: [], comment: [], submit: [] },
       moderation: { anonPosts: 'inherit', signedPosts: 'inherit', comments: 'inherit' },
     })
-    // No button labelled "Custom" — only a status element.
-    expect(screen.queryByRole('button', { name: 'Custom' })).not.toBeInTheDocument()
-    const status = screen.getByRole('status', { name: 'Custom' })
+    // No button labelled "カスタム" — only a status element.
+    expect(screen.queryByRole('button', { name: 'カスタム' })).not.toBeInTheDocument()
+    const status = screen.getByRole('status', { name: 'カスタム' })
     expect(status).toBeInTheDocument()
     expect(status.getAttribute('aria-pressed')).toBe('true')
   })
 
-  it('offers Everyone and Team only presets, named like the Boards list badges', () => {
+  it('offers 全員 and チームのみ presets, named like the Boards list badges', () => {
     renderForm(PUBLIC_ACCESS)
     expect(screen.queryByRole('button', { name: 'Auth only' })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Public' })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Private' })).not.toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Team only' })).toHaveAttribute(
+    expect(screen.getByRole('button', { name: 'チームのみ' })).toHaveAttribute(
       'aria-pressed',
       'false'
     )
@@ -305,7 +305,7 @@ describe('<BoardAccessForm> presets', () => {
 // ---------------------------------------------------------------------------
 
 describe('<BoardAccessForm> tier hierarchy', () => {
-  it('raising View tier auto-clamps Vote, Comment, and Submit', () => {
+  it('raising 閲覧 tier auto-clamps 投票, コメント, and Submit', () => {
     renderForm({
       view: 'anonymous',
       vote: 'anonymous',
@@ -314,14 +314,14 @@ describe('<BoardAccessForm> tier hierarchy', () => {
       segments: { view: [], vote: [], comment: [], submit: [] },
       moderation: { anonPosts: 'inherit', signedPosts: 'inherit', comments: 'inherit' },
     })
-    clickTierCell('View', 'Team only')
-    expect(isCellSelected('View', 'Team only')).toBe(true)
-    expect(isCellSelected('Vote', 'Team only')).toBe(true)
-    expect(isCellSelected('Comment', 'Team only')).toBe(true)
-    expect(isCellSelected('Submit posts', 'Team only')).toBe(true)
+    clickTierCell('閲覧', 'チームのみ')
+    expect(isCellSelected('閲覧', 'チームのみ')).toBe(true)
+    expect(isCellSelected('投票', 'チームのみ')).toBe(true)
+    expect(isCellSelected('コメント', 'チームのみ')).toBe(true)
+    expect(isCellSelected('投稿', 'チームのみ')).toBe(true)
   })
 
-  it('disables cells below View rank on derived action rows', () => {
+  it('disables cells below 閲覧 rank on derived action rows', () => {
     renderForm({
       view: 'team',
       vote: 'team',
@@ -330,9 +330,9 @@ describe('<BoardAccessForm> tier hierarchy', () => {
       segments: { view: [], vote: [], comment: [], submit: [] },
       moderation: { anonPosts: 'inherit', signedPosts: 'inherit', comments: 'inherit' },
     })
-    expect(screen.getByRole('button', { name: 'Vote: Everyone' })).toBeDisabled()
-    expect(screen.getByRole('button', { name: 'Comment: Everyone' })).toBeDisabled()
-    expect(screen.getByRole('button', { name: 'Submit posts: Everyone' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: '投票: 全員' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'コメント: 全員' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: '投稿: 全員' })).toBeDisabled()
   })
 })
 
@@ -341,7 +341,7 @@ describe('<BoardAccessForm> tier hierarchy', () => {
 // ---------------------------------------------------------------------------
 
 describe('<BoardAccessForm> workspace ceiling', () => {
-  it('disables Everyone cell on Vote/Comment/Submit rows when master switch is off', async () => {
+  it('disables 全員 cell on 投票/コメント/Submit rows when master switch is off', async () => {
     setWsFlags({ allowAnonymous: false })
     renderForm({
       view: 'anonymous',
@@ -352,32 +352,32 @@ describe('<BoardAccessForm> workspace ceiling', () => {
       moderation: { anonPosts: 'inherit', signedPosts: 'inherit', comments: 'inherit' },
     })
     await waitFor(() => {
-      const voteAnon = screen.getByRole('button', { name: 'Vote: Everyone' })
+      const voteAnon = screen.getByRole('button', { name: '投票: 全員' })
       expect(voteAnon).toBeDisabled()
       expect(voteAnon.getAttribute('data-disabled-reason')).toBe('workspace')
     })
-    const commentAnon = screen.getByRole('button', { name: 'Comment: Everyone' })
+    const commentAnon = screen.getByRole('button', { name: 'コメント: 全員' })
     expect(commentAnon).toBeDisabled()
     expect(commentAnon.getAttribute('data-disabled-reason')).toBe('workspace')
-    const submitAnon = screen.getByRole('button', { name: 'Submit posts: Everyone' })
+    const submitAnon = screen.getByRole('button', { name: '投稿: 全員' })
     expect(submitAnon).toBeDisabled()
     expect(submitAnon.getAttribute('data-disabled-reason')).toBe('workspace')
-    // View row's Everyone cell is unaffected: view has no workspace ceiling.
-    expect(screen.getByRole('button', { name: 'View: Everyone' })).not.toBeDisabled()
+    // 閲覧 row's 全員 cell is unaffected: view has no workspace ceiling.
+    expect(screen.getByRole('button', { name: '閲覧: 全員' })).not.toBeDisabled()
   })
 
   it('shows the workspace-policy banner listing all three blocked actions together', async () => {
     setWsFlags({ allowAnonymous: false })
     renderForm(PUBLIC_ACCESS)
     await waitFor(() => {
-      const banner = screen.getByText(/Workspace policy disables the/i)
+      const banner = screen.getByText(/ワークスペースの設定により/i)
       expect(banner).toBeInTheDocument()
-      expect(banner.textContent).toMatch(/Vote/)
-      expect(banner.textContent).toMatch(/Comment/)
-      expect(banner.textContent).toMatch(/Submit/)
-      expect(banner.textContent).not.toMatch(/\bView\b/)
+      expect(banner.textContent).toMatch(/投票/)
+      expect(banner.textContent).toMatch(/コメント/)
+      expect(banner.textContent).toMatch(/投稿/)
+      expect(banner.textContent).not.toMatch(/閲覧/)
     })
-    const link = screen.getByRole('link', { name: /Workspace access/i })
+    const link = screen.getByRole('link', { name: /ワークスペースのアクセス設定/ })
     expect(link).toHaveAttribute(
       'href',
       '/admin/settings/security/authentication?tab=portal-access'
@@ -395,10 +395,10 @@ describe('<BoardAccessForm> workspace ceiling', () => {
       moderation: { anonPosts: 'inherit', signedPosts: 'inherit', comments: 'inherit' },
     })
     await waitFor(() => {
-      expect(isCellSelected('Vote', 'Signed-in users')).toBe(true)
+      expect(isCellSelected('投票', 'ログイン済みユーザー')).toBe(true)
     })
-    expect(isCellSelected('Comment', 'Signed-in users')).toBe(true)
-    expect(isCellSelected('Submit posts', 'Signed-in users')).toBe(true)
+    expect(isCellSelected('コメント', 'ログイン済みユーザー')).toBe(true)
+    expect(isCellSelected('投稿', 'ログイン済みユーザー')).toBe(true)
   })
 })
 
@@ -422,7 +422,7 @@ describe('<BoardAccessForm> autosave', () => {
 
   it('renders no save dock or Save button', () => {
     renderForm(PUBLIC_ACCESS)
-    clickTierCell('Comment', 'Team only')
+    clickTierCell('コメント', 'チームのみ')
     expect(screen.queryByRole('region', { name: /save changes/i })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /save changes/i })).not.toBeInTheDocument()
   })
@@ -435,10 +435,10 @@ describe('<BoardAccessForm> autosave', () => {
 
   it('does not save while an action is on Segments with no segment, and says why', () => {
     renderForm(PUBLIC_ACCESS)
-    clickTierCell('View', 'Specific segments')
+    clickTierCell('閲覧', '特定のセグメント')
     flushAutosave()
     expect(mutate).not.toHaveBeenCalled()
-    expect(screen.getByText(/no segments are selected/i)).toBeInTheDocument()
+    expect(screen.getByText(/対象が選択されていません/i)).toBeInTheDocument()
   })
 
   it('saves the BoardAccess payload preserving moderation overrides', () => {
@@ -451,7 +451,7 @@ describe('<BoardAccessForm> autosave', () => {
       // Non-default moderation values to verify the form preserves them on save.
       moderation: { anonPosts: 'on', signedPosts: 'on', comments: 'off' },
     })
-    clickTierCell('Comment', 'Team only')
+    clickTierCell('コメント', 'チームのみ')
     flushAutosave()
     expect(mutate).toHaveBeenCalledTimes(1)
     expect(mutate).toHaveBeenCalledWith({
@@ -471,8 +471,8 @@ describe('<BoardAccessForm> autosave', () => {
 
   it('does not save when a change is undone before the pause ends', () => {
     renderForm(PUBLIC_ACCESS)
-    clickTierCell('Comment', 'Team only')
-    clickTierCell('Comment', 'Signed-in users')
+    clickTierCell('コメント', 'チームのみ')
+    clickTierCell('コメント', 'ログイン済みユーザー')
     flushAutosave()
     expect(mutate).not.toHaveBeenCalled()
   })
@@ -483,7 +483,7 @@ describe('<BoardAccessForm> autosave', () => {
       vote: 'segments',
       segments: { view: [], vote: ['seg_alpha'], comment: [], submit: [] },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Vote: Specific segments' }))
+    fireEvent.click(screen.getByRole('button', { name: '投票: 特定のセグメント' }))
     const beta = () => screen.getByText('Beta').closest('button') as HTMLButtonElement
     fireEvent.click(beta())
     fireEvent.click(beta())
@@ -501,7 +501,7 @@ describe('<BoardAccessForm> autosave', () => {
       submit: 'anonymous',
     })
     await waitFor(() => {
-      expect(isCellSelected('Vote', 'Signed-in users')).toBe(true)
+      expect(isCellSelected('投票', 'ログイン済みユーザー')).toBe(true)
     })
     await new Promise((r) => setTimeout(r, 800))
     expect(mutate).not.toHaveBeenCalled()
@@ -517,9 +517,9 @@ describe('<BoardAccessForm> autosave', () => {
       submit: 'anonymous',
     })
     await waitFor(() => {
-      expect(isCellSelected('Vote', 'Signed-in users')).toBe(true)
+      expect(isCellSelected('投票', 'ログイン済みユーザー')).toBe(true)
     })
-    clickTierCell('Comment', 'Team only')
+    clickTierCell('コメント', 'チームのみ')
     await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1))
     expect(mutate.mock.calls[0][0].access).toMatchObject({
       vote: 'authenticated',
@@ -536,9 +536,9 @@ describe('<BoardAccessForm> autosave', () => {
       </QueryClientProvider>
     )
     const { rerender } = render(ui(PUBLIC_ACCESS))
-    clickTierCell('Comment', 'Team only')
+    clickTierCell('コメント', 'チームのみ')
     rerender(ui({ ...PUBLIC_ACCESS, submit: 'team' }))
-    expect(isCellSelected('Comment', 'Team only')).toBe(true)
+    expect(isCellSelected('コメント', 'チームのみ')).toBe(true)
     flushAutosave()
     expect(mutate).toHaveBeenCalledTimes(1)
     expect(mutate.mock.calls[0][0].access).toMatchObject({ comment: 'team' })
@@ -546,13 +546,13 @@ describe('<BoardAccessForm> autosave', () => {
 
   it('raising view to team clears stale segment lists on cascaded actions', () => {
     renderForm(PUBLIC_ACCESS)
-    // 1. set Submit posts -> Segments; the empty-list picker opens.
-    clickTierCell('Submit posts', 'Specific segments')
+    // 1. set 投稿 -> Segments; the empty-list picker opens.
+    clickTierCell('投稿', '特定のセグメント')
     // 2. pick a segment from the open picker so submit.segments is non-empty.
     const alphaOption = screen.getByText('Alpha').closest('button')!
     fireEvent.click(alphaOption)
-    // 3. raise View -> Team only (cascades vote/comment/submit up to team).
-    clickTierCell('View', 'Team only')
+    // 3. raise 閲覧 -> チームのみ (cascades vote/comment/submit up to team).
+    clickTierCell('閲覧', 'チームのみ')
     // 4. the autosave carries the cascaded submit without its stale segment list.
     flushAutosave()
     expect(mutate).toHaveBeenCalledTimes(1)
@@ -580,7 +580,7 @@ describe('<BoardAccessForm> autosave', () => {
       },
       moderation: { anonPosts: 'inherit', signedPosts: 'inherit', comments: 'inherit' },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Everyone' }))
+    fireEvent.click(screen.getByRole('button', { name: '全員' }))
     flushAutosave()
     expect(mutate).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -597,7 +597,7 @@ describe('<BoardAccessForm> autosave', () => {
 // ---------------------------------------------------------------------------
 
 describe('<BoardAccessForm> reply policy', () => {
-  const REPLY_LABEL = 'Only the post author and team members can reply'
+  const REPLY_LABEL = '投稿者とチームメンバーのみ返信できる'
 
   beforeEach(() => {
     vi.useFakeTimers()
@@ -675,7 +675,7 @@ describe('<BoardAccessForm> reply policy', () => {
   it('a tier change keeps an existing author-only replyPolicy', () => {
     const access: BoardAccess = { ...PUBLIC_ACCESS, replyPolicy: 'author-only' }
     renderForm(access)
-    clickTierCell('Comment', 'Team only')
+    clickTierCell('コメント', 'チームのみ')
     flushAutosave()
     expect(mutate).toHaveBeenCalledWith({
       boardId: BOARD_ID,
@@ -693,7 +693,7 @@ describe('<BoardAccessForm> reply policy', () => {
       moderation: { anonPosts: 'inherit', signedPosts: 'inherit', comments: 'inherit' },
       replyPolicy: 'author-only',
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Everyone' }))
+    fireEvent.click(screen.getByRole('button', { name: '全員' }))
     flushAutosave()
     expect(mutate).toHaveBeenCalledWith({
       boardId: BOARD_ID,
@@ -706,7 +706,7 @@ describe('PRESET_META ↔ accessForPreset agreement (round-trip guard)', () => {
   // The UI preset tiles (PRESET_META, which drives deriveActivePreset) and
   // the server/optimistic source of truth (accessForPreset) must encode the
   // same tier mapping. A one-sided edit would break the create round-trip —
-  // a fresh Public board would render as "Custom". PRESET_META now derives
+  // a fresh Public board would render as "カスタム". PRESET_META now derives
   // its tiers from accessForPreset; this pins that they cannot diverge.
   for (const id of ['public', 'private'] as const) {
     it(`${id}: UI preset tiers match the server source of truth`, () => {

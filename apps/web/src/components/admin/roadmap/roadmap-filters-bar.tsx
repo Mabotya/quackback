@@ -41,9 +41,9 @@ type RoadmapFilterType = 'board' | 'tags' | 'segment'
 // ---------------------------------------------------------------------------
 
 const SORT_OPTIONS = [
-  { value: 'votes', label: 'Votes' },
-  { value: 'newest', label: 'Newest' },
-  { value: 'oldest', label: 'Oldest' },
+  { value: 'votes', label: '投票数順' },
+  { value: 'newest', label: '新しい順' },
+  { value: 'oldest', label: '古い順' },
 ]
 
 const FILTER_ICON_MAP: Record<RoadmapFilterType, IconComponent> = {
@@ -53,9 +53,9 @@ const FILTER_ICON_MAP: Record<RoadmapFilterType, IconComponent> = {
 }
 
 const FILTER_CATEGORIES: { key: FilterCategory; label: string; icon: IconComponent }[] = [
-  { key: 'board', label: 'Board', icon: Squares2X2Icon },
-  { key: 'tags', label: 'Tag', icon: TagIcon },
-  { key: 'segment', label: 'Segment', icon: UserGroupIcon },
+  { key: 'board', label: 'ボード', icon: Squares2X2Icon },
+  { key: 'tags', label: 'タグ', icon: TagIcon },
+  { key: 'segment', label: 'セグメント', icon: UserGroupIcon },
 ]
 
 const MENU_BUTTON_STYLES =
@@ -106,7 +106,7 @@ function computeActiveFilters(
       result.push({
         key: `board-${id}`,
         type: 'board',
-        label: 'Board:',
+        label: 'ボード：',
         value: board.name,
         valueId: id,
         options: boardOptions,
@@ -130,7 +130,7 @@ function computeActiveFilters(
       result.push({
         key: `tag-${id}`,
         type: 'tags',
-        label: 'Tag:',
+        label: 'タグ：',
         value: tag.name,
         valueId: id,
         options: tagOptions,
@@ -158,7 +158,7 @@ function computeActiveFilters(
       result.push({
         key: `segment-${id}`,
         type: 'segment',
-        label: 'Segment:',
+        label: 'セグメント：',
         value: segment.name,
         valueId: id,
         color: segment.color,
@@ -258,7 +258,7 @@ function AddFilterButton({
               className="w-full flex items-center gap-1.5 px-2.5 py-1.5 text-[13px] text-muted-foreground hover:text-foreground border-b border-border/50"
             >
               <ChevronRightIcon className="h-2.5 w-2.5 rotate-180" />
-              Back
+              戻る
             </button>
             <div className="max-h-[250px] overflow-y-auto py-1">
               {activeCategory === 'board' &&
@@ -340,7 +340,7 @@ export function RoadmapFiltersBar({
     <AdminListHeader
       searchValue={searchValue}
       onSearchChange={setSearchValue}
-      searchPlaceholder="Search posts..."
+      searchPlaceholder="投稿を検索..."
       sortOptions={SORT_OPTIONS}
       activeSort={filters.sort ?? 'votes'}
       onSortChange={(sort) => onFiltersChange({ sort: sort as RoadmapFilters['sort'] })}
@@ -372,7 +372,7 @@ export function RoadmapFiltersBar({
                 'transition-colors'
               )}
             >
-              Clear all
+              すべて解除
             </button>
           )}
         </div>

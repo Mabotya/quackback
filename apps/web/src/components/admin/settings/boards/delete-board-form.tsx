@@ -42,7 +42,7 @@ export function DeleteBoardForm({ board }: DeleteBoardFormProps) {
           void navigate({ to: '/admin/settings/boards', search: {} })
           router.invalidate()
         },
-        onError: () => toast.error("Couldn't delete the board. Try again."),
+        onError: () => toast.error("ボードを削除できませんでした。もう一度お試しください。"),
       }
     )
   }
@@ -51,8 +51,8 @@ export function DeleteBoardForm({ board }: DeleteBoardFormProps) {
     <>
       <SettingRows>
         <SettingRow
-          label="Delete this board"
-          description="Removes the board and its posts, votes and comments."
+          label="このボードを削除"
+          description="ボードと投稿、投票、コメントを削除します。"
           control={
             <Button
               type="button"
@@ -60,7 +60,7 @@ export function DeleteBoardForm({ board }: DeleteBoardFormProps) {
               size="sm"
               onClick={() => setOpen(true)}
             >
-              Delete board
+              ボードを削除
             </Button>
           }
         />
@@ -68,17 +68,17 @@ export function DeleteBoardForm({ board }: DeleteBoardFormProps) {
       <ConfirmDialog
         open={open}
         onOpenChange={handleOpenChange}
-        title="Delete board?"
-        description="This permanently deletes the board and everything on it. It cannot be undone."
+        title="ボードを削除しますか？"
+        description="ボードとその内容を完全に削除します。この操作は取り消せません。"
         variant="destructive"
-        confirmLabel="Delete board"
+        confirmLabel="ボードを削除"
         confirmDisabled={confirmName !== board.name}
         isPending={mutation.isPending}
         onConfirm={onConfirm}
       >
         <div className="space-y-2">
           <Label htmlFor="confirm-board-name">
-            Type <span className="font-mono font-semibold">{board.name}</span> to confirm
+            確認のため <span className="font-mono font-semibold">{board.name}</span> と入力してください
           </Label>
           <Input
             id="confirm-board-name"

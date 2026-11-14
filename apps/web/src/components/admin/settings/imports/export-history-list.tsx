@@ -25,10 +25,10 @@ import type { ExportRunListItem } from '@/lib/server/functions/data-runs'
 const IN_FLIGHT_STATUSES = new Set<ExportRunListItem['status']>(['pending', 'running'])
 
 const STATUS_LABEL: Record<ExportRunListItem['status'], string> = {
-  pending: 'Queued',
-  running: 'Exporting',
-  completed: 'Completed',
-  failed: 'Failed',
+  pending: '待機中',
+  running: 'エクスポート中',
+  completed: '完了',
+  failed: '失敗',
 }
 
 const STATUS_VARIANT: Record<
@@ -76,15 +76,15 @@ export function ExportHistoryList() {
   })
 
   if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading export history...</p>
+    return <p className="text-sm text-muted-foreground">エクスポート履歴を読み込み中...</p>
   }
 
   if (!runs || runs.length === 0) {
     return (
       <EmptyState
         icon={ArchiveBoxIcon}
-        title="No exports yet"
-        description="Workspace exports you start above show up here with a download link."
+        title="エクスポート履歴はありません"
+        description="エクスポートを開始すると、ここにダウンロードリンクが表示されます。"
         className="py-8"
       />
     )
@@ -95,11 +95,11 @@ export function ExportHistoryList() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Started</TableHead>
-            <TableHead>Size</TableHead>
-            <TableHead>Contents</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Download</TableHead>
+            <TableHead>開始日時</TableHead>
+            <TableHead>サイズ</TableHead>
+            <TableHead>内容</TableHead>
+            <TableHead>状態</TableHead>
+            <TableHead className="text-right">ダウンロード</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -119,7 +119,7 @@ export function ExportHistoryList() {
                 }
               >
                 {run.status === 'failed'
-                  ? (run.error ?? 'Export failed')
+                  ? (run.error ?? 'エクスポートに失敗しました')
                   : run.entityCounts
                     ? summarizeEntityCounts(run.entityCounts, formatNumber)
                     : '-'}
@@ -140,7 +140,7 @@ export function ExportHistoryList() {
                     </a>
                   </Button>
                 ) : run.status === 'completed' && isExpired(run) ? (
-                  <span className="text-sm text-muted-foreground">Expired</span>
+                  <span className="text-sm text-muted-foreground">期限切れ</span>
                 ) : (
                   <span className="text-sm text-muted-foreground">-</span>
                 )}

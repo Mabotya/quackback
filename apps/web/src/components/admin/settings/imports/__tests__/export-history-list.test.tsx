@@ -79,7 +79,7 @@ describe('<ExportHistoryList>', () => {
   it('shows the empty state when there are no runs', async () => {
     serveRuns([])
     renderWithClient(<ExportHistoryList />)
-    expect(await screen.findByText('No exports yet')).toBeTruthy()
+    expect(await screen.findByText('エクスポート履歴はありません')).toBeTruthy()
   })
 
   it('renders a completed run with size, contents, and a download link', async () => {
@@ -88,8 +88,8 @@ describe('<ExportHistoryList>', () => {
 
     expect(await screen.findByText('4.0 MB')).toBeTruthy()
     expect(screen.getByText(/1,204 posts/)).toBeTruthy()
-    expect(screen.getByText('Completed').className).toContain('text-muted-foreground')
-    expect(screen.getByText('Completed').getAttribute('data-slot')).not.toBe('badge')
+    expect(screen.getByText('完了').className).toContain('text-muted-foreground')
+    expect(screen.getByText('完了').getAttribute('data-slot')).not.toBe('badge')
     const link = screen.getByRole('link', { name: /ZIP/ })
     expect(link.getAttribute('href')).toBe('/api/export/runs/export_run_1/download')
   })
@@ -97,7 +97,7 @@ describe('<ExportHistoryList>', () => {
   it('shows Expired instead of a link past expires_at', async () => {
     serveRuns([{ ...completedRun, expiresAt: new Date(Date.now() - 1000).toISOString() }])
     renderWithClient(<ExportHistoryList />)
-    expect(await screen.findByText('Expired')).toBeTruthy()
+    expect(await screen.findByText('期限切れ')).toBeTruthy()
     expect(screen.queryByRole('link')).toBeNull()
   })
 
@@ -113,7 +113,7 @@ describe('<ExportHistoryList>', () => {
     ])
     renderWithClient(<ExportHistoryList />)
     expect(await screen.findByText('S3 unreachable')).toBeTruthy()
-    expect(screen.getByText('Failed')).toBeTruthy()
+    expect(screen.getByText('失敗')).toBeTruthy()
   })
 })
 

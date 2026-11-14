@@ -47,18 +47,18 @@ interface ModerationRuleMeta {
 const MOD_RULES: readonly ModerationRuleMeta[] = [
   {
     id: 'anonPosts',
-    label: 'Require approval for anonymous posts',
-    sub: 'Posts from visitors without an account wait for review before they appear.',
+    label: '匿名の投稿に承認を必須にする',
+    sub: 'ログインしていない訪問者の投稿は、承認されるまで表示されません。',
   },
   {
     id: 'signedPosts',
-    label: 'Require approval for signed-in posts',
-    sub: 'Posts from signed-in users wait for review before they appear.',
+    label: 'ログイン済みユーザーの投稿に承認を必須にする',
+    sub: 'ログイン済みユーザーの投稿は、承認されるまで表示されません。',
   },
   {
     id: 'comments',
-    label: 'Require approval for new comments',
-    sub: 'Comments wait for review before they appear under a post.',
+    label: '新しいコメントに承認を必須にする',
+    sub: 'コメントは承認されるまで投稿に表示されません。',
   },
 ] as const
 
@@ -134,18 +134,17 @@ export function BoardModerationForm({ board }: BoardModerationFormProps) {
         <div className="flex-1 text-[13px] text-foreground/90">
           {anyOverridden ? (
             <>
-              This board <span className="font-medium text-primary">overrides</span> some workspace
-              defaults.
+              このボードでは、ワークスペースの既定値の一部を<span className="font-medium text-primary">上書き</span>しています。
             </>
           ) : (
-            <>Inheriting all workspace defaults.</>
+            <>ワークスペースの既定値をすべて継承しています。</>
           )}
         </div>
         <Link
           to="/admin/settings/moderation"
           className={`${INLINE_LINK} text-[13px] whitespace-nowrap`}
         >
-          Workspace moderation →
+          ワークスペースのモデレーション設定 →
         </Link>
       </div>
 
@@ -164,11 +163,11 @@ export function BoardModerationForm({ board }: BoardModerationFormProps) {
       </SettingRows>
 
       <p className="pt-2 text-[13px] text-muted-foreground">
-        Held posts and comments appear in the{' '}
+        保留中の投稿とコメントは
         <Link to="/admin/feedback/moderation" className={INLINE_LINK}>
-          review queue
+          承認待ち一覧
         </Link>
-        .
+に表示されます。
       </p>
     </form>
   )
@@ -185,9 +184,9 @@ interface ModerationRuleRowProps {
 
 function ModerationRuleRow({ rule, value, workspaceDefault, onChange }: ModerationRuleRowProps) {
   const options: ReadonlyArray<{ value: ModerationRuleValue; label: string }> = [
-    { value: 'inherit', label: `Inherit (${workspaceDefault === 'on' ? 'On' : 'Off'})` },
-    { value: 'on', label: 'On' },
-    { value: 'off', label: 'Off' },
+    { value: 'inherit', label: `継承（${workspaceDefault === 'on' ? 'オン' : 'オフ'}）` },
+    { value: 'on', label: 'オン' },
+    { value: 'off', label: 'オフ' },
   ]
   return (
     <SettingRow
@@ -196,7 +195,7 @@ function ModerationRuleRow({ rule, value, workspaceDefault, onChange }: Moderati
       badge={
         value !== 'inherit' ? (
           <Badge variant="outline" size="sm">
-            Override
+            個別設定
           </Badge>
         ) : undefined
       }

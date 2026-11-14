@@ -2,6 +2,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, render, screen } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { IntlProvider } from 'react-intl'
 import type { InboxFilters } from '@/components/admin/feedback/use-inbox-filters'
 
 vi.mock('@/components/admin/feedback/inbox-empty-state', () => ({
@@ -44,14 +45,14 @@ describe('feedback toolbar', () => {
     renderTable(<button>New post</button>, <button>Views</button>)
     const toolbar = document.querySelector('[data-slot="admin-list-search"]')!.parentElement!
     const labels = Array.from(toolbar.querySelectorAll('button')).map((b) => b.textContent?.trim())
-    expect(labels).toEqual(['Sort: Newest', 'Filter', 'Views', 'New post'])
+    expect(labels).toEqual(['並び順：Newest', 'フィルター', 'Views', 'New post'])
     expect(screen.queryByText('Add filter')).toBeNull()
   })
 
   it('offers the four sort choices in sentence case', async () => {
     const { default: userEvent } = await import('@testing-library/user-event')
     renderTable()
-    await userEvent.setup().click(screen.getByRole('button', { name: 'Sort: Newest' }))
+    await userEvent.setup().click(screen.getByRole('button', { name: '並び順：Newest' }))
     expect(screen.getAllByRole('menuitemradio').map((i) => i.textContent)).toEqual([
       'Newest',
       'Oldest',
@@ -62,14 +63,14 @@ describe('feedback toolbar', () => {
 
   it('labels the create trigger New post', () => {
     render(
-      <QueryClientProvider client={new QueryClient()}>
+      <IntlProvider locale="en"><QueryClientProvider client={new QueryClient()}>
         <CreatePostDialog
           boards={[]}
           tags={[]}
           statuses={[]}
           currentUser={{ name: 'A', email: 'a@b.c', principalId: 'principal_1' } as never}
         />
-      </QueryClientProvider>
+      </QueryClientProvider></IntlProvider>
     )
     expect(screen.getByRole('button', { name: 'New post' })).toBeInTheDocument()
   })

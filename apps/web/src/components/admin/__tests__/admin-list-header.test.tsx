@@ -15,7 +15,7 @@ describe('AdminListHeader', () => {
   it('renders the search input and forwards changes', () => {
     const onSearchChange = vi.fn()
     render(<AdminListHeader searchValue="" onSearchChange={onSearchChange} />)
-    fireEvent.change(screen.getByPlaceholderText('Search...'), { target: { value: 'abc' } })
+    fireEvent.change(screen.getByPlaceholderText('検索...'), { target: { value: 'abc' } })
     expect(onSearchChange).toHaveBeenCalledWith('abc')
   })
 
@@ -29,7 +29,7 @@ describe('AdminListHeader', () => {
 
   it('gives the search input an accessible name', () => {
     render(<AdminListHeader searchValue="" onSearchChange={() => {}} />)
-    expect(screen.getByRole('textbox', { name: 'Search...' })).toBeTruthy()
+    expect(screen.getByRole('textbox', { name: '検索...' })).toBeTruthy()
   })
 
   it('caps the search width at 360px', () => {
@@ -63,7 +63,7 @@ describe('AdminListHeader', () => {
       />
     )
     expect(screen.queryByRole('button', { name: 'Oldest' })).toBeNull()
-    await user.click(screen.getByRole('button', { name: 'Sort: Newest' }))
+    await user.click(screen.getByRole('button', { name: '並び順：Newest' }))
     await user.click(screen.getByRole('menuitemradio', { name: 'Oldest' }))
     expect(onSortChange).toHaveBeenCalledWith('oldest')
   })
@@ -84,7 +84,7 @@ describe('AdminListHeader', () => {
       .getAllByRole('button')
       .map((b) => b.textContent?.trim())
       .filter(Boolean)
-    expect(buttons.indexOf('Sort: Newest')).toBeLessThan(buttons.indexOf('Filter'))
+    expect(buttons.indexOf('並び順：Newest')).toBeLessThan(buttons.indexOf('Filter'))
     expect(buttons.indexOf('Filter')).toBeLessThan(buttons.indexOf('New post'))
   })
 

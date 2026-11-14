@@ -47,7 +47,7 @@ describe('HelpCenterFilterButton', () => {
       />
     )
     expect(screen.queryByText('Add filter')).toBeNull()
-    await userEvent.setup().click(screen.getByRole('button', { name: 'Filter' }))
+    await userEvent.setup().click(screen.getByRole('button', { name: 'フィルター' }))
     expect(screen.getByRole('button', { name: 'Status' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Category' })).toBeInTheDocument()
   })
@@ -62,7 +62,7 @@ describe('HelpCenterFilterButton', () => {
         onSetCategory={vi.fn()}
       />
     )
-    expect(screen.queryByRole('button', { name: 'Filter' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'フィルター' })).toBeNull()
   })
 
   it('stays when one filter can still be added', () => {
@@ -75,6 +75,6 @@ describe('HelpCenterFilterButton', () => {
         onSetCategory={vi.fn()}
       />
     )
-    expect(screen.getByRole('button', { name: 'Filter' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'フィルター' })).toBeInTheDocument()
   })
 })

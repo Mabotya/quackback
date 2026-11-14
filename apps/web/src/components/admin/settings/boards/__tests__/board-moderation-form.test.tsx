@@ -88,9 +88,9 @@ vi.mock('@/lib/client/queries/settings', () => ({
 const BOARD_ID = 'brd_test' as BoardId
 
 const MOD_RULE_LABELS = {
-  anonPosts: 'Require approval for anonymous posts',
-  signedPosts: 'Require approval for signed-in posts',
-  comments: 'Require approval for new comments',
+  anonPosts: '匿名の投稿に承認を必須にする',
+  signedPosts: 'ログイン済みユーザーの投稿に承認を必須にする',
+  comments: '新しいコメントに承認を必須にする',
 } as const
 
 /** Default-public BoardAccess matching the new "Public" preset. */
@@ -141,8 +141,8 @@ describe('<BoardModerationForm> rendering', () => {
 
   it('renders the "inheriting" banner when every rule is inherit', () => {
     renderForm(PUBLIC_ACCESS)
-    expect(screen.getByText(/inheriting all workspace defaults/i)).toBeInTheDocument()
-    expect(screen.queryByText(/overrides/i)).not.toBeInTheDocument()
+    expect(screen.getByText(/ワークスペースの既定値をすべて継承/)).toBeInTheDocument()
+    expect(screen.queryByText(/上書き/)).not.toBeInTheDocument()
   })
 
   it('renders the "overrides" banner + Override badge when a rule is set', () => {
@@ -150,12 +150,12 @@ describe('<BoardModerationForm> rendering', () => {
       ...PUBLIC_ACCESS,
       moderation: { anonPosts: 'on', signedPosts: 'inherit', comments: 'inherit' },
     })
-    expect(screen.getByText('Override')).toBeInTheDocument()
+    expect(screen.getByText('個別設定')).toBeInTheDocument()
     const banners = screen.getAllByText(
       (_, el) =>
         el?.tagName === 'DIV' &&
         !!el.textContent &&
-        /overrides some workspace defaults/i.test(el.textContent)
+        /ワークスペースの既定値の一部を上書き/.test(el.textContent)
     )
     expect(banners.length).toBeGreaterThan(0)
   })
@@ -170,22 +170,22 @@ describe('<BoardModerationForm> inheritance option', () => {
     setWsFlags({ requireApproval: 'none' })
     renderForm(PUBLIC_ACCESS)
     await waitFor(() => {
-      const anonInherit = radio('anonPosts', /^Inherit/)
-      expect(anonInherit.textContent).toMatch(/Off/)
+      const anonInherit = radio('anonPosts', /^継承/)
+      expect(anonInherit.textContent).toMatch(/オフ/)
     })
-    expect(radio('signedPosts', /^Inherit/).textContent).toMatch(/Off/)
-    expect(radio('comments', /^Inherit/).textContent).toMatch(/Off/)
+    expect(radio('signedPosts', /^継承/).textContent).toMatch(/オフ/)
+    expect(radio('comments', /^継承/).textContent).toMatch(/オフ/)
   })
 
   it('Inherit option reflects workspace default ("all" → all On)', async () => {
     setWsFlags({ requireApproval: 'all' })
     renderForm(PUBLIC_ACCESS)
     await waitFor(() => {
-      const anonInherit = radio('anonPosts', /^Inherit/)
-      expect(anonInherit.textContent).toMatch(/On/)
+      const anonInherit = radio('anonPosts', /^継承/)
+      expect(anonInherit.textContent).toMatch(/オン/)
     })
-    expect(radio('signedPosts', /^Inherit/).textContent).toMatch(/On/)
-    expect(radio('comments', /^Inherit/).textContent).toMatch(/On/)
+    expect(radio('signedPosts', /^継承/).textContent).toMatch(/オン/)
+    expect(radio('comments', /^継承/).textContent).toMatch(/オン/)
   })
 })
 
@@ -232,8 +232,8 @@ describe('<BoardModerationForm> autosave', () => {
     }
     renderForm(access)
 
-    fireEvent.click(radio('anonPosts', 'On'))
-    fireEvent.click(radio('comments', 'Off'))
+    fireEvent.click(radio('anonPosts', 'オン'))
+    fireEvent.click(radio('comments', 'オフ'))
     expect(mutate).not.toHaveBeenCalled()
     act(() => {
       vi.advanceTimersByTime(1000)
@@ -260,8 +260,8 @@ describe('<BoardModerationForm> autosave', () => {
 
   it('does not save when a rule is set and set back before the pause ends', () => {
     renderForm(PUBLIC_ACCESS)
-    fireEvent.click(radio('anonPosts', 'On'))
-    fireEvent.click(radio('anonPosts', /^Inherit/))
+    fireEvent.click(radio('anonPosts', 'オン'))
+    fireEvent.click(radio('anonPosts', /^継承/))
     act(() => {
       vi.advanceTimersByTime(1000)
     })
@@ -270,7 +270,7 @@ describe('<BoardModerationForm> autosave', () => {
 
   it('shows the Override badge as soon as a rule is set', () => {
     renderForm(PUBLIC_ACCESS)
-    fireEvent.click(radio('anonPosts', 'On'))
-    expect(screen.getByText('Override')).toBeInTheDocument()
+    fireEvent.click(radio('anonPosts', 'オン'))
+    expect(screen.getByText('個別設定')).toBeInTheDocument()
   })
 })

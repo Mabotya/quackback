@@ -81,8 +81,8 @@ describe('PortalAuthTab: anonymous interaction', () => {
   it('shows the allow-anonymous switch after visibility and before account signup', () => {
     render(<PortalAuthTab portalConfig={portal} teamOpenSignup />)
 
-    const anonymous = screen.getByRole('switch', { name: 'Allow anonymous interaction' })
-    const signup = screen.getByRole('switch', { name: 'Let visitors create an account' })
+    const anonymous = screen.getByRole('switch', { name: '匿名での操作を許可' })
+    const signup = screen.getByRole('switch', { name: '訪問者のアカウント作成を許可' })
     expect(anonymous).toBeInTheDocument()
     expect(signup).toBeInTheDocument()
     expect(
@@ -91,7 +91,7 @@ describe('PortalAuthTab: anonymous interaction', () => {
 
     expect(
       screen.getByText(
-        'When off, all boards require sign-in for voting, commenting, and submitting posts.'
+        'オフの場合、すべてのボードで投票、コメント、投稿にログインが必要です。'
       )
     ).toBeInTheDocument()
   })
@@ -100,9 +100,9 @@ describe('PortalAuthTab: anonymous interaction', () => {
 describe('PortalAuthTab: visibility and autosave', () => {
   it('offers visibility as radio tiles in the shared vocabulary', () => {
     render(<PortalAuthTab portalConfig={portal} teamOpenSignup />)
-    expect(screen.getByRole('radio', { name: /^Everyone/ })).toBeChecked()
+    expect(screen.getByRole('radio', { name: /^全員/ })).toBeChecked()
     expect(
-      screen.getByRole('radio', { name: /^Only your team and users you invite/ })
+      screen.getByRole('radio', { name: /^チームと招待したユーザーのみ/ })
     ).not.toBeChecked()
     expect(screen.queryByText('Public')).toBeNull()
     expect(screen.queryByText('Private')).toBeNull()
@@ -111,21 +111,21 @@ describe('PortalAuthTab: visibility and autosave', () => {
   it('renders account signup as one setting row with no card header', () => {
     render(<PortalAuthTab portalConfig={portal} teamOpenSignup />)
     expect(screen.queryByRole('heading', { name: 'Account signup' })).toBeNull()
-    expect(screen.getByText('Let visitors create an account')).toBeInTheDocument()
+    expect(screen.getByText('訪問者のアカウント作成を許可')).toBeInTheDocument()
   })
 
   it('reverts a failed signup toggle and shows the one autosave toast', async () => {
     vi.mocked(updatePortalConfigFn).mockRejectedValue(new Error('boom'))
     render(<PortalAuthTab portalConfig={portal} teamOpenSignup />)
 
-    const signup = screen.getByRole('switch', { name: 'Let visitors create an account' })
+    const signup = screen.getByRole('switch', { name: '訪問者のアカウント作成を許可' })
     expect(signup).toHaveAttribute('aria-checked', 'true')
     fireEvent.click(signup)
 
     await waitFor(() => expect(toastError).toHaveBeenCalledWith("Couldn't save. Try again."))
     await waitFor(() =>
       expect(
-        screen.getByRole('switch', { name: 'Let visitors create an account' })
+        screen.getByRole('switch', { name: '訪問者のアカウント作成を許可' })
       ).toHaveAttribute('aria-checked', 'true')
     )
     expect(updatePortalAccessFn).not.toHaveBeenCalled()
@@ -140,6 +140,6 @@ describe('PortalAuthTab: widget sign-in', () => {
         teamOpenSignup
       />
     )
-    expect(screen.getByRole('switch', { name: 'Widget sign-in' })).toBeInTheDocument()
+    expect(screen.getByRole('switch', { name: 'ウィジェットからのログイン' })).toBeInTheDocument()
   })
 })

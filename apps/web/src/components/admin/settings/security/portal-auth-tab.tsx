@@ -53,13 +53,13 @@ type Visibility = 'public' | 'private'
 const VISIBILITY_OPTIONS = [
   {
     value: 'public',
-    title: 'Everyone',
-    description: 'Anyone can view your portal without signing in.',
+    title: '全員',
+    description: 'ログインせずに誰でもポータルを閲覧できます。',
   },
   {
     value: 'private',
-    title: 'Only your team and users you invite',
-    description: 'Everyone else sees a sign-in page.',
+    title: 'チームと招待したユーザーのみ',
+    description: 'それ以外の人にはログイン画面が表示されます。',
   },
 ] satisfies { value: Visibility; title: string; description: string }[]
 
@@ -266,12 +266,12 @@ export function PortalAuthTab({ portalConfig, teamOpenSignup }: PortalAuthTabPro
 
     // Basic client-side validation matching server normalization rules
     if (raw.includes('://') || raw.includes('@') || /\s/.test(raw) || !raw.includes('.')) {
-      setDomainInputError('Enter a valid domain, e.g. acme.com')
+      setDomainInputError('有効なドメインを入力してください（例：acme.com）')
       return
     }
 
     if (allowedDomainsRef.current.includes(raw)) {
-      setDomainInputError('Domain already in the list')
+      setDomainInputError('このドメインは既に登録されています')
       return
     }
 
@@ -306,7 +306,7 @@ export function PortalAuthTab({ portalConfig, teamOpenSignup }: PortalAuthTabPro
       {/* Portal visibility: the who-can-view choice and the anonymous switch.
           The four authorization channels each get their own SettingsCard below
           (only when private) so each one stands on its own. */}
-      <SettingsCard title="Portal visibility" description="Choose who can view your portal.">
+      <SettingsCard title="ポータルの公開範囲" description="ポータルを閲覧できる人を選びます。">
         <div className="space-y-4">
           <VisibilityTiles
             name="portal-visibility"
@@ -321,15 +321,14 @@ export function PortalAuthTab({ portalConfig, teamOpenSignup }: PortalAuthTabPro
               appears at the exact moment an admin picks the private option. */}
           {visibility === 'private' && (
             <p className="text-[13px] text-muted-foreground">
-              <span className="font-medium text-foreground">Your team always has access.</span> Use
-              the cards below to authorize additional visitors.
+              <span className="font-medium text-foreground">チームは常にアクセスできます。</span> 以下の設定で、ほかの訪問者にもアクセスを許可できます。
             </p>
           )}
 
           <div className="border-t border-border/50 pt-1">
             <SettingRow
-              label="Allow anonymous interaction"
-              description="When off, all boards require sign-in for voting, commenting, and submitting posts."
+              label="匿名での操作を許可"
+              description="オフの場合、すべてのボードで投票、コメント、投稿にログインが必要です。"
               htmlFor="allow-anonymous"
               className="pb-0"
               control={
@@ -338,7 +337,7 @@ export function PortalAuthTab({ portalConfig, teamOpenSignup }: PortalAuthTabPro
                   checked={allowAnonymous}
                   onCheckedChange={(checked) => anonMutation.mutate(checked)}
                   disabled={anonBusy || isPending}
-                  aria-label="Allow anonymous interaction"
+                  aria-label="匿名での操作を許可"
                 />
               }
             />
@@ -351,11 +350,11 @@ export function PortalAuthTab({ portalConfig, teamOpenSignup }: PortalAuthTabPro
           read still has to decide whether anyone can join it. */}
       <SettingsCard>
         <SettingRow
-          label="Let visitors create an account"
+          label="訪問者のアカウント作成を許可"
           description={
             openSignup
-              ? 'Anyone can create an account to post, vote and comment.'
-              : 'Only users you invite, and users already holding an account, can sign in.'
+              ? '誰でもアカウントを作成し、投稿、投票、コメントができます。'
+              : '招待したユーザーと既にアカウントを持つユーザーのみログインできます。'
           }
           htmlFor="portal-open-signup-toggle"
           className="py-0"
@@ -365,7 +364,7 @@ export function PortalAuthTab({ portalConfig, teamOpenSignup }: PortalAuthTabPro
               checked={openSignup}
               onCheckedChange={(checked) => signupMutation.mutate(checked)}
               disabled={signupBusy || isPending}
-              aria-label="Let visitors create an account"
+              aria-label="訪問者のアカウント作成を許可"
             />
           }
         />
@@ -377,8 +376,8 @@ export function PortalAuthTab({ portalConfig, teamOpenSignup }: PortalAuthTabPro
       {visibility === 'private' && (
         <>
           <SettingsCard
-            title="Allowed email domains"
-            description="Anyone signed in with a verified email on these domains can view the portal."
+            title="許可するメールドメイン"
+            description="このドメインの確認済みメールアドレスでログインした人はポータルを閲覧できます。"
           >
             <div className="space-y-4">
               <div className="flex gap-2">
@@ -392,7 +391,7 @@ export function PortalAuthTab({ portalConfig, teamOpenSignup }: PortalAuthTabPro
                     onKeyDown={handleDomainKeyDown}
                     placeholder="acme.com"
                     disabled={isAccessBusy}
-                    aria-label="Add email domain"
+                    aria-label="メールドメインを追加"
                     aria-invalid={!!domainInputError}
                     className={cn(domainInputError && 'border-destructive')}
                   />
@@ -409,12 +408,12 @@ export function PortalAuthTab({ portalConfig, teamOpenSignup }: PortalAuthTabPro
                   className="h-9 shrink-0"
                 >
                   <PlusIcon className="mr-1 h-3.5 w-3.5" />
-                  Add
+                  追加
                 </Button>
               </div>
 
               {allowedDomains.length > 0 ? (
-                <ul className="space-y-1.5" role="list" aria-label="Allowed domains">
+                <ul className="space-y-1.5" role="list" aria-label="許可するドメイン">
                   {allowedDomains.map((domain) => (
                     <li
                       key={domain}
@@ -426,7 +425,7 @@ export function PortalAuthTab({ portalConfig, teamOpenSignup }: PortalAuthTabPro
                         onClick={() => handleRemoveDomain(domain)}
                         disabled={isAccessBusy}
                         className="ml-2 rounded p-0.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive disabled:opacity-40 transition-colors"
-                        aria-label={`Remove ${domain}`}
+                        aria-label={`${domain} を削除`}
                       >
                         <XMarkIcon className="h-3.5 w-3.5" />
                       </button>
@@ -435,8 +434,7 @@ export function PortalAuthTab({ portalConfig, teamOpenSignup }: PortalAuthTabPro
                 </ul>
               ) : (
                 <p className="text-xs text-muted-foreground">
-                  No domains yet. Add one to grant access to everyone with a verified address at
-                  that domain.
+                  ドメインはまだありません。追加すると、そのドメインの確認済みメールアドレスを持つ人にアクセスを許可できます。
                 </p>
               )}
             </div>
@@ -445,18 +443,18 @@ export function PortalAuthTab({ portalConfig, teamOpenSignup }: PortalAuthTabPro
           <PortalInvitesSection />
 
           <SettingsCard
-            title="Allowed segments"
-            description="Members of these segments can view the portal. Segments are defined on the Users page."
+            title="許可するセグメント"
+            description="選択したセグメントのメンバーがポータルを閲覧できます。セグメントはユーザーページで設定します。"
           >
             {segmentsQuery.isLoading ? (
-              <p className="text-xs text-muted-foreground">Loading segments…</p>
+              <p className="text-xs text-muted-foreground">セグメントを読み込み中…</p>
             ) : segmentsQuery.isError ? (
               <p className="text-xs text-destructive">
-                Could not load segments. Reload the page to try again.
+                セグメントを読み込めませんでした。ページを再読み込みしてください。
               </p>
             ) : (segmentsQuery.data ?? []).length === 0 ? (
               <p className="text-xs text-muted-foreground">
-                No segments defined yet. Create segments on the Users page.
+                セグメントがありません。ユーザーページで作成してください。
               </p>
             ) : (
               <div className="space-y-3">
@@ -475,8 +473,7 @@ export function PortalAuthTab({ portalConfig, teamOpenSignup }: PortalAuthTabPro
                 />
                 {allowedSegmentIds.length > 0 && (
                   <p className="text-xs text-muted-foreground">
-                    Members of {allowedSegmentIds.length} selected segment
-                    {allowedSegmentIds.length === 1 ? '' : 's'} can access this portal.
+                    選択した {allowedSegmentIds.length} 件のセグメントのメンバーがポータルにアクセスできます。
                   </p>
                 )}
               </div>
@@ -485,8 +482,8 @@ export function PortalAuthTab({ portalConfig, teamOpenSignup }: PortalAuthTabPro
 
           <SettingsCard>
             <SettingRow
-              label="Widget sign-in"
-              description="Let users signed in through the widget continue in the full portal."
+              label="ウィジェットからのログイン"
+              description="ウィジェットでログインしたユーザーがポータルを利用できるようにします。"
               htmlFor="widget-signin-toggle"
               className="py-0"
               control={
@@ -534,12 +531,12 @@ function PortalInvitesSection() {
 
   return (
     <SettingsCard
-      title="Email invites"
-      description="Invite users by email. They get a magic link to sign in."
+      title="メールで招待"
+      description="ログイン用のリンクをメールで送ってユーザーを招待します。"
       action={
         <Button type="button" size="sm" variant="outline" onClick={portal.openDialog}>
           <PlusIcon className="mr-1.5 h-3.5 w-3.5" />
-          Invite users
+          ユーザーを招待
         </Button>
       }
     >
@@ -594,7 +591,7 @@ function InviteSummary({
     return (
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
         <ArrowPathIcon className="h-3.5 w-3.5 animate-spin" />
-        <span>Loading invites…</span>
+        <span>招待を読み込み中…</span>
       </div>
     )
   }
@@ -602,27 +599,27 @@ function InviteSummary({
   if (totalCount === 0) {
     return (
       <p className="text-xs text-muted-foreground">
-        No invites sent yet. Use Invite users to send the first one.
+        招待はまだ送信されていません。「ユーザーを招待」から送信できます。
       </p>
     )
   }
 
   const summary = [
-    pendingCount > 0 ? `${pendingCount} pending` : null,
-    acceptedCount > 0 ? `${acceptedCount} accepted` : null,
+    pendingCount > 0 ? `承諾待ち ${pendingCount} 件` : null,
+    acceptedCount > 0 ? `承諾済み ${acceptedCount} 件` : null,
   ]
     .filter(Boolean)
     .join(' · ')
 
   return (
     <div className="flex items-center justify-between gap-3">
-      <p className="text-xs text-muted-foreground">{summary || `${totalCount} invites`}</p>
+      <p className="text-xs text-muted-foreground">{summary || `招待 ${totalCount} 件`}</p>
       <Link
         to="/admin/users"
         search={{ invites: 'pending' as const }}
         className={`${INLINE_LINK} inline-flex items-center gap-1 text-xs`}
       >
-        Manage invites
+        招待を管理
         <ArrowRightIcon className="h-3 w-3" />
       </Link>
     </div>

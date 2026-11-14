@@ -52,8 +52,8 @@ function board(over: Record<string, unknown>) {
 describe('BoardsList', () => {
   it('shows no access badge for a board open to the portal', () => {
     render(<BoardsList boards={[board({ access: PUBLIC })]} />)
-    expect(screen.queryByText('Team only')).toBeNull()
-    expect(screen.queryByText('Segments')).toBeNull()
+    expect(screen.queryByText('チームのみ')).toBeNull()
+    expect(screen.queryByText('セグメント')).toBeNull()
     expect(screen.queryByText('Custom')).toBeNull()
   })
 
@@ -66,8 +66,8 @@ describe('BoardsList', () => {
         ]}
       />
     )
-    expect(screen.getByText('Team only')).toBeTruthy()
-    expect(screen.getByText('Segments')).toBeTruthy()
+    expect(screen.getByText('チームのみ')).toBeTruthy()
+    expect(screen.getByText('セグメント')).toBeTruthy()
     expect(screen.queryByText('Custom')).toBeNull()
   })
 
@@ -82,9 +82,9 @@ describe('BoardsList', () => {
     )
     const bugs = screen.getByText('Bugs').closest('a')!
     expect(bugs.getAttribute('href')).toBe('/admin/settings/boards/$slug')
-    expect(within(bugs).getByText('Report problems · 6 posts')).toBeTruthy()
+    expect(within(bugs).getByText('Report problems · 6 件の投稿')).toBeTruthy()
     const ideas = screen.getByText('Ideas').closest('a')!
-    expect(within(ideas).getByText('1 post')).toBeTruthy()
+    expect(within(ideas).getByText('1 件の投稿')).toBeTruthy()
     expect(document.querySelectorAll('[data-slot="settings-list-chevron"]')).toHaveLength(2)
   })
 
@@ -113,11 +113,11 @@ describe('BoardsList', () => {
         boards={[board({ slug: 'staff', name: 'Staff', access: { ...PUBLIC, view: 'team' } })]}
       />
     )
-    expect(screen.getByText('Team only')).toBeTruthy()
+    expect(screen.getByText('チームのみ')).toBeTruthy()
   })
 
   it('treats the default access as open', () => {
     render(<BoardsList boards={[board({ access: DEFAULT_BOARD_ACCESS })]} />)
-    expect(screen.queryByText('Team only')).toBeNull()
+    expect(screen.queryByText('チームのみ')).toBeNull()
   })
 })

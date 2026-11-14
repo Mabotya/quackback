@@ -26,7 +26,7 @@ interface AdminListHeaderProps {
 export function AdminListHeader({
   searchValue,
   onSearchChange,
-  searchPlaceholder = 'Search...',
+  searchPlaceholder = '検索...',
   sortOptions,
   activeSort,
   onSortChange,
@@ -51,7 +51,7 @@ export function AdminListHeader({
             options={sortOptions}
             value={activeSort ?? sortOptions[0].value}
             onChange={onSortChange}
-            formatLabel={formatSortLabel}
+            formatLabel={formatSortLabel ?? ((label) => `並び順：${label}`)}
           />
         )}
         {filters}

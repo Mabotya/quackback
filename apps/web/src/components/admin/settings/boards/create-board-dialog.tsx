@@ -105,21 +105,21 @@ export function CreateBoardDialog({
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       {(!isControlled || trigger) && (
-        <DialogTrigger asChild>{trigger ?? <NewButton noun="board" />}</DialogTrigger>
+        <DialogTrigger asChild>{trigger ?? <NewButton noun="board">ボードを追加</NewButton>}</DialogTrigger>
       )}
       <DialogContent className="sm:max-w-lg">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <DialogHeader>
-              <DialogTitle>New board</DialogTitle>
+              <DialogTitle>新しいボード</DialogTitle>
               <DialogDescription>
-                Create a new feedback board to collect ideas from your users.
+                ユーザーからアイデアを集めるボードを作成します。
               </DialogDescription>
             </DialogHeader>
 
             <div className="space-y-4 py-4">
               {mutation.isError && (
-                <FormError message={mutation.error?.message ?? 'An error occurred'} />
+                <FormError message={mutation.error?.message ?? 'エラーが発生しました'} />
               )}
 
               <FormField
@@ -127,9 +127,9 @@ export function CreateBoardDialog({
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Board name</FormLabel>
+                    <FormLabel>ボード名</FormLabel>
                     <FormControl>
-                      <Input placeholder="Feature Requests" {...field} />
+                      <Input placeholder="機能リクエスト" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -141,10 +141,10 @@ export function CreateBoardDialog({
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>説明</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Share your ideas and vote on features"
+                        placeholder="アイデアを共有し、機能に投票できます"
                         rows={3}
                         {...field}
                       />
@@ -159,19 +159,19 @@ export function CreateBoardDialog({
                 name="preset"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Access</FormLabel>
+                    <FormLabel>アクセス</FormLabel>
                     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                       <PresetTile
                         active={field.value === 'public'}
-                        label="Everyone"
-                        description="Anyone can view. Sign-in for vote, comment, submit."
+                        label="全員"
+                        description="誰でも閲覧できます。投票・コメント・投稿にはログインが必要です。"
                         icon={<GlobeAltIcon className="h-3.5 w-3.5" />}
                         onClick={() => field.onChange('public')}
                       />
                       <PresetTile
                         active={field.value === 'private'}
-                        label="Team only"
-                        description="Workspace members only. Hidden from the portal."
+                        label="チームのみ"
+                        description="ワークスペースのメンバーのみ。ポータルには表示されません。"
                         icon={<LockClosedIcon className="h-3.5 w-3.5" />}
                         onClick={() => field.onChange('private')}
                       />
@@ -186,24 +186,24 @@ export function CreateBoardDialog({
                   id="customize-access"
                   checked={customize}
                   onCheckedChange={(v) => setCustomize(v === true)}
-                  aria-label="Customize access after create"
+                  aria-label="作成後にアクセス権限を設定する"
                 />
                 <Label
                   htmlFor="customize-access"
                   className="cursor-pointer text-xs font-normal text-muted-foreground"
                 >
-                  Customize access after create
-                  <span className="ml-1">open the Access tab to fine-tune.</span>
+                  作成後にアクセス権限を設定する
+                  <span className="ml-1">アクセス設定画面を開きます。</span>
                 </Label>
               </div>
             </div>
 
             <DialogFooter>
               <Button type="button" size="sm" variant="ghost" onClick={() => setIsOpen(false)}>
-                Cancel
+                キャンセル
               </Button>
               <Button type="submit" size="sm" disabled={mutation.isPending}>
-                {mutation.isPending ? 'Creating...' : 'Create board'}
+                {mutation.isPending ? '作成中...' : 'ボードを作成'}
               </Button>
             </DialogFooter>
           </form>

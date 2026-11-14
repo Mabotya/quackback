@@ -238,7 +238,7 @@ export function MembersTab({ currentMember, canManageMembers, initialSearch }: M
         id: 'name',
         accessorFn: (row) =>
           `${row.type === 'member' ? row.name : row.name || ''} ${row.email || ''} ${row.role || ''}`,
-        header: 'Name',
+        header: '名前',
         cell: ({ row }) => {
           const r = row.original
           if (r.type === 'member') {
@@ -251,7 +251,7 @@ export function MembersTab({ currentMember, canManageMembers, initialSearch }: M
                   <p className="font-medium text-foreground truncate">
                     {r.name}
                     {isCurrentUser && (
-                      <span className="ml-2 text-xs text-muted-foreground">(you)</span>
+                      <span className="ml-2 text-xs text-muted-foreground">（自分）</span>
                     )}
                   </p>
                   {r.email && <p className="text-sm text-muted-foreground truncate">{r.email}</p>}
@@ -271,12 +271,12 @@ export function MembersTab({ currentMember, canManageMembers, initialSearch }: M
                 <p className="font-medium text-foreground truncate">
                   {r.name || r.email}
                   <Badge variant="warning" className="ml-2">
-                    Invited
+                    招待中
                   </Badge>
                 </p>
                 {r.name && <p className="text-sm text-muted-foreground truncate">{r.email}</p>}
                 <p className="text-xs text-muted-foreground">
-                  Sent <InviteDate date={r.lastSentAt || r.createdAt} />
+                  送信日 <InviteDate date={r.lastSentAt || r.createdAt} />
                   <span className="mx-1">&middot;</span>
                   <span className={expiry.className}>{expiry.text}</span>
                 </p>
@@ -287,7 +287,7 @@ export function MembersTab({ currentMember, canManageMembers, initialSearch }: M
       },
       {
         id: 'role',
-        header: 'Role',
+        header: '役割',
         meta: { className: 'w-0 whitespace-nowrap' },
         cell: ({ row }) => {
           const r = row.original
@@ -297,20 +297,20 @@ export function MembersTab({ currentMember, canManageMembers, initialSearch }: M
       },
       {
         id: 'lastSignIn',
-        header: 'Last sign-in',
+        header: '最終ログイン',
         meta: { className: 'w-0 whitespace-nowrap text-xs text-muted-foreground' },
         cell: ({ row }) => {
           const r = row.original
           // Invitation rows have their own time info inline with the
           // name; skip the column.
           if (r.type !== 'member') return null
-          if (!r.lastSignInAt) return <span className="text-muted-foreground">Never</span>
+          if (!r.lastSignInAt) return <span className="text-muted-foreground">ログイン履歴なし</span>
           return <SignInLabel at={r.lastSignInAt} withTitle />
         },
       },
       {
         id: 'actions',
-        header: () => <span className="sr-only">Actions</span>,
+        header: () => <span className="sr-only">操作</span>,
         meta: { className: 'w-0 whitespace-nowrap' },
         cell: ({ row }) => {
           const r = row.original
@@ -376,7 +376,7 @@ export function MembersTab({ currentMember, canManageMembers, initialSearch }: M
           <SearchInput
             value={search}
             onChange={setSearch}
-            placeholder="Search by name, email or role..."
+            placeholder="名前、メールアドレス、役割で検索..."
           />
         </div>
         {seatDescription && (
@@ -385,7 +385,7 @@ export function MembersTab({ currentMember, canManageMembers, initialSearch }: M
         {canManageMembers && (
           <Button size="sm" className="ml-auto" onClick={() => setShowAddPeople(true)}>
             <PlusIcon className="h-4 w-4" />
-            Add people
+            メンバーを追加
           </Button>
         )}
       </div>
@@ -412,7 +412,7 @@ export function MembersTab({ currentMember, canManageMembers, initialSearch }: M
                     colSpan={columns.length}
                     className="h-24 text-center text-muted-foreground"
                   >
-                    {data.length === 0 ? 'No team members yet' : 'No results found'}
+                    {data.length === 0 ? 'チームメンバーはいません' : '該当する結果がありません'}
                   </TableCell>
                 </TableRow>
               ) : (

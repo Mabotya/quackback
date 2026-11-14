@@ -81,7 +81,7 @@ export function RoadmapSidebar({
       setIsCreateDialogOpen(false)
       onSelectRoadmap(newRoadmap.id)
     } catch (error) {
-      toastError(error, "Couldn't create roadmap. Try again.")
+      toastError(error, "ロードマップを作成できませんでした。もう一度お試しください。")
     }
   }
 
@@ -96,7 +96,7 @@ export function RoadmapSidebar({
       setIsEditDialogOpen(false)
       setEditingRoadmap(null)
     } catch (error) {
-      toastError(error, "Couldn't update roadmap. Try again.")
+      toastError(error, "ロードマップを更新できませんでした。もう一度お試しください。")
     }
   }
 
@@ -111,7 +111,7 @@ export function RoadmapSidebar({
         onSelectRoadmap(roadmaps?.[0]?.id ?? null)
       }
     } catch (error) {
-      toastError(error, "Couldn't delete roadmap. Try again.")
+      toastError(error, "ロードマップを削除できませんでした。もう一度お試しください。")
     }
   }
 
@@ -131,7 +131,7 @@ export function RoadmapSidebar({
       className="w-64 xl:w-72 shrink-0 flex flex-col border-e border-chrome-hairline bg-background overflow-hidden"
     >
       <div className="shrink-0 px-5 py-3.5">
-        <PageHeader as="h2" title="Roadmap" />
+        <PageHeader as="h2" title="ロードマップ" />
       </div>
 
       {/* Selector + list — the "Roadmaps" subheading routes through the shared
@@ -140,9 +140,9 @@ export function RoadmapSidebar({
       <ScrollArea className="flex-1">
         <div className="px-2.5 pb-5">
           <FilterSection
-            title="Roadmaps"
+            title="ロードマップ"
             action={
-              <PaneAddButton label="New roadmap" onClick={() => setIsCreateDialogOpen(true)} />
+              <PaneAddButton label="ロードマップを追加" onClick={() => setIsCreateDialogOpen(true)} />
             }
           >
             {isLoading ? (
@@ -188,7 +188,7 @@ export function RoadmapSidebar({
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => openEditDialog(roadmap)}>
                           <PencilIcon className="h-4 w-4 mr-2" />
-                          Edit
+                          編集
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
@@ -196,7 +196,7 @@ export function RoadmapSidebar({
                           onClick={() => openDeleteDialog(roadmap)}
                         >
                           <TrashIcon className="h-4 w-4 mr-2" />
-                          Delete
+                          削除
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -212,9 +212,9 @@ export function RoadmapSidebar({
       <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
         <DialogContent className="sm:max-w-3xl">
           <DialogHeader>
-            <DialogTitle>Create roadmap</DialogTitle>
+            <DialogTitle>ロードマップを作成</DialogTitle>
             <DialogDescription>
-              Define a saved view over posts using statuses or ETA periods.
+              ステータスまたは予定時期で投稿を表示するロードマップを作成します。
             </DialogDescription>
           </DialogHeader>
           <RoadmapBuilderForm
@@ -223,7 +223,7 @@ export function RoadmapSidebar({
             tags={tags}
             segments={segments}
             isPending={createRoadmap.isPending}
-            submitLabel="Create roadmap"
+            submitLabel="ロードマップを作成"
             onCancel={() => setIsCreateDialogOpen(false)}
             onSubmit={handleCreateSubmit}
           />
@@ -234,8 +234,8 @@ export function RoadmapSidebar({
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="sm:max-w-3xl">
           <DialogHeader>
-            <DialogTitle>Edit roadmap</DialogTitle>
-            <DialogDescription>Update your roadmap settings.</DialogDescription>
+            <DialogTitle>ロードマップを編集</DialogTitle>
+            <DialogDescription>ロードマップの設定を変更します。</DialogDescription>
           </DialogHeader>
           {editingRoadmap && (
             <RoadmapBuilderForm
@@ -246,7 +246,7 @@ export function RoadmapSidebar({
               tags={tags}
               segments={segments}
               isPending={updateRoadmap.isPending}
-              submitLabel="Save changes"
+              submitLabel="変更を保存"
               onCancel={() => setIsEditDialogOpen(false)}
               onSubmit={handleEditSubmit}
             />
@@ -258,9 +258,9 @@ export function RoadmapSidebar({
       <ConfirmDialog
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
-        title="Delete roadmap?"
-        description={`Are you sure you want to delete "${deletingRoadmap?.name}"? Posts are not changed because roadmap placement is derived from their fields.`}
-        confirmLabel="Delete roadmap"
+        title="ロードマップを削除しますか？"
+        description={`「${deletingRoadmap?.name}」を削除しますか？ 投稿自体は変更されません。`}
+        confirmLabel="削除"
         variant="destructive"
         isPending={deleteRoadmap.isPending}
         onConfirm={handleDelete}
