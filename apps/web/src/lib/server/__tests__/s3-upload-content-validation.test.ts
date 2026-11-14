@@ -134,6 +134,27 @@ describe('uploadMediaFromFormData — MOV and M4V containers', () => {
     return calls[calls.length - 1]![0].input
   }
 
+  it('enforces the caller-specific limit before sending to storage', async () => {
+    mockSend.mockClear()
+    const res = await uploadMediaFromFormData(
+      formDataWith(MOV_BYTES, 'recording.mov', 'video/quicktime'),
+      'portal-media',
+      { maxBytes: MOV_BYTES.length - 1 }
+    )
+    expect(res.status).toBe(400)
+    expect(mockSend).not.toHaveBeenCalled()
+  })
+
+  it('allows the exact caller-specific byte limit', async () => {
+    mockSend.mockClear()
+    const res = await uploadMediaFromFormData(
+      formDataWith(MOV_BYTES, 'recording.mov', 'video/quicktime'),
+      'portal-media',
+      { maxBytes: MOV_BYTES.length }
+    )
+    expect(res.status).toBe(200)
+  })
+
   it('accepts a QuickTime MOV and preserves its content type', async () => {
     mockSend.mockClear()
     const res = await uploadMediaFromFormData(

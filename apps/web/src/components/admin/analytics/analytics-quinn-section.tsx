@@ -59,12 +59,12 @@ function OutcomeBar({
 }) {
   const formatNumber = useFormatNumber()
   const items = [
-    { label: 'Resolved confirmed', value: confirmed, className: 'bg-success' },
-    { label: 'Resolved assumed', value: assumed, className: 'bg-success/50' },
-    { label: 'Escalated', value: escalated, className: 'bg-warning' },
-    { label: 'Pending', value: pending, className: 'bg-primary' },
+    { label: '解決を確認', value: confirmed, className: 'bg-success' },
+    { label: '解決と推定', value: assumed, className: 'bg-success/50' },
+    { label: '担当者へ引き継ぎ', value: escalated, className: 'bg-warning' },
+    { label: '保留中', value: pending, className: 'bg-primary' },
     ...(systemErrors > 0
-      ? [{ label: 'System errors', value: systemErrors, className: 'bg-destructive' }]
+      ? [{ label: 'システムエラー', value: systemErrors, className: 'bg-destructive' }]
       : []),
   ]
   const total = items.reduce((sum, i) => sum + i.value, 0) || 1
@@ -117,7 +117,7 @@ export function AnalyticsQuinnSection({
       {performance.isError ? (
         <Card className="overflow-hidden py-0">
           <LoadError
-            message="AI agent results could not be loaded."
+            message="AIエージェントの結果を読み込めませんでした。"
             onRetry={() => void performance.refetch()}
           />
         </Card>
@@ -125,7 +125,7 @@ export function AnalyticsQuinnSection({
         <SectionSkeleton section="ai" />
       ) : quinn.involvements === 0 ? (
         <Card className="overflow-hidden">
-          <AnalyticsEmpty message="The AI agent hasn't handled any conversations this period" />
+          <AnalyticsEmpty message="この期間にAIエージェントが対応した会話はありません" />
         </Card>
       ) : (
         <>
@@ -133,19 +133,19 @@ export function AnalyticsQuinnSection({
             <AnalyticsStatRow
               stats={[
                 {
-                  label: 'Conversations involved',
+                  label: '対応した会話',
                   value: formatNumber(quinn.involvements),
-                  caption: `${quinn.involvementRate}% of conversations`,
+                  caption: `会話全体の${quinn.involvementRate}%`,
                 },
                 {
-                  label: 'Resolved',
+                  label: '解決済み',
                   value: `${quinn.resolutionRate}%`,
-                  caption: `${formatNumber(quinn.resolvedConfirmed)} confirmed, ${formatNumber(quinn.resolvedAssumed)} assumed`,
+                  caption: `確認済み ${formatNumber(quinn.resolvedConfirmed)}件、推定 ${formatNumber(quinn.resolvedAssumed)}件`,
                 },
                 {
-                  label: 'Escalated',
+                  label: '担当者へ引き継ぎ',
                   value: `${quinn.escalationRate}%`,
-                  caption: `${formatNumber(quinn.handedOff)} handed off`,
+                  caption: `${formatNumber(quinn.handedOff)}件を引き継ぎ`,
                 },
                 {
                   label: 'AI CSAT',
@@ -153,7 +153,7 @@ export function AnalyticsQuinnSection({
                   suffix: quinn.csat.responseCount > 0 ? '/ 5' : undefined,
                   caption:
                     quinn.csat.responseCount > 0
-                      ? `${formatNumber(quinn.csat.responseCount)} ${quinn.csat.responseCount === 1 ? 'rating' : 'ratings'}`
+                      ? `${formatNumber(quinn.csat.responseCount)}件の評価`
                       : undefined,
                 },
               ]}
@@ -161,7 +161,7 @@ export function AnalyticsQuinnSection({
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle>Outcomes</CardTitle>
+              <CardTitle>対応結果</CardTitle>
             </CardHeader>
             <CardContent>
               <OutcomeBar
@@ -179,24 +179,24 @@ export function AnalyticsQuinnSection({
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:items-start">
         <Card>
           <CardHeader>
-            <CardTitle>Actions</CardTitle>
+            <CardTitle>アクション</CardTitle>
           </CardHeader>
           <CardContent>
             {tools.isError ? (
               <LoadError
-                message="Actions could not be loaded."
+                message="アクションを読み込めませんでした。"
                 onRetry={() => void tools.refetch()}
               />
             ) : tools.isSuccess && toolList.length === 0 ? (
-              <AnalyticsEmpty message="No actions in this period" />
+              <AnalyticsEmpty message="この期間のアクションはありません" />
             ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Action</TableHead>
-                    <TableHead className="text-right">Attempted</TableHead>
-                    <TableHead className="text-right">Completed</TableHead>
-                    <TableHead className="text-right">Failed</TableHead>
+                    <TableHead>アクション</TableHead>
+                    <TableHead className="text-right">実行数</TableHead>
+                    <TableHead className="text-right">完了</TableHead>
+                    <TableHead className="text-right">失敗</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -225,7 +225,7 @@ export function AnalyticsQuinnSection({
           <CardContent>
             {copilot.isError ? (
               <LoadError
-                message="Copilot usage could not be loaded."
+                message="Copilotの利用状況を読み込めませんでした。"
                 onRetry={() => void copilot.refetch()}
               />
             ) : usage &&
@@ -234,21 +234,21 @@ export function AnalyticsQuinnSection({
                 usage.totalSummaries +
                 usage.actionsProposed ===
                 0 ? (
-              <AnalyticsEmpty message="No Copilot activity in this period" />
+              <AnalyticsEmpty message="この期間のCopilotの利用はありません" />
             ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Activity</TableHead>
+                    <TableHead>アクティビティ</TableHead>
                     <TableHead className="text-right">{periodLabel}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {[
-                    ['Questions answered', usage?.totalQuestions],
-                    ['Suggestions used', usage?.totalInserted],
-                    ['Actions proposed', usage?.actionsProposed],
-                    ['Actions accepted', usage?.actionsApproved],
+                    ['回答した質問', usage?.totalQuestions],
+                    ['使用された提案', usage?.totalInserted],
+                    ['提案されたアクション', usage?.actionsProposed],
+                    ['承認されたアクション', usage?.actionsApproved],
                   ].map(([label, value]) => (
                     <TableRow key={label}>
                       <TableCell>{label}</TableCell>

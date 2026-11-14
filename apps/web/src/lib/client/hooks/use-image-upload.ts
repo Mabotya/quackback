@@ -6,6 +6,7 @@ import {
   maxMediaFileSize,
   resolveVideoMimeType,
 } from '@/lib/shared/storage-config'
+import { TEAM_ATTACHMENT_LIMITS, VISITOR_ATTACHMENT_LIMITS } from '@/lib/client/attachment-policy'
 
 interface UseImageUploadOptions {
   prefix?: string
@@ -14,6 +15,7 @@ interface UseImageUploadOptions {
   onStart?: () => void
   onSuccess?: (url: string) => void
   onError?: (error: Error) => void
+  maxFileBytes?: number
 }
 
 type FileValidator = (file: File) => Error | null
@@ -29,7 +31,7 @@ export function validateImageFile(file: File): Error | null {
   return null
 }
 
-export function validateMediaFile(file: File): Error | null {
+export function validateMediaFile(file: File, maxFileBytes?: number): Error | null {
   const contentType = isAllowedImageType(file.type)
     ? file.type
     : resolveVideoMimeType(file.type, file.name)
@@ -38,7 +40,7 @@ export function validateMediaFile(file: File): Error | null {
       'Invalid file type. Allowed types: JPEG, PNG, GIF, WebP, AVIF, MP4, WebM, MOV, M4V.'
     )
   }
-  const maxBytes = maxMediaFileSize(contentType)
+  const maxBytes = maxFileBytes ?? maxMediaFileSize(contentType)
   if (file.size > maxBytes) {
     return new Error(`File too large. Maximum size is ${maxBytes / 1024 / 1024}MB.`)
   }
@@ -119,7 +121,9 @@ export function useImageUpload(options: UseImageUploadOptions = {}) {
 }
 
 export function useMediaUpload(options: UseImageUploadOptions = {}) {
-  return useFileUpload(options, validateMediaFile, normalizeMediaFile)
+  const maxFileBytes = options.maxFileBytes ?? VISITOR_ATTACHMENT_LIMITS.maxFileBytes
+  const validate = useCallback((file: File) => validateMediaFile(file, maxFileBytes), [maxFileBytes])
+  return useFileUpload(options, validate, normalizeMediaFile)
 }
 
 export function useChangelogImageUpload(
@@ -137,7 +141,7 @@ export function usePostImageUpload(
 export function usePostMediaUpload(
   options: Omit<UseImageUploadOptions, 'prefix' | 'endpoint' | 'extraHeaders'> = {}
 ) {
-  return useMediaUpload({ ...options, prefix: 'post-media', endpoint: '/api/upload/image' })
+  return useMediaUpload({ maxFileBytes: TEAM_ATTACHMENT_LIMITS.maxFileBytes, ...options, prefix: 'post-media', endpoint: '/api/upload/image' })
 }
 
 export function usePortalImageUpload(

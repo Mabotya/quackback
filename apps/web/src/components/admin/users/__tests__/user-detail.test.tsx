@@ -142,23 +142,23 @@ describe('UserDetail', () => {
     )
 
     expect(screen.getByText('Maya Chen')).toBeInTheDocument()
-    expect(screen.getByText('View public profile')).toBeInTheDocument()
+    expect(screen.getByText('公開プロフィールを見る')).toBeInTheDocument()
     expect(screen.getByText('Germany')).toBeInTheDocument()
-    expect(screen.getByText('Posts')).toBeInTheDocument()
+    expect(screen.getByText('投稿')).toBeInTheDocument()
     expect(screen.getByText('12')).toBeInTheDocument()
-    expect(screen.getByText('Activity')).toBeInTheDocument()
-    expect(screen.getByText('No activity yet')).toBeInTheDocument()
-    expect(screen.getByText('Company')).toBeInTheDocument()
+    expect(screen.getByText('アクティビティ')).toBeInTheDocument()
+    expect(screen.getByText('アクティビティはまだありません')).toBeInTheDocument()
+    expect(screen.getByText('企業')).toBeInTheDocument()
     expect(screen.getByText('No company')).toBeInTheDocument()
     expect(screen.getByText('usr_7f3a91')).toBeInTheDocument()
     expect(screen.getByText('plan_tier')).toBeInTheDocument()
     expect(screen.queryByText('_externalUserId')).not.toBeInTheDocument()
 
     // Destructive actions are in the overflow menu, not stacked buttons.
-    expect(screen.queryByRole('button', { name: 'Remove from portal' })).not.toBeInTheDocument()
-    fireEvent.click(screen.getByLabelText('More actions'))
-    expect(await screen.findByRole('menuitem', { name: 'Block' })).toBeInTheDocument()
-    expect(screen.getByRole('menuitem', { name: 'Remove from portal' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'サイトから削除' })).not.toBeInTheDocument()
+    fireEvent.click(screen.getByLabelText('その他の操作'))
+    expect(await screen.findByRole('menuitem', { name: 'ブロック' })).toBeInTheDocument()
+    expect(screen.getByRole('menuitem', { name: 'サイトから削除' })).toBeInTheDocument()
   })
 
   it('renders em dashes for missing last-seen and country', () => {
@@ -194,12 +194,12 @@ describe('UserDetail', () => {
         currentMemberRole="admin"
       />
     )
-    expect(screen.getByText('Unnamed user')).toBeInTheDocument()
-    expect(screen.getByText('Lead')).toBeInTheDocument()
-    expect(screen.getByText(/No email/)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Send message/ })).toBeDisabled()
-    fireEvent.click(screen.getByLabelText('More actions'))
-    expect(await screen.findByRole('menuitem', { name: 'Merge' })).toBeInTheDocument()
+    expect(screen.getByText('名前未設定のユーザー')).toBeInTheDocument()
+    expect(screen.getByText('見込みユーザー')).toBeInTheDocument()
+    expect(screen.getByText(/メールアドレスが未登録/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /メッセージを送る/ })).toBeDisabled()
+    fireEvent.click(screen.getByLabelText('その他の操作'))
+    expect(await screen.findByRole('menuitem', { name: '統合' })).toBeInTheDocument()
   })
 
   describe('Escape', () => {
@@ -235,7 +235,7 @@ describe('UserDetail', () => {
 
     it('leaves the profile open while editing the name', () => {
       const onClose = renderWithClose()
-      fireEvent.click(screen.getByTitle('Edit user details'))
+      fireEvent.click(screen.getByTitle('ユーザー情報を編集'))
       fireEvent.keyDown(document.body, { key: 'Escape' })
       expect(onClose).not.toHaveBeenCalled()
     })

@@ -1,4 +1,6 @@
 {
+  "files.upload.error.totalLimit": "附件總大小不能超過40 MB。",
+  "files.upload.error.singleLimit": "每個檔案不能超過 {size} MB。",
   "portal.settings.accountError.invalidPassword": "目前的密碼不正確。",
   "portal.settings.accountError.rateLimited": "嘗試次數過多，請稍後再試。",
   "portal.settings.accountError.sameEmail": "這已經是您目前的電子郵件地址。",
@@ -226,7 +228,7 @@
   "portal.feedback.list.noPostsYetDescription": "{workspace} 團隊會閱讀每一則請求。",
   "portal.feedback.header.postingTo": "發佈至",
   "portal.feedback.header.selectBoard": "選擇看板",
-  "portal.feedback.header.titlePlaceholder": "標題",
+  "portal.feedback.header.titlePlaceholder": "在此輸入標題以建立貼文",
   "portal.feedback.header.detailsPlaceholder": "輸入詳細內容",
   "portal.feedback.header.postingAs": "發佈身分：",
   "portal.feedback.header.signOut": "登出",

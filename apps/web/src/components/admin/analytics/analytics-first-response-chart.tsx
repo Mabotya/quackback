@@ -21,7 +21,7 @@ function formatAxisMinutes(minutes: number): string {
 }
 
 const chartConfig: ChartConfig = {
-  medianMinutes: { label: 'Median first response', color: 'var(--chart-1)' },
+  medianMinutes: { label: '初回返信時間の中央値', color: 'var(--chart-1)' },
 }
 
 /** Median first-response time per day. Days with no answered conversation are
@@ -36,7 +36,7 @@ export function AnalyticsFirstResponseChart({ days }: AnalyticsFirstResponseChar
           CHART_HEIGHT_CLASS
         )}
       >
-        No responses for this period
+        この期間の返信はありません
       </div>
     )
   }

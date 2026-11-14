@@ -14,28 +14,28 @@ type InvitesStatus = 'pending' | 'accepted' | 'expired' | 'all'
 const STATUSES: InvitesStatus[] = ['pending', 'accepted', 'expired', 'all']
 
 const STATUS_LABEL: Record<InvitesStatus, string> = {
-  pending: 'Pending',
-  accepted: 'Accepted',
-  expired: 'Expired',
-  all: 'All',
+  pending: '招待中',
+  accepted: '承認済み',
+  expired: '期限切れ',
+  all: 'すべて',
 }
 
 const EMPTY_COPY: Record<InvitesStatus, { title: string; body: string }> = {
   pending: {
-    title: 'No invitations yet',
-    body: 'Invitations appear here until the recipient signs in.',
+    title: '招待はまだありません',
+    body: '受信者がログインするまで、招待がここに表示されます。',
   },
   accepted: {
-    title: 'No accepted invitations yet',
-    body: 'Accepted invitations move here once the recipient signs in.',
+    title: '承認された招待はまだありません',
+    body: '受信者がログインして承認された招待がここに表示されます。',
   },
   expired: {
-    title: 'No expired invitations',
-    body: 'Pending invitations expire after 30 days and show here to resend.',
+    title: '期限切れの招待はありません',
+    body: '招待は30日後に期限切れとなり、ここから再送できます。',
   },
   all: {
-    title: 'No invitations yet',
-    body: 'Invite users to give them access to your portal.',
+    title: '招待はまだありません',
+    body: 'ユーザーを招待してサイトへのアクセスを許可できます。',
   },
 }
 
@@ -77,10 +77,10 @@ export function InvitationsView({ status }: InvitationsViewProps) {
     <div className="flex h-full flex-col">
       <div className="w-full max-w-5xl space-y-4 px-4 pt-4 sm:px-6">
         <PageHeader
-          title="Invitations"
+          title="招待"
           actions={
             <NewButton noun="user" onClick={portal.openDialog}>
-              Invite users
+              ユーザーを招待
             </NewButton>
           }
         />
@@ -118,7 +118,7 @@ export function InvitationsView({ status }: InvitationsViewProps) {
               {portal.actionError}
             </p>
           )}
-          {portal.resendConfirm && <p className="text-xs text-muted-foreground">Invite resent.</p>}
+          {portal.resendConfirm && <p className="text-xs text-muted-foreground">招待を再送しました。</p>}
         </div>
       )}
 
@@ -127,7 +127,7 @@ export function InvitationsView({ status }: InvitationsViewProps) {
         {portal.isLoading ? (
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <ArrowPathIcon className="h-3.5 w-3.5 animate-spin" />
-            <span>Loading invites…</span>
+            <span>招待を読み込み中…</span>
           </div>
         ) : visible.length === 0 ? (
           <EmptyState
@@ -137,7 +137,7 @@ export function InvitationsView({ status }: InvitationsViewProps) {
             description={empty.body}
           />
         ) : (
-          <ul className="space-y-1.5" role="list" aria-label="Portal invitations">
+          <ul className="space-y-1.5" role="list" aria-label="サイトへの招待">
             {visible.map((inv) => (
               <InviteRow
                 key={inv.id}

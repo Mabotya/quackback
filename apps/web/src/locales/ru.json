@@ -1,4 +1,6 @@
 {
+  "files.upload.error.totalLimit": "Общий размер вложений не должен превышать 40 МБ.",
+  "files.upload.error.singleLimit": "Размер каждого файла не должен превышать {size} МБ.",
   "portal.settings.accountError.invalidPassword": "Текущий пароль неверен.",
   "portal.settings.accountError.rateLimited": "Слишком много попыток. Повторите позже.",
   "portal.settings.accountError.sameEmail": "Это уже ваш адрес электронной почты.",

@@ -180,6 +180,9 @@ lowlight.registerAlias({
  * NOTE: StarterKit v3 bundles Underline by default — do NOT add it separately.
  */
 type UploadErrors = { image: string; video: string }
+function uploadErrorMessage(error: unknown, fallback: string): string {
+  return error instanceof Error && error.name === 'AttachmentLimitError' ? error.message : fallback
+}
 const DEFAULT_UPLOAD_ERRORS: UploadErrors = {
   image: "Couldn't upload image. Try again.",
   video: "Couldn't upload video. Try again.",
@@ -774,7 +777,7 @@ function getSlashMenuItems(
           } catch (error) {
             console.error('Failed to upload image:', error)
             const { toast } = await import('sonner')
-            toast.error(uploadErrors.image)
+            toast.error(uploadErrorMessage(error, uploadErrors.image))
           }
         }
         input.click()
@@ -814,7 +817,7 @@ function getSlashMenuItems(
           } catch (error) {
             console.error('Failed to upload video:', error)
             const { toast } = await import('sonner')
-            toast.error(uploadErrors.video)
+            toast.error(uploadErrorMessage(error, uploadErrors.video))
           }
         }
         input.click()
@@ -2027,7 +2030,7 @@ function handleMediaDrop(
         .catch((err) => {
           console.error('[RichTextEditor] Media drop upload failed:', err)
           void import('sonner').then(({ toast }) =>
-            toast.error(isVideo ? uploadErrors.video : uploadErrors.image)
+            toast.error(uploadErrorMessage(err, isVideo ? uploadErrors.video : uploadErrors.image))
           )
         })
     })
@@ -2087,7 +2090,7 @@ function handleMediaPaste(
         .catch((err) => {
           console.error('[RichTextEditor] Media paste upload failed:', err)
           void import('sonner').then(({ toast }) =>
-            toast.error(isVideo ? uploadErrors.video : uploadErrors.image)
+            toast.error(uploadErrorMessage(err, isVideo ? uploadErrors.video : uploadErrors.image))
           )
         })
     })
@@ -2699,7 +2702,7 @@ function MenuBar({
       } catch (error) {
         console.error('Failed to upload image:', error)
         const { toast } = await import('sonner')
-        toast.error(uploadErrors.image)
+        toast.error(uploadErrorMessage(error, uploadErrors.image))
       }
     }
     input.click()
@@ -2731,7 +2734,7 @@ function MenuBar({
       } catch (error) {
         console.error('Failed to upload video:', error)
         const { toast } = await import('sonner')
-        toast.error(uploadErrors.video)
+        toast.error(uploadErrorMessage(error, uploadErrors.video))
       }
     }
     input.click()

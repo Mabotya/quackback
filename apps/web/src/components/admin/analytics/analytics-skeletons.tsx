@@ -106,8 +106,8 @@ export function SectionSkeleton({ section }: { section: Section }) {
           <StatusChartSkeleton />
         </StatSectionSkeleton>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:items-start">
-          <ListCardSkeleton title="Boards" />
-          <ListCardSkeleton title="Top posts" />
+          <ListCardSkeleton title="ボード" />
+          <ListCardSkeleton title="人気の投稿" />
         </div>
       </div>
     )
@@ -119,7 +119,7 @@ export function SectionSkeleton({ section }: { section: Section }) {
         <StatSectionSkeleton cols={4}>
           <BarListSkeleton />
         </StatSectionSkeleton>
-        <ListCardSkeleton title="Signups by source" rows={4} />
+        <ListCardSkeleton title="登録元別の新規登録" rows={4} />
       </div>
     )
   }

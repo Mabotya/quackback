@@ -202,6 +202,7 @@ import type { TiptapContent } from '@/lib/shared/db-types'
 import { isEmptyTiptapDoc } from '@/lib/shared/utils/is-empty-tiptap-doc'
 import { useConversationTyping } from '@/lib/client/hooks/use-conversation-typing'
 import { useAgentFileUpload } from '@/lib/client/hooks/use-file-upload'
+import { TEAM_ATTACHMENT_LIMITS } from '@/lib/client/attachment-policy'
 import { useConversationComposerAttachments } from '@/lib/client/hooks/use-conversation-composer-attachments'
 import { useCopilotInsert } from '@/lib/client/hooks/use-copilot-insert'
 import { useComposerFocus } from '@/lib/client/hooks/use-composer-focus'
@@ -575,7 +576,7 @@ export function AgentConversationThread({
     retry: retryAttachment,
     clear: clearAttachments,
     uploading,
-  } = useConversationComposerAttachments(upload)
+  } = useConversationComposerAttachments(upload, TEAM_ATTACHMENT_LIMITS)
   const fileInputRef = useRef<HTMLInputElement>(null)
   // Same as the visitor messenger: paste/drop stages the tray. The editor has
   // no onImageUpload, so it never inlines a resizableImage into the draft.

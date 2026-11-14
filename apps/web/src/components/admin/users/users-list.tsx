@@ -59,14 +59,14 @@ interface UsersListProps {
 }
 
 const SORT_OPTIONS = [
-  { value: 'newest', label: 'Newest' },
-  { value: 'oldest', label: 'Oldest' },
-  { value: 'most_active', label: 'Most active' },
-  { value: 'last_active', label: 'Last active' },
-  { value: 'most_posts', label: 'Most posts' },
-  { value: 'most_comments', label: 'Most comments' },
-  { value: 'most_votes', label: 'Most votes' },
-  { value: 'name', label: 'Name A-Z' },
+  { value: 'newest', label: '新しい順' },
+  { value: 'oldest', label: '古い順' },
+  { value: 'most_active', label: 'アクティブ順' },
+  { value: 'last_active', label: '最終利用日時順' },
+  { value: 'most_posts', label: '投稿数順' },
+  { value: 'most_comments', label: 'コメント数順' },
+  { value: 'most_votes', label: '投票数順' },
+  { value: 'name', label: '名前順' },
 ]
 
 const SHOW_COUNTRY_STORAGE_KEY = 'quackback:users-list:show-country'
@@ -127,11 +127,11 @@ function UsersEmptyState({
       <div className="rounded-xl overflow-hidden shadow-sm bg-card border border-border/50">
         <EmptyState
           icon={UsersIcon}
-          title={hasActiveFilters ? 'No users match your filters' : 'No users yet'}
+          title={hasActiveFilters ? '条件に一致するユーザーはいません' : 'ユーザーはまだいません'}
           description={
             hasActiveFilters
-              ? "Try adjusting your filters to find what you're looking for."
-              : 'Users appear here when they sign up to your feedback portal.'
+              ? 'フィルターの条件を変更してみてください。'
+              : 'ユーザーがフィードバックサイトに登録すると、ここに表示されます。'
           }
           action={
             hasActiveFilters ? (
@@ -140,7 +140,7 @@ function UsersEmptyState({
                 onClick={onClearFilters}
                 className="text-sm text-primary hover:underline"
               >
-                Clear filters
+                フィルターを解除
               </button>
             ) : undefined
           }
@@ -179,7 +179,7 @@ function UserTagFilterDropdown({
           className={cn(selectedTagIds.length > 0 && 'border-primary/40 text-primary')}
         >
           <TagIcon className={MENU_ICON} />
-          Tags{selectedTagIds.length > 0 ? ` (${selectedTagIds.length})` : ''}
+          タグ{selectedTagIds.length > 0 ? ` (${selectedTagIds.length})` : ''}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -308,7 +308,7 @@ export function UsersList({
       <AdminListHeader
         searchValue={searchValue}
         onSearchChange={setSearchValue}
-        searchPlaceholder="Search users..."
+        searchPlaceholder="ユーザーを検索..."
         sortOptions={SORT_OPTIONS}
         activeSort={sort}
         onSortChange={(value) => handleSortChange(value as UsersFilters['sort'])}
@@ -325,12 +325,12 @@ export function UsersList({
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
                   <ViewColumnsIcon className={MENU_ICON} />
-                  Columns
+                  表示項目
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuCheckboxItem checked={showCountry} onCheckedChange={setShowCountry}>
-                  Country
+                  国
                 </DropdownMenuCheckboxItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -354,7 +354,7 @@ export function UsersList({
 
         <div className="mt-2 flex items-center gap-2">
           <span className="text-xs text-muted-foreground">
-            {total} {total === 1 ? 'user' : 'users'}
+            {total}人のユーザー
           </span>
         </div>
       </AdminListHeader>
@@ -392,16 +392,16 @@ export function UsersList({
               list a vertical lane to scan down instead of a stacked cell. */}
           <div className="flex items-center gap-3 border-b border-border/50 px-3 py-2">
             <div className="h-8 w-8 shrink-0" aria-hidden="true" />
-            <span className={cn('min-w-0 flex-1', MENU_LABEL)}>Name</span>
-            <span className={cn(EMAIL_COLUMN_WIDTH, MENU_LABEL, 'shrink-0')}>Email</span>
-            <span className={cn(JOINED_COLUMN_WIDTH, MENU_LABEL, 'shrink-0')}>Joined</span>
+            <span className={cn('min-w-0 flex-1', MENU_LABEL)}>名前</span>
+            <span className={cn(EMAIL_COLUMN_WIDTH, MENU_LABEL, 'shrink-0')}>メールアドレス</span>
+            <span className={cn(JOINED_COLUMN_WIDTH, MENU_LABEL, 'shrink-0')}>登録日</span>
             {showCountry && (
-              <span className={cn(COUNTRY_COLUMN_WIDTH, MENU_LABEL, 'shrink-0')}>Country</span>
+              <span className={cn(COUNTRY_COLUMN_WIDTH, MENU_LABEL, 'shrink-0')}>国</span>
             )}
             <div className="flex shrink-0 items-center gap-3">
-              <span className={cn(METRIC_COLUMN_WIDTH, MENU_LABEL, 'text-right')}>Posts</span>
-              <span className={cn(METRIC_COLUMN_WIDTH, MENU_LABEL, 'text-right')}>Comments</span>
-              <span className={cn(METRIC_COLUMN_WIDTH, MENU_LABEL, 'text-right')}>Votes</span>
+              <span className={cn(METRIC_COLUMN_WIDTH, MENU_LABEL, 'text-right')}>投稿</span>
+              <span className={cn(METRIC_COLUMN_WIDTH, MENU_LABEL, 'text-right')}>コメント</span>
+              <span className={cn(METRIC_COLUMN_WIDTH, MENU_LABEL, 'text-right')}>投票</span>
             </div>
           </div>
           <div className="divide-y divide-border/50">
@@ -435,7 +435,7 @@ export function UsersList({
               onClick={onLoadMore}
               className="text-muted-foreground"
             >
-              Load more
+              さらに読み込む
             </Button>
           )}
         </div>

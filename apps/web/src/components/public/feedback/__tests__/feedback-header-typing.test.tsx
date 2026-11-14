@@ -19,12 +19,14 @@ import { IntlProvider } from 'react-intl'
 
 type Doc = { json(): unknown; html(): string; markdown(): string }
 
-const { createPost, editor, similar, boardPicker } = vi.hoisted(() => ({
+const { createPost, editor, similar, boardPicker, mediaUpload } = vi.hoisted(() => ({
   createPost: vi.fn(),
+  mediaUpload: vi.fn(async (file: File) => `/media/${file.name}`),
   editor: {
     renders: 0,
     onChange: null as ((json: unknown, html: string, markdown: string) => void) | null,
     onDocumentChange: null as ((document: Doc) => void) | null,
+    onImageUpload: null as ((file: File) => Promise<string>) | null,
   },
   // What the similar-posts search was asked, and what its card was told.
   similar: {
@@ -44,7 +46,7 @@ vi.mock('@tanstack/react-router', () => ({
   },
 }))
 vi.mock('@/lib/client/hooks/use-image-upload', () => ({
-  usePortalMediaUpload: () => ({ upload: vi.fn() }),
+  usePortalMediaUpload: () => ({ upload: mediaUpload }),
 }))
 vi.mock('@/lib/client/mutations/portal-posts', () => ({
   useCreatePublicPost: () => ({ mutateAsync: createPost, isPending: false }),
@@ -102,10 +104,12 @@ vi.mock('@/components/ui/rich-text-editor', () => ({
   RichTextEditor: (props: {
     onChange?: typeof editor.onChange
     onDocumentChange?: typeof editor.onDocumentChange
+    onImageUpload?: typeof editor.onImageUpload
   }) => {
     editor.renders++
     editor.onChange = props.onChange ?? null
     editor.onDocumentChange = props.onDocumentChange ?? null
+    editor.onImageUpload = props.onImageUpload ?? null
     return <div data-testid="editor" />
   },
 }))
@@ -167,6 +171,8 @@ afterEach(() => {
   editor.renders = 0
   editor.onChange = null
   editor.onDocumentChange = null
+  editor.onImageUpload = null
+  mediaUpload.mockClear()
   similar.searches = []
   similar.shown = []
   boardPicker.renders = 0
@@ -272,6 +278,25 @@ describe('feedback header title', () => {
 })
 
 describe('feedback header post composer', () => {
+  it('limits one visitor draft to 40 MiB and releases removed media', async () => {
+    renderHeader()
+    typeTitle('Images')
+    await screen.findByTestId('editor')
+    const file = (name: string, size: number) => {
+      const result = new File(['x'], name, { type: 'image/png' })
+      Object.defineProperty(result, 'size', { value: size })
+      return result
+    }
+    const mib = 1024 * 1024
+    const urls: string[] = []
+    for (let n = 0; n < 4; n++) urls.push(await editor.onImageUpload!(file(`${n}.png`, 10 * mib)))
+    await expect(editor.onImageUpload!(file('extra.png', 1))).rejects.toThrow('40 MB')
+    await expect(editor.onImageUpload!(file('large.png', 10 * mib + 1))).rejects.toThrow('10 MB')
+    const doc = (sources: string[]) => ({ type: 'doc', content: sources.map((src) => ({ type: 'image', attrs: { src } })) })
+    act(() => editor.onDocumentChange!({ json: () => doc(urls), html: () => '', markdown: () => '' }))
+    act(() => editor.onDocumentChange!({ json: () => doc(urls.slice(1)), html: () => '', markdown: () => '' }))
+    await expect(editor.onImageUpload!(file('replacement.png', 10 * mib))).resolves.toBe('/media/replacement.png')
+  })
   it('does not re-render the header per keystroke in the details', async () => {
     renderHeader()
     typeTitle('Dark mode')

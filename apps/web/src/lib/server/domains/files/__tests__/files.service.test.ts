@@ -282,21 +282,22 @@ describe.skipIf(!fixture.available)('files service (real DB, rolled back)', () =
       )
     })
 
-    it('keeps the legacy rules for attachments without a file id', async () => {
+    it('requires unprivileged senders to reattach legacy files', async () => {
       const ok = {
         url: '/api/storage/chat-images/a.png?read=x',
         name: 'a.png',
         contentType: 'image/png',
         size: 10,
       }
-      await expect(resolveAttachments([ok], { canAttachAnyFile: false })).resolves.toEqual([ok])
+      await expect(resolveAttachments([ok], { canAttachAnyFile: false })).rejects.toThrow('Attach this file again')
+      await expect(resolveAttachments([ok], { canAttachAnyFile: true })).resolves.toEqual([ok])
       await expect(
         resolveAttachments([{ ...ok, url: 'https://evil.example/a.png' }], {
-          canAttachAnyFile: false,
+          canAttachAnyFile: true,
         })
       ).rejects.toThrow('Invalid attachment')
       await expect(
-        resolveAttachments([{ ...ok, size: 26 * 1024 * 1024 }], { canAttachAnyFile: false })
+        resolveAttachments([{ ...ok, size: 26 * 1024 * 1024 }], { canAttachAnyFile: true })
       ).rejects.toThrow('Attachment too large')
     })
 
@@ -331,7 +332,7 @@ describe.skipIf(!fixture.available)('files service (real DB, rolled back)', () =
       ]) {
         const legacy = { url, name: 'a.pdf', contentType: 'application/pdf', size: 10 }
         await expect(
-          resolveAttachments([legacy], { canAttachAnyFile: false }),
+          resolveAttachments([legacy], { canAttachAnyFile: true }),
           url
         ).resolves.toEqual([legacy])
       }
@@ -344,7 +345,7 @@ describe.skipIf(!fixture.available)('files service (real DB, rolled back)', () =
         contentType: 'image/png',
         size: 10,
       }
-      const [att] = await resolveAttachments([spoofed], { canAttachAnyFile: false })
+      const [att] = await resolveAttachments([spoofed], { canAttachAnyFile: true })
       expect(att!.name).toBe('Invoicexcod.docm')
     })
 

@@ -35,7 +35,7 @@ export function createS3MockFactory() {
     async (key: string, _body?: unknown, _type?: string) => `https://cdn.example.com/${key}`
   )
 
-  const upload = async (formData: FormData, storagePrefix: string, allowVideo: boolean) => {
+  const upload = async (formData: FormData, storagePrefix: string, allowVideo: boolean, overrideMaxBytes?: number) => {
     const file = formData.get('file')
     if (!(file instanceof File))
       return Response.json({ error: 'No file provided' }, { status: 400 })
@@ -43,7 +43,7 @@ export function createS3MockFactory() {
     const contentType = image ? file.type : resolveVideoMimeType(file.type, file.name)
     const video = allowVideo && !!contentType && mockIsAllowedVideoType(contentType)
     if (!image && !video) return Response.json({ error: 'Invalid file type' }, { status: 400 })
-    const maxSize = video ? MAX_VIDEO_FILE_SIZE : MAX_FILE_SIZE
+    const maxSize = overrideMaxBytes ?? (video ? MAX_VIDEO_FILE_SIZE : MAX_FILE_SIZE)
     if (file.size > maxSize)
       return Response.json(
         { error: `File too large. Maximum size is ${maxSize / 1024 / 1024}MB` },
@@ -77,8 +77,8 @@ export function createS3MockFactory() {
     async uploadImageFromFormData(formData: FormData, storagePrefix: string) {
       return upload(formData, storagePrefix, false)
     },
-    async uploadMediaFromFormData(formData: FormData, storagePrefix: string) {
-      return upload(formData, storagePrefix, true)
+    async uploadMediaFromFormData(formData: FormData, storagePrefix: string, options?: { maxBytes?: number }) {
+      return upload(formData, storagePrefix, true, options?.maxBytes)
     },
   }
 }

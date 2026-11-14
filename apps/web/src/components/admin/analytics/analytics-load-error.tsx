@@ -8,7 +8,7 @@ export function LoadError({ message, onRetry }: { message: string; onRetry: () =
         {message}
       </p>
       <Button variant="outline" size="sm" onClick={onRetry}>
-        Try again
+        再試行
       </Button>
     </div>
   )

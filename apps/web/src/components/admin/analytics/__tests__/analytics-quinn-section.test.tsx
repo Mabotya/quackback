@@ -75,21 +75,21 @@ describe('AnalyticsQuinnSection', () => {
     const { container } = renderSection(
       <AnalyticsQuinnSection range={RANGE} periodLabel="Last 30 days" />
     )
-    await screen.findByText('Conversations involved')
+    await screen.findByText('対応した会話')
     // The headline row is the first card; "Escalated" also labels an outcome below it.
     const headline = container.querySelector('[data-slot="card"]') as HTMLElement
     const tile = (label: string) => within(headline).getByText(label).parentElement!
-    const involved = tile('Conversations involved')
+    const involved = tile('対応した会話')
     expect(within(involved).getByText('40')).toBeInTheDocument()
-    expect(within(involved).getByText('40% of conversations')).toBeInTheDocument()
-    const resolved = tile('Resolved')
+    expect(within(involved).getByText('会話全体の40%')).toBeInTheDocument()
+    const resolved = tile('解決済み')
     expect(within(resolved).getByText('50%')).toBeInTheDocument()
-    expect(within(resolved).getByText('12 confirmed, 8 assumed')).toBeInTheDocument()
-    const escalated = tile('Escalated')
+    expect(within(resolved).getByText('確認済み 12件、推定 8件')).toBeInTheDocument()
+    const escalated = tile('担当者へ引き継ぎ')
     expect(within(escalated).getByText('25%')).toBeInTheDocument()
     const csat = tile('AI CSAT')
     expect(within(csat).getByText('4.3')).toBeInTheDocument()
-    expect(within(csat).getByText('6 ratings')).toBeInTheDocument()
+    expect(within(csat).getByText('6件の評価')).toBeInTheDocument()
   })
 
   it('draws the outcome bar from the same counts as the headline', async () => {
@@ -98,14 +98,14 @@ describe('AnalyticsQuinnSection', () => {
     hoisted.copilot.mockResolvedValue(COPILOT)
     renderSection(<AnalyticsQuinnSection range={RANGE} periodLabel="Last 30 days" />)
 
-    const outcomes = (await screen.findByText('Outcomes')).closest('[data-slot="card"]')!
+    const outcomes = (await screen.findByText('対応結果')).closest('[data-slot="card"]')!
     const legend = (label: string) =>
       within(outcomes as HTMLElement).getByText(label).parentElement!.textContent
-    expect(legend('Resolved confirmed')).toContain('12')
-    expect(legend('Resolved assumed')).toContain('8')
-    expect(legend('Escalated')).toContain('10')
-    expect(legend('Pending')).toContain('10')
-    expect(within(outcomes as HTMLElement).queryByText('System errors')).toBeNull()
+    expect(legend('解決を確認')).toContain('12')
+    expect(legend('解決と推定')).toContain('8')
+    expect(legend('担当者へ引き継ぎ')).toContain('10')
+    expect(legend('保留中')).toContain('10')
+    expect(within(outcomes as HTMLElement).queryByText('システムエラー')).toBeNull()
   })
 
   it('lists system errors in the outcomes only when there were some', async () => {
@@ -113,9 +113,9 @@ describe('AnalyticsQuinnSection', () => {
     hoisted.tools.mockResolvedValue([])
     hoisted.copilot.mockResolvedValue(COPILOT)
     renderSection(<AnalyticsQuinnSection range={RANGE} periodLabel="Last 30 days" />)
-    const outcomes = (await screen.findByText('Outcomes')).closest('[data-slot="card"]')!
+    const outcomes = (await screen.findByText('対応結果')).closest('[data-slot="card"]')!
     expect(
-      within(outcomes as HTMLElement).getByText('System errors').parentElement!.textContent
+      within(outcomes as HTMLElement).getByText('システムエラー').parentElement!.textContent
     ).toContain('3')
   })
 
@@ -137,10 +137,10 @@ describe('AnalyticsQuinnSection', () => {
     const copilot = screen.getByText('Copilot').closest('[data-slot="card"]') as HTMLElement
     expect(within(copilot).getByText('Last 7 days')).toBeInTheDocument()
     const rowOf = (label: string) => within(copilot).getByText(label).closest('tr')!.textContent
-    expect(rowOf('Questions answered')).toContain('21')
-    expect(rowOf('Suggestions used')).toContain('13')
-    expect(rowOf('Actions proposed')).toContain('9')
-    expect(rowOf('Actions accepted')).toContain('6')
+    expect(rowOf('回答した質問')).toContain('21')
+    expect(rowOf('使用された提案')).toContain('13')
+    expect(rowOf('提案されたアクション')).toContain('9')
+    expect(rowOf('承認されたアクション')).toContain('6')
   })
 
   it('asks every server function for the one range', async () => {
@@ -169,11 +169,11 @@ describe('AnalyticsQuinnSection', () => {
     hoisted.copilot.mockResolvedValue(COPILOT)
     renderSection(<AnalyticsQuinnSection range={RANGE} periodLabel="Last 30 days" />)
     expect(
-      await screen.findByText("The AI agent hasn't handled any conversations this period")
+      await screen.findByText("この期間にAIエージェントが対応した会話はありません")
     ).toBeInTheDocument()
-    expect(screen.queryByText('Outcomes')).toBeNull()
-    expect(await screen.findByText('No actions in this period')).toBeInTheDocument()
-    expect(screen.getByText('Questions answered')).toBeInTheDocument()
+    expect(screen.queryByText('対応結果')).toBeNull()
+    expect(await screen.findByText('この期間のアクションはありません')).toBeInTheDocument()
+    expect(screen.getByText('回答した質問')).toBeInTheDocument()
   })
 
   it('reads a missing CSAT as a hyphen', async () => {

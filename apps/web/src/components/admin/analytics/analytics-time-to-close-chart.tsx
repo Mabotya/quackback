@@ -21,7 +21,7 @@ function formatAxisMinutes(minutes: number): string {
 }
 
 const chartConfig: ChartConfig = {
-  medianMinutes: { label: 'Median time to close', color: 'var(--chart-2)' },
+  medianMinutes: { label: 'クローズまでの時間の中央値', color: 'var(--chart-2)' },
 }
 
 /** Median time-to-close per day, bucketed on the close day. Days with no closed
@@ -36,7 +36,7 @@ export function AnalyticsTimeToCloseChart({ days }: AnalyticsTimeToCloseChartPro
           CHART_HEIGHT_CLASS
         )}
       >
-        No conversations closed for this period
+        この期間にクローズした会話はありません
       </div>
     )
   }

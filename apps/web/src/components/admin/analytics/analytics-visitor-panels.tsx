@@ -4,6 +4,15 @@ import { AnalyticsBarList, type BarListRow } from './analytics-bar-list'
 import { AnalyticsEmpty } from './analytics-empty'
 
 type TopBreakdowns = Record<string, Array<{ label: string; count: number }>>
+const japaneseRegions = new Intl.DisplayNames(['ja'], { type: 'region' })
+
+function japaneseCountryName(code: string): string {
+  try {
+    return japaneseRegions.of(code.toUpperCase()) ?? countryName(code)
+  } catch {
+    return countryName(code)
+  }
+}
 
 const PANELS: Array<{
   dimension: string
@@ -11,17 +20,17 @@ const PANELS: Array<{
   header: string
   format?: (label: string) => BarListRow['label']
 }> = [
-  { dimension: 'page', title: 'Top pages', header: 'Page' },
-  { dimension: 'source', title: 'Sources', header: 'Source' },
+  { dimension: 'page', title: '人気のページ', header: 'ページ' },
+  { dimension: 'source', title: '流入元', header: '流入元' },
   {
     dimension: 'country',
-    title: 'Countries',
-    header: 'Country',
-    format: (code) => `${countryFlag(code)} ${countryName(code)}`,
+    title: '国',
+    header: '国',
+    format: (code) => `${countryFlag(code)} ${japaneseCountryName(code)}`,
   },
-  { dimension: 'device', title: 'Devices', header: 'Device' },
-  { dimension: 'browser', title: 'Browsers', header: 'Browser' },
-  { dimension: 'os', title: 'Operating systems', header: 'OS' },
+  { dimension: 'device', title: 'デバイス', header: 'デバイス' },
+  { dimension: 'browser', title: 'ブラウザー', header: 'ブラウザー' },
+  { dimension: 'os', title: 'OS', header: 'OS' },
 ]
 
 /** The breakdown grid: six visitor-ranked bar lists fed by the rollup
@@ -38,10 +47,10 @@ export function AnalyticsVisitorPanels({ top }: { top: TopBreakdowns }) {
             </CardHeader>
             <CardContent className="max-h-[320px] overflow-y-auto scrollbar-thin">
               {rows.length === 0 ? (
-                <AnalyticsEmpty message="No data for this period" />
+                <AnalyticsEmpty message="この期間のデータはありません" />
               ) : (
                 <AnalyticsBarList
-                  header={{ label: header, value: 'Visitors' }}
+                  header={{ label: header, value: '訪問者' }}
                   rows={rows.map((row) => ({
                     key: row.label,
                     label: format ? format(row.label) : row.label,

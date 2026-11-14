@@ -12,7 +12,7 @@ export async function handlePortalUpload({ request }: { request: Request }): Pro
   }
   const principalRecord = await db.query.principal.findFirst({
     where: eq(principal.userId, session.user.id as UserId),
-    columns: { type: true },
+    columns: { type: true, role: true },
   })
   if (!principalRecord) return Response.json({ error: 'Forbidden' }, { status: 403 })
   const bucket = { key: `portal-upload:user:${session.user.id}`, windowSeconds: 60 }
@@ -33,7 +33,11 @@ export async function handlePortalUpload({ request }: { request: Request }): Pro
   } catch {
     return Response.json({ error: 'Invalid request body' }, { status: 400 })
   }
-  return uploadMediaFromFormData(formData, 'portal-media')
+  const isTeam = principalRecord.type === 'user' &&
+    (principalRecord.role === 'admin' || principalRecord.role === 'member')
+  return uploadMediaFromFormData(formData, 'portal-media', {
+    maxBytes: (isTeam ? 100 : 10) * 1024 * 1024,
+  })
 }
 
 export const Route = createFileRoute('/api/portal/upload')({

@@ -1,4 +1,6 @@
 {
+  "files.upload.error.totalLimit": "附件总大小不能超过40 MB。",
+  "files.upload.error.singleLimit": "每个文件不能超过 {size} MB。",
   "portal.settings.accountError.invalidPassword": "当前密码不正确。",
   "portal.settings.accountError.rateLimited": "尝试次数过多，请稍后再试。",
   "portal.settings.accountError.sameEmail": "该邮箱地址已是您的当前地址。",
@@ -226,7 +228,7 @@
   "portal.feedback.list.noPostsYetDescription": "{workspace} 团队会阅读每一条请求。",
   "portal.feedback.header.postingTo": "发布到",
   "portal.feedback.header.selectBoard": "选择看板",
-  "portal.feedback.header.titlePlaceholder": "标题",
+  "portal.feedback.header.titlePlaceholder": "在此输入标题以创建帖子",
   "portal.feedback.header.detailsPlaceholder": "输入详细内容",
   "portal.feedback.header.postingAs": "发布身份",
   "portal.feedback.header.signOut": "退出登录",

@@ -6,20 +6,20 @@ import { SectionSkeleton } from '../analytics-skeletons'
 describe('<SectionSkeleton>', () => {
   it('feedback: matches the two-card Boards / Top posts layout', () => {
     render(<SectionSkeleton section="feedback" />)
-    expect(screen.getByText('Boards')).toBeInTheDocument()
-    expect(screen.getByText('Top posts')).toBeInTheDocument()
+    expect(screen.getByText('ボード')).toBeInTheDocument()
+    expect(screen.getByText('人気の投稿')).toBeInTheDocument()
   })
 
   it('users: matches the signups-source card layout', () => {
     render(<SectionSkeleton section="users" />)
-    expect(screen.getByText('Signups by source')).toBeInTheDocument()
+    expect(screen.getByText('登録元別の新規登録')).toBeInTheDocument()
   })
 
   it('overview and changelog do not render the feedback list cards', () => {
     const { rerender } = render(<SectionSkeleton section="overview" />)
-    expect(screen.queryByText('Boards')).toBeNull()
-    expect(screen.queryByText('Signups by source')).toBeNull()
+    expect(screen.queryByText('ボード')).toBeNull()
+    expect(screen.queryByText('登録元別の新規登録')).toBeNull()
     rerender(<SectionSkeleton section="changelog" />)
-    expect(screen.queryByText('Boards')).toBeNull()
+    expect(screen.queryByText('ボード')).toBeNull()
   })
 })

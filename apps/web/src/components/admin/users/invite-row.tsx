@@ -14,7 +14,7 @@ export function InviteStatusBadge({ status }: { status: string | null }) {
     case 'pending':
       return (
         <Badge variant="outline" className="text-[11px] px-1.5 py-0">
-          Pending
+          招待中
         </Badge>
       )
     case 'accepted':
@@ -23,25 +23,25 @@ export function InviteStatusBadge({ status }: { status: string | null }) {
           variant="outline"
           className="border-green-500/30 text-green-600 text-[11px] px-1.5 py-0"
         >
-          Accepted
+          承認済み
         </Badge>
       )
     case 'canceled':
       return (
         <Badge variant="secondary" className="text-[11px] px-1.5 py-0">
-          Revoked
+          取り消し済み
         </Badge>
       )
     case 'expired':
       return (
         <Badge variant="destructive" className="text-[11px] px-1.5 py-0">
-          Expired
+          期限切れ
         </Badge>
       )
     default:
       return (
         <Badge variant="outline" className="text-[11px] px-1.5 py-0">
-          {status ?? 'Unknown'}
+          {status ?? '不明'}
         </Badge>
       )
   }
@@ -136,7 +136,7 @@ export function InviteRow({ invite, onRevoke, onResend, revoking, resending }: I
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm">{invite.email}</p>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            Sent <LocalDate date={sentDate} options={INVITE_DATE} locale="en-US" />
+            送信日: <LocalDate date={sentDate} options={INVITE_DATE} locale="ja-JP" />
           </p>
         </div>
         <InviteStatusBadge status={invite.status} />
@@ -149,16 +149,16 @@ export function InviteRow({ invite, onRevoke, onResend, revoking, resending }: I
               onClick={() => void handleCopyLink()}
               disabled={copyState === 'copying' || revoking || resending}
               className="h-7 px-2 text-xs"
-              title="Mint a fresh sign-in link and copy it to your clipboard"
+              title="新しいログインリンクを作成してコピー"
             >
               {copyState === 'copying' && (
                 <ArrowPathIcon className="mr-1 h-3.5 w-3.5 animate-spin" />
               )}
               {copyState === 'copied'
-                ? 'Link copied'
+                ? 'リンクをコピーしました'
                 : copyState === 'error'
-                  ? 'Copy failed'
-                  : 'Copy link'}
+                  ? 'コピーに失敗しました'
+                  : 'リンクをコピー'}
             </Button>
             <Button
               type="button"
@@ -168,7 +168,7 @@ export function InviteRow({ invite, onRevoke, onResend, revoking, resending }: I
               disabled={resending || revoking}
               className="h-7 px-2 text-xs"
             >
-              {resending ? <ArrowPathIcon className="h-3.5 w-3.5 animate-spin" /> : 'Resend'}
+              {resending ? <ArrowPathIcon className="h-3.5 w-3.5 animate-spin" /> : '再送'}
             </Button>
             <Button
               type="button"
@@ -186,9 +186,9 @@ export function InviteRow({ invite, onRevoke, onResend, revoking, resending }: I
               {revoking ? (
                 <ArrowPathIcon className="h-3.5 w-3.5 animate-spin" />
               ) : confirmRevoke ? (
-                'Confirm revoke'
+                '取り消しを確認'
               ) : (
-                'Revoke'
+                '取り消し'
               )}
             </Button>
           </div>
@@ -197,7 +197,7 @@ export function InviteRow({ invite, onRevoke, onResend, revoking, resending }: I
       {fallbackLink && (
         <div className="mt-2 space-y-1">
           <p className="text-xs text-muted-foreground">
-            Couldn't copy automatically. Select and copy this link:
+            自動でコピーできませんでした。リンクを選択してコピーしてください。
           </p>
           <input
             readOnly

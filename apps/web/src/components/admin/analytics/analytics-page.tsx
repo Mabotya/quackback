@@ -4,6 +4,7 @@ import { useNavigate, useSearch } from '@tanstack/react-router'
 import { isProductEnabled, type FeatureFlags } from '@/lib/shared/types/settings'
 import { analyticsQueries, periodRange, type AnalyticsPeriod } from '@/lib/client/queries/analytics'
 import { formatDistanceToNow } from 'date-fns'
+import { ja } from 'date-fns/locale'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
@@ -100,15 +101,15 @@ function channelTotals(volume: {
  *  null (nothing resolved in the period) renders as a hyphen. */
 function formatResolveTime(days: number | null): { value: string; suffix?: string } {
   if (days == null) return { value: '-' }
-  if (days < 1) return { value: '<1', suffix: 'day' }
-  return { value: days < 10 ? days.toFixed(1) : Math.round(days).toString(), suffix: 'days' }
+  if (days < 1) return { value: '1未満', suffix: '日' }
+  return { value: days < 10 ? days.toFixed(1) : Math.round(days).toString(), suffix: '日' }
 }
 
 const periods: Array<{ value: AnalyticsPeriod; label: string }> = [
-  { value: '7d', label: 'Last 7 days' },
-  { value: '30d', label: 'Last 30 days' },
-  { value: '90d', label: 'Last 90 days' },
-  { value: '12m', label: 'Last 12 months' },
+  { value: '7d', label: '過去7日間' },
+  { value: '30d', label: '過去30日間' },
+  { value: '90d', label: '過去90日間' },
+  { value: '12m', label: '過去12か月' },
 ]
 
 export function AnalyticsPage() {
@@ -158,7 +159,7 @@ export function AnalyticsPage() {
         className="hidden lg:flex w-64 xl:w-72 shrink-0 flex-col border-e border-chrome-hairline bg-background overflow-hidden"
       >
         <div className="shrink-0 px-5 py-3.5">
-          <PageHeader as="h2" title="Analytics" />
+          <PageHeader as="h2" title="分析" />
         </div>
         <ScrollArea className="min-h-0 flex-1">
           <div className="px-2.5 pb-5">
@@ -196,13 +197,13 @@ export function AnalyticsPage() {
             {/* Header: mobile title + section switcher (left) · updated + period (right) */}
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3 lg:hidden">
-                <h1 className="text-base font-semibold">Analytics</h1>
+                <h1 className="text-base font-semibold">分析</h1>
                 <AnalyticsSectionSelect items={sections} value={section} onChange={setSection} />
               </div>
               <div className="ml-auto flex items-center gap-3">
                 {data?.computedAt && (
                   <p className="hidden text-sm text-muted-foreground sm:block">
-                    Updated {formatDistanceToNow(new Date(data.computedAt), { addSuffix: true })}
+                    {formatDistanceToNow(new Date(data.computedAt), { addSuffix: true, locale: ja })}に更新
                   </p>
                 )}
                 {/* Available filters for the active section (surface, today);
@@ -215,18 +216,18 @@ export function AnalyticsPage() {
                         {surface !== 'all' && (
                           <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-primary" />
                         )}
-                        <span className="sr-only">Filters</span>
+                        <span className="sr-only">フィルター</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-44">
-                      <DropdownMenuLabel>Surface</DropdownMenuLabel>
+                      <DropdownMenuLabel>表示先</DropdownMenuLabel>
                       <DropdownMenuRadioGroup
                         value={surface}
                         onValueChange={(value) => setSurface(value as typeof surface)}
                       >
-                        <DropdownMenuRadioItem value="all">All surfaces</DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="portal">Portal</DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="widget">Widget</DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem value="all">すべての表示先</DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem value="portal">ポータル</DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem value="widget">ウィジェット</DropdownMenuRadioItem>
                       </DropdownMenuRadioGroup>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -286,7 +287,7 @@ export function AnalyticsPage() {
                     <SectionSkeleton section="overview" />
                   ) : !visitorData.enabled ? (
                     <Card className="overflow-hidden">
-                      <AnalyticsEmpty message="Visitor analytics is turned off" />
+                      <AnalyticsEmpty message="訪問者の分析は無効です" />
                     </Card>
                   ) : (
                     <div className="flex flex-col gap-6">
@@ -318,23 +319,23 @@ export function AnalyticsPage() {
                     <StatSection
                       stats={[
                         {
-                          label: 'Posts',
+                          label: '投稿',
                           value: formatNumber(data.summary.posts.total),
                           delta: data.summary.posts.delta,
                         },
                         {
-                          label: 'Resolved',
+                          label: '解決済み',
                           value: `${data.resolutionRate}%`,
-                          caption: 'current',
+                          caption: '現在',
                         },
                         {
-                          label: 'Median resolve',
+                          label: '解決時間の中央値',
                           ...formatResolveTime(data.medianResolutionDays),
                         },
                         {
-                          label: 'Followers',
+                          label: 'フォロワー',
                           value: formatNumber(data.followers),
-                          caption: 'current',
+                          caption: '現在',
                         },
                       ]}
                     >
@@ -345,7 +346,7 @@ export function AnalyticsPage() {
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:items-start">
                       <Card>
                         <CardHeader>
-                          <CardTitle>Boards</CardTitle>
+                          <CardTitle>ボード</CardTitle>
                         </CardHeader>
                         <CardContent className="max-h-[320px] overflow-y-auto scrollbar-thin">
                           <AnalyticsBoardChart data={data.boardBreakdown} />
@@ -353,7 +354,7 @@ export function AnalyticsPage() {
                       </Card>
                       <Card>
                         <CardHeader>
-                          <CardTitle>Top posts</CardTitle>
+                          <CardTitle>人気の投稿</CardTitle>
                         </CardHeader>
                         <CardContent className="max-h-[320px] overflow-y-auto scrollbar-thin">
                           <AnalyticsTopPosts posts={data.topPosts} />
@@ -368,7 +369,7 @@ export function AnalyticsPage() {
                     <StatSection
                       stats={[
                         {
-                          label: 'New conversations',
+                          label: '新規の会話',
                           value: formatNumber(data.conversationVolume.total),
                           delta: data.conversationVolume.delta,
                         },
@@ -389,13 +390,13 @@ export function AnalyticsPage() {
                     <StatSection
                       stats={[
                         {
-                          label: 'Median first response',
+                          label: '初回返信時間の中央値',
                           value: formatResponseTime(data.firstResponse.medianMinutes),
                         },
                         {
-                          label: 'Answered',
+                          label: '返信済み',
                           value: formatNumber(data.firstResponse.responded),
-                          caption: 'conversations',
+                          caption: '会話',
                         },
                       ]}
                     >
@@ -405,7 +406,7 @@ export function AnalyticsPage() {
                     </StatSection>
                     <Card>
                       <CardHeader>
-                        <CardTitle>First response distribution</CardTitle>
+                        <CardTitle>初回返信時間の分布</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <AnalyticsResponseDistribution distribution={data.responseDistribution} />
@@ -414,13 +415,13 @@ export function AnalyticsPage() {
                     <StatSection
                       stats={[
                         {
-                          label: 'Median time to close',
+                          label: 'クローズまでの時間の中央値',
                           value: formatResponseTime(data.timeToClose.medianMinutes),
                         },
                         {
-                          label: 'Closed',
+                          label: 'クローズ',
                           value: formatNumber(data.timeToClose.closed),
-                          caption: 'conversations',
+                          caption: '会話',
                         },
                       ]}
                     >
@@ -430,7 +431,7 @@ export function AnalyticsPage() {
                     </StatSection>
                     <Card>
                       <CardHeader>
-                        <CardTitle>Teammate performance</CardTitle>
+                        <CardTitle>チームメンバーの実績</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <AnalyticsTeammatePerformance teammates={data.teammatePerformance} />
@@ -438,19 +439,19 @@ export function AnalyticsPage() {
                     </Card>
                     {data.csat.responseCount === 0 ? (
                       <Card className="overflow-hidden">
-                        <AnalyticsEmpty message="No CSAT responses for this period" />
+                        <AnalyticsEmpty message="この期間の顧客満足度の回答はありません" />
                       </Card>
                     ) : (
                       <StatSection
                         stats={[
                           {
-                            label: 'Avg rating',
+                            label: '平均評価',
                             value: data.csat.avgRating.toFixed(1),
                             suffix: '/ 5',
                             delta: data.csat.avgRatingDelta,
                           },
-                          { label: 'Responses', value: formatNumber(data.csat.responseCount) },
-                          { label: 'Response rate', value: `${data.csat.responseRate}%` },
+                          { label: '回答数', value: formatNumber(data.csat.responseCount) },
+                          { label: '回答率', value: `${data.csat.responseRate}%` },
                         ]}
                       >
                         <AnalyticsCsatDistribution distribution={data.csat.distribution} />
@@ -464,22 +465,22 @@ export function AnalyticsPage() {
                   <StatSection
                     stats={[
                       {
-                        label: 'Published',
+                        label: '公開数',
                         value: formatNumber(data.changelog.publishedInPeriod),
                       },
                       {
-                        label: 'Total views',
+                        label: '総閲覧数',
                         value: formatNumber(data.changelog.totalViews),
-                        caption: 'all time',
+                        caption: '全期間',
                       },
                       {
-                        label: 'Avg / entry',
+                        label: '1件あたりの平均',
                         value: avgPerItem(
                           formatNumber,
                           data.changelog.totalViews,
                           data.changelog.publishedCount
                         ),
-                        caption: 'all time',
+                        caption: '全期間',
                       },
                     ]}
                   >
@@ -492,25 +493,25 @@ export function AnalyticsPage() {
                     <StatSection
                       stats={[
                         {
-                          label: 'Signups',
+                          label: '新規登録',
                           value: formatNumber(data.summary.users.total),
                           delta: data.summary.users.delta,
                         },
                         {
-                          label: 'New leads',
+                          label: '新規リード',
                           value: formatNumber(data.newLeads.total),
                           delta: data.newLeads.delta,
                         },
-                        { label: 'Active users', value: formatNumber(data.activeUsers) },
-                        { label: 'Verified', value: `${data.verifiedRate}%`, caption: 'all time' },
-                        { label: 'Contributors', value: formatNumber(data.contributorCount) },
+                        { label: 'アクティブユーザー', value: formatNumber(data.activeUsers) },
+                        { label: '認証済み', value: `${data.verifiedRate}%`, caption: '全期間' },
+                        { label: '貢献者', value: formatNumber(data.contributorCount) },
                       ]}
                     >
                       <AnalyticsTopContributors contributors={data.topContributors} />
                     </StatSection>
                     <Card>
                       <CardHeader>
-                        <CardTitle>Signups by source</CardTitle>
+                        <CardTitle>登録元別の新規登録</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <AnalyticsSignupSources sources={data.signupsBySource} />

@@ -19,7 +19,7 @@ interface AnalyticsSectionSelectProps {
 export function AnalyticsSectionSelect({ items, value, onChange }: AnalyticsSectionSelectProps) {
   return (
     <Select value={value} onValueChange={(v) => onChange(v as Section)}>
-      <SelectTrigger size="sm" className="w-44" aria-label="Section">
+      <SelectTrigger size="sm" className="w-44" aria-label="セクション">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>

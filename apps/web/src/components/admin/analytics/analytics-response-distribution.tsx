@@ -11,7 +11,7 @@ export function AnalyticsResponseDistribution({
   if (distribution.total === 0) {
     return (
       <div className="flex items-center justify-center py-10 text-sm text-muted-foreground">
-        No responses for this period
+        この期間の返信はありません
       </div>
     )
   }

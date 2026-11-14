@@ -49,9 +49,9 @@ export function InvitePeopleDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Invite users to the portal</DialogTitle>
+          <DialogTitle>ユーザーをサイトに招待</DialogTitle>
           <DialogDescription>
-            They&apos;ll get a magic link to sign in and access the portal, no password needed.
+            パスワードなしでログインできる招待リンクを送信します。
           </DialogDescription>
         </DialogHeader>
 
@@ -63,7 +63,7 @@ export function InvitePeopleDialog({
           className="space-y-4"
         >
           <label className="block">
-            <span className="text-sm font-medium">Email addresses</span>
+            <span className="text-sm font-medium">メールアドレス</span>
             <Textarea
               value={emailsInput}
               onChange={(e) => onEmailsChange(e.target.value)}
@@ -71,26 +71,26 @@ export function InvitePeopleDialog({
               rows={4}
               className="mt-1.5 font-mono text-sm"
               disabled={sendBusy}
-              aria-label="Email addresses to invite"
+              aria-label="招待するメールアドレス"
               aria-invalid={!!emailError}
               autoFocus
             />
             <span className="text-xs text-muted-foreground mt-1 block">
-              Separate addresses with commas, spaces, or newlines. Up to 50 at a time.
+              カンマ・スペース・改行で区切ってください。一度に最大50件まで指定できます。
             </span>
           </label>
 
           <label className="block">
-            <span className="text-sm font-medium">Personal message (optional)</span>
+            <span className="text-sm font-medium">メッセージ（任意）</span>
             <Textarea
               value={messageInput}
               onChange={(e) => onMessageChange(e.target.value)}
-              placeholder="Hi! We'd love your feedback on the new beta."
+              placeholder="ぜひフィードバックをお寄せください。"
               rows={3}
               className="mt-1.5 text-sm"
               maxLength={500}
               disabled={sendBusy}
-              aria-label="Optional personal message"
+              aria-label="メッセージ（任意）"
             />
           </label>
 
@@ -108,7 +108,7 @@ export function InvitePeopleDialog({
               role="status"
             >
               <p className="font-medium">
-                {batchResults.sent} sent, {batchResults.failed.length} failed.
+                {batchResults.sent}件送信、{batchResults.failed.length}件失敗しました。
               </p>
               <ul className="mt-1 list-disc pl-4 space-y-0.5">
                 {batchResults.failed.map((f) => (
@@ -118,18 +118,18 @@ export function InvitePeopleDialog({
                 ))}
               </ul>
               <p className="mt-1.5">
-                The failed addresses have been kept in the field above. Fix them and try again.
+                送信に失敗したアドレスを入力欄に残しています。確認して再度お試しください。
               </p>
             </div>
           )}
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              キャンセル
             </Button>
             <Button type="submit" disabled={sendBusy || !emailsInput.trim()}>
               {sendBusy ? <ArrowPathIcon className="mr-2 h-3 w-3 animate-spin" /> : null}
-              Send invites
+              招待を送信
             </Button>
           </DialogFooter>
         </form>

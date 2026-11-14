@@ -17,17 +17,17 @@ import type { TeammatePerformance } from '@/lib/server/domains/analytics/teammat
 export function AnalyticsTeammatePerformance({ teammates }: { teammates: TeammatePerformance[] }) {
   const formatNumber = useFormatNumber()
   if (teammates.length === 0) {
-    return <AnalyticsEmpty message="No assigned conversations in this period" />
+    return <AnalyticsEmpty message="この期間に割り当てられた会話はありません" />
   }
 
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Teammate</TableHead>
-          <TableHead className="text-right">Conversations</TableHead>
-          <TableHead className="text-right">Median first response</TableHead>
-          <TableHead className="text-right">Median time to close</TableHead>
+          <TableHead>メンバー</TableHead>
+          <TableHead className="text-right">会話</TableHead>
+          <TableHead className="text-right">初回返信時間の中央値</TableHead>
+          <TableHead className="text-right">クローズまでの時間の中央値</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

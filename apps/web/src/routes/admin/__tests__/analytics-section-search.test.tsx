@@ -73,13 +73,13 @@ describe('AnalyticsPage section from the URL', () => {
   it('opens the overview when the URL names no section', () => {
     hoisted.search.current = {}
     const { container } = renderPage()
-    expect(container.querySelector('[data-side-pane] [data-active]')?.textContent).toBe('Overview')
+    expect(container.querySelector('[data-side-pane] [data-active]')?.textContent).toBe('概要')
   })
 
   it('writes the picked section back to the URL', async () => {
     hoisted.search.current = {}
     renderPage()
-    fireEvent.click(screen.getByRole('button', { name: 'Users' }))
+    fireEvent.click(screen.getByRole('button', { name: 'ユーザー' }))
     await waitFor(() => expect(hoisted.navigate).toHaveBeenCalled())
     const call = hoisted.navigate.mock.calls[0][0] as {
       search: (prev: Record<string, unknown>) => Record<string, unknown>

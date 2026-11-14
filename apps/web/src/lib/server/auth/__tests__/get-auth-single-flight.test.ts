@@ -7,11 +7,14 @@
  * credentials, list the identity providers and register the plugins.
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { betterAuth } from 'better-auth'
+import { handleOAuthUserInfo, linkOAuthAccount } from 'better-auth/oauth2'
 
 if (!process.env.BASE_URL?.startsWith('http')) process.env.BASE_URL = 'http://localhost:3000'
 process.env.SECRET_KEY ??= 'test-secret-key-with-at-least-32-characters'
 
 let builds = 0
+let enableSocialProviders = false
 vi.mock('better-auth', async (importOriginal) => ({
   ...(await importOriginal<typeof import('better-auth')>()),
   betterAuth: vi.fn(() => ({ id: ++builds, api: {}, handler: vi.fn() })),
@@ -20,7 +23,9 @@ vi.mock('better-auth', async (importOriginal) => ({
 const mockGetPlatformCredentials = vi.fn(async (_type: string) => {
   // Long enough for every concurrent caller to arrive while the build runs.
   await new Promise((resolve) => setTimeout(resolve, 20))
-  return null
+  return enableSocialProviders && ['auth_google', 'auth_discord', 'auth_github'].includes(_type)
+    ? { clientId: 'test-client', clientSecret: 'test-secret' }
+    : null
 })
 vi.mock('@/lib/server/domains/platform-credentials/platform-credential.service', () => ({
   getPlatformCredentials: (type: string) => mockGetPlatformCredentials(type),
@@ -40,13 +45,17 @@ vi.mock('@/lib/server/domains/settings/settings.service', () => ({
     }
     return {
       settings: { authConfigVersion },
-      authConfig: { oauth: {} },
+      authConfig: { oauth: enableSocialProviders ? { google: true, discord: true, github: true } : {} },
       developerConfig: {},
     }
   }),
 }))
 vi.mock('@/lib/server/domains/settings/tier-limits.service', () => ({
   getTierLimits: vi.fn(async () => ({ features: {} })),
+}))
+vi.mock('@/lib/server/domains/settings/identity-providers.service', () => ({
+  listIdentityProviders: vi.fn(async () => []),
+  getIdentityProviderCredentials: vi.fn(async () => null),
 }))
 vi.mock('../ensure-mcp-oauth-resource', () => ({
   ensureMcpOauthResource: vi.fn(async () => undefined),
@@ -66,7 +75,9 @@ beforeEach(() => {
   authConfigVersion = 1
   gatedReads = 0
   heldReads.length = 0
+  enableSocialProviders = false
   mockGetPlatformCredentials.mockClear()
+  vi.mocked(betterAuth).mockClear()
 })
 
 describe('getAuth', () => {
@@ -113,6 +124,9 @@ describe('getAuth', () => {
 
   it('starts afresh after a reset, even with a build still in flight', async () => {
     const stale = getAuth()
+    // Wait until the first build is inside the deliberately delayed read, so
+    // the reset really races an active build without racing Vite's mock loader.
+    await vi.waitFor(() => expect(mockGetPlatformCredentials).toHaveBeenCalled())
     resetAuth()
     const fresh = await getAuth()
     await stale
@@ -126,5 +140,73 @@ describe('getAuth', () => {
 
     await expect(getAuth()).rejects.toThrow('credential store down')
     await expect(getAuth()).resolves.toBeDefined()
+  })
+
+  it('requires verified provider and local email for implicit social linking, while retaining session-based explicit linking', async () => {
+    enableSocialProviders = true
+    await getAuth()
+    const config = vi.mocked(betterAuth).mock.calls.at(-1)![0]!
+    const linking = config.account!.accountLinking!
+    expect(linking.requireLocalEmailVerified).toBe(true)
+    expect(linking.allowDifferentEmails).toBe(true)
+
+    for (const providerId of ['google', 'discord', 'github']) {
+      expect(config.socialProviders).toHaveProperty(providerId)
+      expect(linking.trustedProviders).not.toContain(providerId)
+
+      for (const [localVerified, providerVerified, allowed] of [
+        [false, false, false], [false, true, false],
+        [true, false, false], [true, true, true],
+      ] as const) {
+        const user = { id: 'local-user', email: 'person@example.com', emailVerified: localVerified }
+        const linkAccount = vi.fn(async () => ({ id: 'link', userId: user.id, providerId, accountId: 'provider-id' }))
+        const ctx = {
+          context: {
+            options: { account: { accountLinking: linking } },
+            trustedProviders: linking.trustedProviders,
+            socialProviders: [{ id: providerId, options: {} }],
+            logger: { error: vi.fn(), warn: vi.fn() },
+            internalAdapter: {
+              findAccountOwnerByKey: vi.fn(async () => null),
+              findUserByEmail: vi.fn(async () => ({ user, accounts: [] })),
+              linkAccount,
+              createSession: vi.fn(async () => ({ userId: user.id })),
+            },
+          },
+        }
+        const result = await handleOAuthUserInfo(ctx as never, {
+          userInfo: { id: 'provider-id', name: 'Person', email: user.email, emailVerified: providerVerified },
+          account: { providerId, accountId: 'provider-id' }, callbackURL: '/',
+        } as never)
+        expect(linkAccount).toHaveBeenCalledTimes(allowed ? 1 : 0)
+        expect(result.error).toBe(allowed ? null : 'account not linked')
+      }
+
+      const createAccount = vi.fn(async (value: unknown) => value)
+      const explicitCtx = {
+        context: {
+          options: { account: { accountLinking: linking } },
+          trustedProviders: linking.trustedProviders,
+          logger: { error: vi.fn(), warn: vi.fn() },
+          internalAdapter: { findAccountByKey: vi.fn(async () => null), createAccount },
+        },
+      }
+      const explicit = await linkOAuthAccount(explicitCtx as never, {
+        link: { userId: 'local-user', email: 'local@example.com' },
+        account: { providerId, accountId: 'provider-id' },
+        userInfo: { id: 'provider-id', email: 'different@example.com', emailVerified: true },
+      } as never)
+      expect(explicit.linked).toBe(true)
+      expect(createAccount).toHaveBeenCalledTimes(1)
+
+      createAccount.mockClear()
+      const unverified = await linkOAuthAccount(explicitCtx as never, {
+        link: { userId: 'local-user', email: 'local@example.com' },
+        account: { providerId, accountId: 'provider-id' },
+        userInfo: { id: 'provider-id', email: 'different@example.com', emailVerified: false },
+      } as never)
+      expect(unverified.linked).toBe(false)
+      expect(createAccount).not.toHaveBeenCalled()
+    }
   })
 })

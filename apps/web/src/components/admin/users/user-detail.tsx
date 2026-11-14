@@ -184,7 +184,7 @@ function EngagementBadges({ types }: { types: EngagedPost['engagementTypes'] }) 
       {types.includes('authored') && (
         <span
           className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[11px] font-medium bg-primary/10 text-primary"
-          title="Authored this post"
+          title="この投稿の作成者"
         >
           <PencilSquareIcon className="h-2.5 w-2.5" />
         </span>
@@ -192,7 +192,7 @@ function EngagementBadges({ types }: { types: EngagedPost['engagementTypes'] }) 
       {types.includes('commented') && (
         <span
           className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[11px] font-medium bg-blue-500/10 text-blue-600 dark:text-blue-400"
-          title="Commented on this post"
+          title="この投稿にコメント"
         >
           <ChatBubbleLeftIcon className="h-2.5 w-2.5" />
         </span>
@@ -200,7 +200,7 @@ function EngagementBadges({ types }: { types: EngagedPost['engagementTypes'] }) 
       {types.includes('voted') && (
         <span
           className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[11px] font-medium bg-orange-500/10 text-orange-600 dark:text-orange-400"
-          title="Voted on this post"
+          title="この投稿に投票"
         >
           <HandThumbUpIcon className="h-2.5 w-2.5" />
         </span>
@@ -240,7 +240,7 @@ function EngagedPostCard({ post }: { post: EngagedPost }) {
 
         {/* Footer */}
         <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
-          <span className="text-foreground/70">{post.authorName || 'Anonymous'}</span>
+          <span className="text-foreground/70">{post.authorName || '匿名'}</span>
           <span className="text-muted-foreground/50">·</span>
           <TimeAgo date={new Date(post.createdAt)} />
           <div className="flex-1" />
@@ -282,12 +282,12 @@ function ConversationPreview({ conversationId }: { conversationId: ConversationD
   return (
     <div className="mt-2 space-y-2 rounded-md border border-border/50 bg-muted/20 p-2.5">
       {messages.length === 0 ? (
-        <p className="text-xs text-muted-foreground">No messages yet</p>
+        <p className="text-xs text-muted-foreground">メッセージはまだありません</p>
       ) : (
         messages.map((m) => (
           <div key={m.id} className="text-xs">
             <span className="font-medium text-foreground">
-              {m.senderType === 'visitor' ? 'Visitor' : (m.author?.displayName ?? 'Agent')}
+              {m.senderType === 'visitor' ? '訪問者' : (m.author?.displayName ?? '担当者')}
             </span>{' '}
             <span className="text-muted-foreground/60">
               <TimeAgo date={m.createdAt} />
@@ -338,7 +338,7 @@ function UserConversations({
   return (
     <div className={cn(!embedded && 'border-t border-border/50 pt-4')}>
       <div className="mb-3 flex items-center justify-between">
-        {embedded ? <span /> : <h3 className="text-sm font-medium">Support conversations</h3>}
+        {embedded ? <span /> : <h3 className="text-sm font-medium">サポートの会話</h3>}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
@@ -350,7 +350,7 @@ function UserConversations({
                   : 'text-muted-foreground hover:bg-muted'
               )}
             >
-              <span className="capitalize">{status === 'all' ? 'Status' : status}</span>
+              <span className="capitalize">{status === 'all' ? '状態' : ({ open: '対応中', snoozed: '保留中', closed: '完了' }[status] ?? status)}</span>
               <ChevronDownIcon className="size-3.5" />
             </button>
           </DropdownMenuTrigger>
@@ -361,7 +361,7 @@ function UserConversations({
                 setExpandedId(null)
               }}
             >
-              All statuses
+              すべての状態
             </DropdownMenuItem>
             {(['open', 'snoozed', 'closed'] as const).map((s) => (
               <DropdownMenuItem
@@ -372,7 +372,7 @@ function UserConversations({
                 }}
                 className="capitalize"
               >
-                {s}
+                {{ open: '対応中', snoozed: '保留中', closed: '完了' }[s]}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
@@ -383,7 +383,7 @@ function UserConversations({
         <Skeleton className="h-16 w-full rounded-lg" />
       ) : conversations.length === 0 ? (
         <EmptyMessage
-          message={status === 'all' ? 'No conversations yet' : `No ${status} conversations`}
+          message={status === 'all' ? '会話はまだありません' : `該当する会話はありません`}
         />
       ) : (
         <div className="divide-y divide-border/50 overflow-hidden rounded-lg border border-border/50">
@@ -400,7 +400,7 @@ function UserConversations({
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                       <span className="truncate text-sm text-foreground">
-                        {c.subject ?? c.lastMessagePreview ?? 'Conversation'}
+                        {c.subject ?? c.lastMessagePreview ?? '会話'}
                       </span>
                       <span
                         className={cn(
@@ -412,20 +412,20 @@ function UserConversations({
                       </span>
                     </div>
                     <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                      {c.lastMessagePreview ?? 'No messages yet'}
+                      {c.lastMessagePreview ?? 'メッセージはまだありません'}
                     </p>
                     <div className="mt-1 flex items-center gap-1.5 text-[11px] text-muted-foreground">
                       {c.assignedAgent ? (
                         <span className="flex items-center gap-1">
                           <Avatar
                             src={c.assignedAgent.avatarUrl}
-                            name={c.assignedAgent.displayName ?? 'Agent'}
+                            name={c.assignedAgent.displayName ?? '担当者'}
                             className="size-4 text-xs"
                           />
-                          {c.assignedAgent.displayName ?? 'Agent'}
+                          {c.assignedAgent.displayName ?? '担当者'}
                         </span>
                       ) : (
-                        <span>Unassigned</span>
+                        <span>未割り当て</span>
                       )}
                       {getChannelDescriptor(c.channel)?.surface === 'ours' ? (
                         <span>· {getChannelDescriptor(c.channel)?.label ?? 'Messenger'}</span>
@@ -455,7 +455,7 @@ function UserConversations({
                         search={{ c: c.id }}
                         className="text-xs font-medium text-primary hover:underline"
                       >
-                        Open in inbox →
+                        受信トレイで開く →
                       </Link>
                     </div>
                   </div>
@@ -477,7 +477,7 @@ function UserConversations({
             {query.isFetchingNextPage ? (
               <ArrowPathIcon className="h-3.5 w-3.5 animate-spin" />
             ) : (
-              'Load more'
+              'さらに読み込む'
             )}
           </Button>
         </div>
@@ -598,10 +598,10 @@ export function UserDetail({
     updateUser.mutate(updates, {
       onSuccess: () => {
         setIsEditing(false)
-        toast.success('User updated')
+        toast.success('ユーザーを更新しました')
       },
       onError: (error) => {
-        toastError(error, 'Failed to update user')
+        toastError(error, 'ユーザーを更新できませんでした')
       },
     })
   }
@@ -642,7 +642,7 @@ export function UserDetail({
   const canChangeRole = !!teamRole && !isSelf
   const portalActions = !teamRole
   const hasMenu = canChangeRole || canJoinTeam || portalActions
-  const noEmailTooltip = 'This user has no email address to deliver a message to'
+  const noEmailTooltip = 'このユーザーのメールアドレスが登録されていません'
 
   return (
     <div className="max-w-5xl w-full">
@@ -656,14 +656,14 @@ export function UserDetail({
                 <Input
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  placeholder="Name"
+                  placeholder="名前"
                   className="text-sm"
                 />
                 <Input
                   type="email"
                   value={editEmail}
                   onChange={(e) => setEditEmail(e.target.value)}
-                  placeholder="Email (optional)"
+                  placeholder="メールアドレス（任意）"
                   className="text-sm"
                 />
                 <div className="flex gap-1.5">
@@ -690,7 +690,7 @@ export function UserDetail({
               <>
                 <div className="flex min-w-0 items-center gap-2">
                   <h2 className="min-w-0 truncate text-lg font-semibold leading-7">
-                    {user.name || 'Unnamed user'}
+                    {user.name || '名前未設定のユーザー'}
                   </h2>
                   {user.emailVerified && (
                     <CheckCircleIcon className="h-4 w-4 shrink-0 text-primary" />
@@ -701,12 +701,12 @@ export function UserDetail({
                     </Badge>
                   ) : (
                     <Badge variant="secondary" className="shrink-0">
-                      {user.isLead ? 'Lead' : 'User'}
+                      {user.isLead ? '見込みユーザー' : 'ユーザー'}
                     </Badge>
                   )}
                   {blocked && (
                     <Badge variant="destructive" className="shrink-0">
-                      Blocked
+                      ブロック済み
                     </Badge>
                   )}
                   {canManageUsers && (
@@ -714,7 +714,7 @@ export function UserDetail({
                       type="button"
                       onClick={startEditing}
                       className="text-muted-foreground/50 transition-colors hover:text-muted-foreground"
-                      title="Edit user details"
+                      title="ユーザー情報を編集"
                     >
                       <PencilIcon className="h-3.5 w-3.5" />
                     </button>
@@ -724,7 +724,7 @@ export function UserDetail({
                   <p className="mt-0.5 truncate text-sm text-muted-foreground">{displayEmail}</p>
                 ) : (
                   <p className="mt-0.5 text-sm italic text-muted-foreground/50">
-                    No email &middot; cannot receive notifications
+                    メールアドレスが未登録のため、通知を受け取れません
                   </p>
                 )}
               </>
@@ -743,7 +743,7 @@ export function UserDetail({
                         disabled={!displayEmail}
                       >
                         <ChatBubbleLeftIcon className="h-4 w-4" />
-                        Send message
+                        メッセージを送る
                       </Button>
                     </span>
                   </TooltipTrigger>
@@ -753,13 +753,13 @@ export function UserDetail({
               <Button size="sm" variant="outline" asChild>
                 <Link to="/u/$principalId" params={{ principalId: user.principalId }}>
                   <ArrowTopRightOnSquareIcon className="h-3.5 w-3.5" />
-                  View public profile
+                  公開プロフィールを見る
                 </Link>
               </Button>
               {canManageUsers && hasMenu && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button size="icon-sm" variant="ghost" aria-label="More actions">
+                    <Button size="icon-sm" variant="ghost" aria-label="その他の操作">
                       <EllipsisHorizontalIcon className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -767,14 +767,14 @@ export function UserDetail({
                     {canChangeRole && (
                       <DropdownMenuItem onClick={() => setChangeRoleOpen(true)}>
                         <ShieldCheckIcon className="h-4 w-4" />
-                        Change role…
+                        権限を変更…
                       </DropdownMenuItem>
                     )}
                     {canJoinTeam && (
                       <>
                         <DropdownMenuItem onClick={() => setAddToTeamOpen(true)}>
                           <UserPlusIcon className="h-4 w-4" />
-                          Make teammate…
+                          チームメンバーに追加…
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                       </>
@@ -786,12 +786,12 @@ export function UserDetail({
                           onClick={() => (blocked ? unblock() : setBlockConfirmOpen(true))}
                         >
                           <NoSymbolIcon className="h-4 w-4" />
-                          {blocked ? 'Unblock' : 'Block'}
+                          {blocked ? 'ブロック解除' : 'ブロック'}
                         </DropdownMenuItem>
                         {user.isLead && (
                           <DropdownMenuItem onClick={() => setMergeOpen(true)}>
                             <ArrowsRightLeftIcon className="h-4 w-4" />
-                            Merge
+                            統合
                           </DropdownMenuItem>
                         )}
                         <DropdownMenuSeparator />
@@ -805,7 +805,7 @@ export function UserDetail({
                           ) : (
                             <TrashIcon className="h-4 w-4" />
                           )}
-                          Remove from portal
+                          サイトから削除
                         </DropdownMenuItem>
                       </>
                     )}
@@ -877,9 +877,9 @@ export function UserDetail({
             <ConfirmDialog
               open={removeDialogOpen}
               onOpenChange={setRemoveDialogOpen}
-              title={`Remove ${user.name || 'this user'}?`}
-              description="This will remove the user from your portal. They lose access to vote and comment, and their votes are withdrawn. Their posts, comments and conversations stay, reattributed to “Deleted user”. Their global account is preserved and they can sign up again."
-              confirmLabel="Remove"
+              title={`「${user.name || 'このユーザー'}」を削除しますか？`}
+              description="ユーザーはサイトから削除され、投票とコメントができなくなり、投票は取り消されます。投稿・コメント・会話は「削除されたユーザー」に引き継がれて残ります。アカウント自体は保持され、再登録できます。"
+              confirmLabel="削除"
               variant="destructive"
               isPending={isRemovePending}
               onConfirm={onRemoveUser}
@@ -896,18 +896,18 @@ export function UserDetail({
         )}
 
         <div className="mt-4 flex overflow-hidden rounded-lg border border-border/50">
-          <FactCell value={user.postCount} label="Posts" numeric />
-          <FactCell value={user.commentCount} label="Comments" numeric />
-          <FactCell value={user.voteCount} label="Votes" numeric />
+          <FactCell value={user.postCount} label="投稿" numeric />
+          <FactCell value={user.commentCount} label="コメント" numeric />
+          <FactCell value={user.voteCount} label="投票" numeric />
           <FactCell
             value={user.lastSeenAt ? <TimeAgo date={user.lastSeenAt} /> : NO_VALUE}
-            label="Last seen"
+            label="最終利用"
             muted={!user.lastSeenAt}
           />
-          <FactCell value={<ProfileDate date={user.joinedAt} />} label="Joined" />
+          <FactCell value={<ProfileDate date={user.joinedAt} />} label="登録日" />
           <FactCell
             value={user.country ? countryName(user.country) : NO_VALUE}
-            label="Country"
+            label="国"
             muted={!user.country}
           />
         </div>
@@ -916,19 +916,19 @@ export function UserDetail({
           <div className="min-w-0 w-full flex-1">
             <Tabs defaultValue="activity">
               <TabsList>
-                <TabsTrigger value="activity">Activity</TabsTrigger>
+                <TabsTrigger value="activity">アクティビティ</TabsTrigger>
                 {supportInboxEnabled && (
                   <TabsTrigger value="conversations">
                     {conversationCount != null
-                      ? `Conversations (${conversationCount})`
-                      : 'Conversations'}
+                      ? `会話 (${conversationCount})`
+                      : '会話'}
                   </TabsTrigger>
                 )}
               </TabsList>
               <TabsContent value="activity" className="mt-3">
                 {user.engagedPosts.length === 0 ? (
                   <div className="rounded-lg border border-dashed border-border/60 px-4 py-6 text-center text-[13px] text-muted-foreground">
-                    No activity yet
+                    アクティビティはまだありません
                   </div>
                 ) : (
                   <div className="overflow-hidden rounded-lg border border-border/50">
@@ -947,28 +947,28 @@ export function UserDetail({
           </div>
 
           <div className="flex w-full shrink-0 flex-col gap-3 lg:w-[300px]">
-            <RailCard title="Company">
+            <RailCard title="企業">
               <UserCompanyControl
                 principalId={user.principalId as PrincipalId}
                 canManage={canManageUsers}
               />
             </RailCard>
-            <RailCard title="Segments">
+            <RailCard title="セグメント">
               <UserSegmentBadges
                 principalId={user.principalId as PrincipalId}
                 segments={user.segments}
                 canManage={canManageUsers}
               />
             </RailCard>
-            <RailCard title="Tags">
+            <RailCard title="タグ">
               <UserTagControl
                 principalId={user.principalId as PrincipalId}
                 canManage={canManageUsers}
               />
             </RailCard>
-            <RailCard title="Attributes">
+            <RailCard title="属性">
               {attributes.length === 0 ? (
-                <p className="text-xs text-muted-foreground">No attributes</p>
+                <p className="text-xs text-muted-foreground">属性はありません</p>
               ) : (
                 attributes.map(([key, value]) => (
                   <KvRow key={key} label={key}>
@@ -983,11 +983,11 @@ export function UserDetail({
                 ))
               )}
             </RailCard>
-            <RailCard title="Account">
-              <KvRow label="Account created">
+            <RailCard title="アカウント">
+              <KvRow label="アカウント作成日">
                 <ProfileDate date={user.createdAt} />
               </KvRow>
-              <KvRow label="External ID">
+              <KvRow label="外部ID">
                 {externalId ? (
                   <span className="font-mono text-[11px]">{externalId}</span>
                 ) : (

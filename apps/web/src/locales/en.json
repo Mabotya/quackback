@@ -1,4 +1,6 @@
 {
+  "files.upload.error.totalLimit": "Attachments cannot total more than 40 MB.",
+  "files.upload.error.singleLimit": "Each file must be {size} MB or smaller.",
   "portal.settings.accountError.invalidPassword": "Your current password is incorrect.",
   "portal.settings.accountError.rateLimited": "Too many attempts. Please try again later.",
   "portal.settings.accountError.sameEmail": "That is already your email address.",
@@ -226,7 +228,7 @@
   "portal.feedback.list.noPostsYetDescription": "The {workspace} team reads every request.",
   "portal.feedback.header.postingTo": "Posting to",
   "portal.feedback.header.selectBoard": "Select a board",
-  "portal.feedback.header.titlePlaceholder": "Title",
+  "portal.feedback.header.titlePlaceholder": "Enter a title here to create a post",
   "portal.feedback.header.detailsPlaceholder": "Enter details",
   "portal.feedback.header.postingAs": "Posting as",
   "portal.feedback.header.signOut": "sign out",

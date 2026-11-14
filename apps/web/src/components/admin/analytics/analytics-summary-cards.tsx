@@ -3,10 +3,10 @@ import { AnalyticsMetricStrip } from './analytics-metric-strip'
 export type MetricKey = 'posts' | 'votes' | 'postComments' | 'users'
 
 export const METRICS: Array<{ key: MetricKey; label: string; color: string }> = [
-  { key: 'posts', label: 'Posts', color: 'var(--metric-posts)' },
-  { key: 'votes', label: 'Votes', color: 'var(--metric-votes)' },
-  { key: 'postComments', label: 'Comments', color: 'var(--metric-comments)' },
-  { key: 'users', label: 'Users', color: 'var(--metric-users)' },
+  { key: 'posts', label: '投稿', color: 'var(--metric-posts)' },
+  { key: 'votes', label: '投票', color: 'var(--metric-votes)' },
+  { key: 'postComments', label: 'コメント', color: 'var(--metric-comments)' },
+  { key: 'users', label: 'ユーザー', color: 'var(--metric-users)' },
 ]
 
 interface MetricBarProps {

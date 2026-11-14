@@ -54,14 +54,14 @@ function renderNav(onCreateSegment = vi.fn()) {
 describe('<UsersSegmentNav>', () => {
   it('labels the first group Directory, above All users', () => {
     renderNav()
-    const label = screen.getByText('Directory')
-    const allUsers = screen.getByText('All users')
+    const label = screen.getByText('ユーザー一覧')
+    const allUsers = screen.getByText('すべてのユーザー')
     expect(label.compareDocumentPosition(allUsers) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
   it('gives the segments add button an accessible New segment name', () => {
     const onCreate = renderNav()
-    fireEvent.click(screen.getByRole('button', { name: 'New segment' }))
+    fireEvent.click(screen.getByRole('button', { name: 'セグメントを追加' }))
     expect(onCreate).toHaveBeenCalledTimes(1)
   })
 

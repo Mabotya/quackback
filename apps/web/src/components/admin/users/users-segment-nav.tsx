@@ -78,7 +78,7 @@ export function UsersSegmentNav({
   return (
     <div className="space-y-0">
       <div className="pb-4">
-        <FilterSection title="Directory">
+        <FilterSection title="ユーザー一覧">
           {/* Directory group: the main user list, leads, companies and the
             standalone Invitations view. */}
           <div className="space-y-1">
@@ -115,7 +115,7 @@ export function UsersSegmentNav({
               )}
             >
               <UsersIcon className={MENU_ICON} />
-              <span className="flex-1 truncate">All users</span>
+              <span className="flex-1 truncate">すべてのユーザー</span>
               <span className="text-xs text-muted-foreground/60 shrink-0 tabular-nums">
                 {totalUserCount}
               </span>
@@ -149,7 +149,7 @@ export function UsersSegmentNav({
               )}
             >
               <UserPlusIcon className={MENU_ICON} />
-              <span className="flex-1 truncate">All leads</span>
+              <span className="flex-1 truncate">すべての見込みユーザー</span>
               {totalLeadCount !== undefined && (
                 <span className="text-xs text-muted-foreground/60 shrink-0 tabular-nums">
                   {totalLeadCount}
@@ -185,7 +185,7 @@ export function UsersSegmentNav({
               )}
             >
               <BuildingOffice2Icon className={MENU_ICON} />
-              <span className="flex-1 truncate">All companies</span>
+              <span className="flex-1 truncate">すべての企業</span>
               {totalCompanyCount !== undefined && (
                 <span className="text-xs text-muted-foreground/60 shrink-0 tabular-nums">
                   {totalCompanyCount}
@@ -210,7 +210,7 @@ export function UsersSegmentNav({
               )}
             >
               <EnvelopeIcon className={MENU_ICON} />
-              <span className="flex-1 truncate">Invitations</span>
+              <span className="flex-1 truncate">招待</span>
               {invitesPendingCount !== undefined && invitesPendingCount > 0 && (
                 <span className="text-xs text-muted-foreground/60 shrink-0 tabular-nums">
                   {invitesPendingCount}
@@ -224,8 +224,8 @@ export function UsersSegmentNav({
             FilterSection, with the add button in the header's action slot. */}
         <div className="mt-2">
           <FilterSection
-            title="Segments"
-            action={<PaneAddButton label="New segment" onClick={onCreateSegment} />}
+            title="セグメント"
+            action={<PaneAddButton label="セグメントを追加" onClick={onCreateSegment} />}
           >
             {isLoading ? (
               <div className="space-y-1">
@@ -234,7 +234,7 @@ export function UsersSegmentNav({
                 ))}
               </div>
             ) : !segments || segments.length === 0 ? (
-              <p className="text-xs text-muted-foreground px-2.5 py-1.5">No segments yet.</p>
+              <p className="text-xs text-muted-foreground px-2.5 py-1.5">セグメントはまだありません。</p>
             ) : (
               <div className="space-y-1">
                 {segments.map((seg) => (
@@ -294,7 +294,7 @@ function SegmentNavItem({
         <FunnelIcon className={MENU_ICON} />
         <span className="flex-1 truncate">{segment.name}</span>
         {segment.type === 'dynamic' && (
-          <BoltIcon className="h-2.5 w-2.5 shrink-0 opacity-50" title="Dynamic segment" />
+          <BoltIcon className="h-2.5 w-2.5 shrink-0 opacity-50" title="動的セグメント" />
         )}
         <span className="group-hover:hidden text-xs text-muted-foreground/60 shrink-0 tabular-nums">
           {segment.memberCount}
@@ -312,7 +312,7 @@ function SegmentNavItem({
             }}
             disabled={isEvaluating}
             className="p-1 rounded text-muted-foreground hover:text-foreground transition-colors"
-            title="Re-evaluate"
+            title="再評価"
           >
             <ArrowPathIcon className={cn('h-3 w-3', isEvaluating && 'animate-spin')} />
           </button>
@@ -324,7 +324,7 @@ function SegmentNavItem({
             onEdit()
           }}
           className="p-1 rounded text-muted-foreground hover:text-foreground transition-colors"
-          title="Edit segment"
+          title="セグメントを編集"
         >
           <PencilIcon className="h-3 w-3" />
         </button>
@@ -335,7 +335,7 @@ function SegmentNavItem({
             onDelete()
           }}
           className="p-1 rounded text-muted-foreground hover:text-destructive transition-colors"
-          title="Delete segment"
+          title="セグメントを削除"
         >
           <TrashIcon className="h-3 w-3" />
         </button>
@@ -366,10 +366,10 @@ export function MobileSegmentSelector({
 
   const label =
     selectedNames.length === 0
-      ? 'All users'
+      ? 'すべてのユーザー'
       : selectedNames.length === 1
         ? selectedNames[0]
-        : `${selectedNames.length} segments`
+        : `${selectedNames.length}件のセグメント`
 
   return (
     <div className="relative">
@@ -402,7 +402,7 @@ export function MobileSegmentSelector({
                 selectedSegmentIds.length === 0 && 'bg-muted text-foreground'
               )}
             >
-              All users
+              すべてのユーザー
             </button>
             <div className="border-b border-border/30 my-1" />
             {segments.map((seg) => (

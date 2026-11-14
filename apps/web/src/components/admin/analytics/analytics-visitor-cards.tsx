@@ -11,12 +11,12 @@ export const VISITOR_METRICS: Array<{
 }> = [
   {
     key: 'visitors',
-    label: 'Unique visitors',
+    label: 'ユニーク訪問者',
     color: 'var(--metric-visitors)',
     dataKey: 'uniqueVisitors',
   },
-  { key: 'pageviews', label: 'Pageviews', color: 'var(--metric-pageviews)', dataKey: 'pageviews' },
-  { key: 'visits', label: 'Visits', color: 'var(--metric-visits)', dataKey: 'visits' },
+  { key: 'pageviews', label: 'ページビュー', color: 'var(--metric-pageviews)', dataKey: 'pageviews' },
+  { key: 'visits', label: '訪問数', color: 'var(--metric-visits)', dataKey: 'visits' },
 ]
 
 interface VisitorCardsProps {

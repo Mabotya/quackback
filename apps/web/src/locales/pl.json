@@ -1,4 +1,6 @@
 {
+  "files.upload.error.totalLimit": "Łączny rozmiar załączników nie może przekraczać 40 MB.",
+  "files.upload.error.singleLimit": "Każdy plik może mieć maksymalnie {size} MB.",
   "portal.settings.accountError.invalidPassword": "Obecne hasło jest nieprawidłowe.",
   "portal.settings.accountError.rateLimited": "Zbyt wiele prób. Spróbuj ponownie później.",
   "portal.settings.accountError.sameEmail": "To już jest Twój adres e-mail.",

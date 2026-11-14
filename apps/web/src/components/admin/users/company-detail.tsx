@@ -130,13 +130,13 @@ function AttachMemberButton({ companyId }: { companyId: CompanyId }) {
         <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search users..."
+          placeholder="ユーザーを検索..."
           className="mb-2 h-8 text-sm"
           autoFocus
         />
         <div className="max-h-56 space-y-0.5 overflow-y-auto">
           {candidates.length === 0 ? (
-            <p className="px-2 py-1.5 text-[13px] text-muted-foreground">No users found</p>
+            <p className="px-2 py-1.5 text-[13px] text-muted-foreground">ユーザーが見つかりません</p>
           ) : (
             candidates.map((person) => (
               <button
@@ -196,13 +196,13 @@ function MembersSection({ companyId, canManage }: { companyId: CompanyId; canMan
   return (
     <div className="border-t border-border/50 pt-4">
       <div className="mb-3 flex items-center justify-between">
-        <h3 className="text-sm font-medium">Users{members ? ` (${members.length})` : ''}</h3>
+        <h3 className="text-sm font-medium">ユーザー{members ? ` (${members.length})` : ''}</h3>
         {canManage && <AttachMemberButton companyId={companyId} />}
       </div>
       {isLoading ? (
         <Skeleton className="h-16 w-full rounded-lg" />
       ) : !members || members.length === 0 ? (
-        <p className="py-4 text-center text-sm text-muted-foreground">No users linked yet</p>
+        <p className="py-4 text-center text-sm text-muted-foreground">関連付けられたユーザーはまだいません</p>
       ) : (
         <div className="divide-y divide-border/50 overflow-hidden rounded-lg border border-border/50">
           {members.map((member) => (
@@ -230,7 +230,7 @@ function MembersSection({ companyId, canManage }: { companyId: CompanyId; canMan
                   disabled={detaching === member.principalId}
                   onClick={() => detach(member.principalId)}
                   className="rounded p-1 text-muted-foreground hover:text-destructive transition-colors disabled:opacity-50"
-                  title="Remove from company"
+                  title="企業から外す"
                 >
                   <XMarkIcon className="h-3.5 w-3.5" />
                 </button>
@@ -271,7 +271,7 @@ function ActivitySection({ companyId }: { companyId: CompanyId }) {
 
   return (
     <div className="border-t border-border/50 pt-4 space-y-4">
-      <h3 className="text-sm font-medium">Activity</h3>
+      <h3 className="text-sm font-medium">アクティビティ</h3>
 
       {/* Rollup counts */}
       <div className="grid grid-cols-2 gap-3">
@@ -301,7 +301,7 @@ function ActivitySection({ companyId }: { companyId: CompanyId }) {
       {supportInboxEnabled && recentConversations.length > 0 && (
         <div>
           <div className="mb-2 flex items-center justify-between">
-            <h4 className="text-xs font-medium text-muted-foreground">Recent conversations</h4>
+            <h4 className="text-xs font-medium text-muted-foreground">最近の会話</h4>
             <Link
               to="/admin/inbox"
               search={{ company: companyId }}
@@ -347,7 +347,7 @@ function ActivitySection({ companyId }: { companyId: CompanyId }) {
       {supportTicketsEnabled && (recentTickets ?? []).length > 0 && (
         <div>
           <div className="mb-2 flex items-center justify-between">
-            <h4 className="text-xs font-medium text-muted-foreground">Recent tickets</h4>
+            <h4 className="text-xs font-medium text-muted-foreground">最近のチケット</h4>
           </div>
           <div className="divide-y divide-border/50 overflow-hidden rounded-lg border border-border/50">
             {(recentTickets ?? []).map((t) => (
@@ -427,7 +427,7 @@ function CompanyAttributesPanel({
         if (def.type === 'number' || def.type === 'currency') {
           const num = Number(raw)
           if (Number.isNaN(num)) {
-            toast.error(`${def.label} must be a number`)
+            toast.error(`${def.label}には数字を入力してください`)
             setSaving(false)
             return
           }
@@ -441,7 +441,7 @@ function CompanyAttributesPanel({
       await updateCompanyFn({ data: { id: company.id, customAttributes: next } })
       await queryClient.invalidateQueries({ queryKey: companyKeys(company.id).detail })
       setDraft(null)
-      toast.success('Attributes updated')
+      toast.success('属性を更新しました')
     } catch (error) {
       toastError(error, 'Failed to update attributes')
     } finally {
@@ -452,7 +452,7 @@ function CompanyAttributesPanel({
   return (
     <div className="border-t border-border/50 pt-4">
       <div className="mb-3 flex items-center justify-between">
-        <h3 className="text-sm font-medium">Custom attributes</h3>
+        <h3 className="text-sm font-medium">カスタム属性</h3>
         {canManage &&
           defs.length > 0 &&
           (draft ? (
@@ -494,9 +494,9 @@ function CompanyAttributesPanel({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="unset">Not set</SelectItem>
-                    <SelectItem value="true">True</SelectItem>
-                    <SelectItem value="false">False</SelectItem>
+                    <SelectItem value="unset">未設定</SelectItem>
+                    <SelectItem value="true">真</SelectItem>
+                    <SelectItem value="false">偽</SelectItem>
                   </SelectContent>
                 </Select>
               ) : (
@@ -504,7 +504,7 @@ function CompanyAttributesPanel({
                   value={draft[def.key] ?? ''}
                   onChange={(e) => setDraft({ ...draft, [def.key]: e.target.value })}
                   type={def.type === 'number' || def.type === 'currency' ? 'number' : 'text'}
-                  placeholder={def.type === 'date' ? 'YYYY-MM-DD' : 'Not set'}
+                  placeholder={def.type === 'date' ? 'YYYY-MM-DD' : '未設定'}
                   className="h-8 text-sm"
                 />
               )}
@@ -521,7 +521,7 @@ function CompanyAttributesPanel({
                   valueAsString(def.key)
                 )
               ) : (
-                <span className="text-muted-foreground/60">Not set</span>
+                <span className="text-muted-foreground/60">未設定</span>
               )}
             </FieldRow>
           )
@@ -567,13 +567,13 @@ export function CompanyDetail({ companyId, onClose, canManage }: CompanyDetailPr
     if (!company || !draft) return
     const name = editName.trim()
     if (!name) {
-      toast.error('Company name is required')
+      toast.error('企業名を入力してください')
       return
     }
     const spend = draft.monthlySpend.trim()
     const mrrCents = spend === '' ? null : Math.round(Number(spend) * 100)
     if (mrrCents != null && Number.isNaN(mrrCents)) {
-      toast.error('Monthly spend must be a number')
+      toast.error('月額利用額には数字を入力してください')
       return
     }
     setSaving(true)
@@ -597,7 +597,7 @@ export function CompanyDetail({ companyId, onClose, canManage }: CompanyDetailPr
         queryClient.invalidateQueries({ queryKey: ['admin', 'company', 'for-principal'] }),
       ])
       setIsEditing(false)
-      toast.success('Company updated')
+      toast.success('企業情報を更新しました')
     } catch (error) {
       toastError(error, 'Failed to update company')
     } finally {
@@ -610,7 +610,7 @@ export function CompanyDetail({ companyId, onClose, canManage }: CompanyDetailPr
     try {
       await deleteCompanyFn({ data: { id: company.id } })
       await queryClient.invalidateQueries({ queryKey: ['admin', 'companies'] })
-      toast.success('Company deleted')
+      toast.success('企業を削除しました')
       onClose()
     } catch (error) {
       toastError(error, 'Failed to delete company')
@@ -712,13 +712,13 @@ export function CompanyDetail({ companyId, onClose, canManage }: CompanyDetailPr
             <div className="space-y-3 py-2">
               {(
                 [
-                  { key: 'domain', label: 'Email domain', placeholder: 'acme.com' },
-                  { key: 'externalId', label: 'External ID', placeholder: 'crm-123' },
-                  { key: 'plan', label: 'Plan', placeholder: 'Scale' },
-                  { key: 'monthlySpend', label: 'Monthly spend (USD)', placeholder: '499' },
-                  { key: 'size', label: 'Size', placeholder: '11-50' },
-                  { key: 'website', label: 'Website', placeholder: 'https://acme.com' },
-                  { key: 'industry', label: 'Industry', placeholder: 'SaaS' },
+                  { key: 'domain', label: 'メールドメイン', placeholder: 'acme.com' },
+                  { key: 'externalId', label: '外部ID', placeholder: 'crm-123' },
+                  { key: 'plan', label: 'プラン', placeholder: 'Scale' },
+                  { key: 'monthlySpend', label: '月額利用額（USD）', placeholder: '499' },
+                  { key: 'size', label: '規模', placeholder: '11-50' },
+                  { key: 'website', label: 'ウェブサイト', placeholder: 'https://acme.com' },
+                  { key: 'industry', label: '業種', placeholder: 'SaaS' },
                 ] as const
               ).map((field) => (
                 <div key={field.key} className="flex items-center gap-3">
@@ -735,21 +735,21 @@ export function CompanyDetail({ companyId, onClose, canManage }: CompanyDetailPr
             </div>
           ) : (
             <>
-              <FieldRow label="Plan">
-                {company.plan ?? <span className="text-muted-foreground/60">Not set</span>}
+              <FieldRow label="プラン">
+                {company.plan ?? <span className="text-muted-foreground/60">未設定</span>}
               </FieldRow>
-              <FieldRow label="Monthly spend">{formatMonthlySpend(company.mrrCents)}</FieldRow>
-              <FieldRow label="Size">
-                {company.size ?? <span className="text-muted-foreground/60">Not set</span>}
+              <FieldRow label="月額利用額">{formatMonthlySpend(company.mrrCents)}</FieldRow>
+              <FieldRow label="規模">
+                {company.size ?? <span className="text-muted-foreground/60">未設定</span>}
               </FieldRow>
-              <FieldRow label="Website">
-                {company.website ?? <span className="text-muted-foreground/60">Not set</span>}
+              <FieldRow label="ウェブサイト">
+                {company.website ?? <span className="text-muted-foreground/60">未設定</span>}
               </FieldRow>
-              <FieldRow label="Industry">
-                {company.industry ?? <span className="text-muted-foreground/60">Not set</span>}
+              <FieldRow label="業種">
+                {company.industry ?? <span className="text-muted-foreground/60">未設定</span>}
               </FieldRow>
-              <FieldRow label="External ID">
-                {company.externalId ?? <span className="text-muted-foreground/60">Not set</span>}
+              <FieldRow label="外部ID">
+                {company.externalId ?? <span className="text-muted-foreground/60">未設定</span>}
               </FieldRow>
             </>
           )}
@@ -768,9 +768,9 @@ export function CompanyDetail({ companyId, onClose, canManage }: CompanyDetailPr
       <ConfirmDialog
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
-        title={`Delete "${company.name}"?`}
+        title={`「${company.name}」を削除しますか？`}
         description="Users linked to this company will be detached. This cannot be undone."
-        confirmLabel="Delete"
+        confirmLabel="削除"
         variant="destructive"
         onConfirm={handleDelete}
       />

@@ -1,4 +1,6 @@
 {
+  "files.upload.error.totalLimit": "Bijlagen mogen samen niet groter zijn dan 40 MB.",
+  "files.upload.error.singleLimit": "Elk bestand mag maximaal {size} MB zijn.",
   "portal.settings.accountError.invalidPassword": "Uw huidige wachtwoord is onjuist.",
   "portal.settings.accountError.rateLimited": "Te veel pogingen. Probeer het later opnieuw.",
   "portal.settings.accountError.sameEmail": "Dit is al uw e-mailadres.",

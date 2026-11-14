@@ -413,9 +413,9 @@ export function UsersContainer({ currentMemberRole }: UsersContainerProps) {
       <ConfirmDialog
         open={!!deleteTarget}
         onOpenChange={(open) => !open && setDeleteTarget(null)}
-        title={`Delete "${deleteTarget?.name}"?`}
-        description="This will permanently delete the segment and remove all user memberships. This cannot be undone."
-        confirmLabel="Delete"
+        title={`「${deleteTarget?.name}」を削除しますか？`}
+        description="セグメントと所属情報が完全に削除されます。この操作は元に戻せません。"
+        confirmLabel="削除"
         variant="destructive"
         isPending={deleteSegment.isPending}
         onConfirm={handleDeleteSegment}

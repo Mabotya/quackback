@@ -33,6 +33,7 @@ import { CONVERSATION_EDITOR_FEATURES } from '@/components/conversation/conversa
 import { ComposerAttachmentTray } from '@/components/shared/composer-attachment-tray'
 import { isEmptyTiptapDoc } from '@/lib/shared/utils/is-empty-tiptap-doc'
 import { useAgentFileUpload } from '@/lib/client/hooks/use-file-upload'
+import { TEAM_ATTACHMENT_LIMITS } from '@/lib/client/attachment-policy'
 import { useConversationComposerAttachments } from '@/lib/client/hooks/use-conversation-composer-attachments'
 import {
   Dialog,
@@ -239,7 +240,7 @@ export const CreateTicketDialog = memo(function CreateTicketDialog({
     retry: retryAttachment,
     clear: clearAttachments,
     uploading,
-  } = useConversationComposerAttachments(upload)
+  } = useConversationComposerAttachments(upload, TEAM_ATTACHMENT_LIMITS)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Paste still works for an image from the clipboard; drop/paste now accept

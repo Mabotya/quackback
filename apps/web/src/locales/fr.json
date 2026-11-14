@@ -1,4 +1,6 @@
 {
+  "files.upload.error.totalLimit": "Le total des pièces jointes ne peut pas dépasser 40 Mo.",
+  "files.upload.error.singleLimit": "Chaque fichier doit faire au maximum {size} Mo.",
   "portal.settings.accountError.invalidPassword": "Votre mot de passe actuel est incorrect.",
   "portal.settings.accountError.rateLimited": "Trop de tentatives. Réessayez plus tard.",
   "portal.settings.accountError.sameEmail": "Cette adresse est déjà votre adresse e-mail.",

@@ -7,7 +7,7 @@ interface UsersLayoutProps {
 
 export function UsersLayout({ segmentNav, children }: UsersLayoutProps) {
   return (
-    <AdminFilterLayout filters={segmentNav} headerTitle="Users">
+    <AdminFilterLayout filters={segmentNav} headerTitle="ユーザー">
       {children}
     </AdminFilterLayout>
   )

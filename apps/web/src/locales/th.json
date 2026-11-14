@@ -1,4 +1,6 @@
 {
+  "files.upload.error.totalLimit": "ไฟล์แนบรวมกันต้องไม่เกิน 40 MB",
+  "files.upload.error.singleLimit": "แต่ละไฟล์ต้องมีขนาดไม่เกิน {size} MB",
   "portal.settings.accountError.invalidPassword": "รหัสผ่านปัจจุบันไม่ถูกต้อง",
   "portal.settings.accountError.rateLimited": "พยายามหลายครั้งเกินไป โปรดลองอีกครั้งภายหลัง",
   "portal.settings.accountError.sameEmail": "ที่อยู่นี้เป็นอีเมลปัจจุบันของคุณอยู่แล้ว",

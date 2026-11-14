@@ -82,11 +82,11 @@ function UsersErrorComponent({ error, reset }: { error: unknown; reset: () => vo
     <div className="flex items-center justify-center min-h-[400px] p-4">
       <Alert variant="destructive" className="max-w-2xl">
         <ExclamationCircleIcon className="h-4 w-4" />
-        <AlertTitle>Failed to load users</AlertTitle>
+        <AlertTitle>ユーザーを読み込めませんでした</AlertTitle>
         <AlertDescription className="mt-2">
           <p className="mb-4">{message}</p>
           <Button onClick={reset} variant="outline" size="sm">
-            Try again
+            もう一度試す
           </Button>
         </AlertDescription>
       </Alert>

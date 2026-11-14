@@ -62,7 +62,7 @@ describe('<CompaniesView> toolbar', () => {
     const labels = Array.from(toolbar.querySelectorAll('button, a')).map((b) =>
       b.textContent?.trim()
     )
-    expect(labels).toEqual(['Filter', 'Export CSV', 'New company'])
+    expect(labels).toEqual(['フィルター', 'CSVを出力', '新しい企業'])
     expect(screen.queryByText('Add filter')).toBeNull()
     expect(screen.queryByRole('button', { name: /Sort/ })).toBeNull()
   })
@@ -71,7 +71,7 @@ describe('<CompaniesView> toolbar', () => {
 describe('<CompaniesView> table', () => {
   it('uses the same header style as the users list', () => {
     renderView(ROWS)
-    for (const header of ['Company', 'Plan', 'Monthly spend', 'Users', 'Source']) {
+    for (const header of ['企業', 'プラン', '月額利用額', 'ユーザー', '登録元']) {
       const el = screen.getByText(header, { selector: 'span' })
       expect(el.className).toContain(MENU_LABEL)
     }

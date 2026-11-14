@@ -1,4 +1,6 @@
 {
+  "files.upload.error.totalLimit": "Anhänge dürfen insgesamt 40 MB nicht überschreiten.",
+  "files.upload.error.singleLimit": "Jede Datei darf höchstens {size} MB groß sein.",
   "portal.settings.accountError.invalidPassword": "Ihr aktuelles Passwort ist falsch.",
   "portal.settings.accountError.rateLimited": "Zu viele Versuche. Bitte später erneut versuchen.",
   "portal.settings.accountError.sameEmail": "Das ist bereits Ihre E-Mail-Adresse.",

@@ -36,7 +36,7 @@ export function AnalyticsAreaChart({ data, dataKey, label, metric }: AnalyticsAr
           CHART_HEIGHT_CLASS
         )}
       >
-        No data for this period
+        この期間のデータはありません
       </div>
     )
   }

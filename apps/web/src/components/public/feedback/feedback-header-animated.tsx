@@ -30,7 +30,9 @@ import { removeViewerScopedPortalQueries } from '@/lib/client/queries/portal'
 import { resolveSubmitState } from '@/components/public/feedback/submit-permission'
 import { PUBLIC_FEEDBACK_EDITOR_FEATURES } from '@/components/public/feedback/feedback-editor-features'
 import type { EditorDocument } from '@/components/ui/rich-text-editor'
-import { useSessionContext } from '@/lib/client/hooks/use-root-context'
+import { useSessionContext, useUserRole } from '@/lib/client/hooks/use-root-context'
+import { isTeamMember } from '@/lib/shared/roles'
+import { AttachmentLimitError, TEAM_ATTACHMENT_LIMITS, VISITOR_ATTACHMENT_LIMITS, MIB } from '@/lib/client/attachment-policy'
 import { shownName } from '@/lib/shared/greeting-name'
 import { TITLE_MAX_LENGTH } from './feedback-header'
 
@@ -82,6 +84,10 @@ export function FeedbackHeaderAnimated({
   const router = useRouter()
   const queryClient = useQueryClient()
   const session = useSessionContext()
+  const role = useUserRole()
+  const limits = isTeamMember(role) ? TEAM_ATTACHMENT_LIMITS : VISITOR_ATTACHMENT_LIMITS
+  // Keep in-flight reservations so concurrent uploads cannot exceed a draft's cap.
+  const uploads = useRef(new Map<symbol, { size: number; url?: string; seen: boolean }>())
   const [expanded, setExpanded] = useState(false)
   const [error, setError] = useState('')
   const { openAuthPopover } = useAuthPopover()
@@ -97,13 +103,33 @@ export function FeedbackHeaderAnimated({
     session?.user && !isAnonymousSession
       ? { name: shownName(session.user.name, session.user.email), email: session.user.email }
       : user
-  const { upload: uploadMedia } = usePortalMediaUpload()
+  const { upload: uploadMedia } = usePortalMediaUpload({ maxFileBytes: limits.maxFileBytes })
   const uploadMediaWithSession = useCallback(
     async (file: File) => {
-      if (!(await ensureAnonSession())) throw new Error('Could not create upload session')
-      return uploadMedia(file)
+      if (file.size > limits.maxFileBytes) {
+        throw new AttachmentLimitError(intl.formatMessage(
+          { id: 'files.upload.error.singleLimit', defaultMessage: 'Each file must be {size} MB or smaller.' },
+          { size: limits.maxFileBytes / MIB }
+        ))
+      }
+      const total = Array.from(uploads.current.values()).reduce((sum, item) => sum + item.size, 0)
+      if (limits.maxTotalBytes != null && total + file.size > limits.maxTotalBytes) {
+        throw new AttachmentLimitError(intl.formatMessage({ id: 'files.upload.error.totalLimit', defaultMessage: 'Attachments cannot total more than 40 MB.' }))
+      }
+      const key = Symbol('upload')
+      uploads.current.set(key, { size: file.size, seen: false })
+      try {
+        if (!(await ensureAnonSession())) throw new Error('Could not create upload session')
+        const url = await uploadMedia(file)
+        const entry = uploads.current.get(key)
+        if (entry) entry.url = url
+        return url
+      } catch (error) {
+        uploads.current.delete(key)
+        throw error
+      }
     },
-    [ensureAnonSession, uploadMedia]
+    [ensureAnonSession, uploadMedia, limits, intl]
   )
 
   // Listen for auth success to refetch session (no page reload)
@@ -169,7 +195,14 @@ export function FeedbackHeaderAnimated({
   const expandedRef = useRef(expanded)
   expandedRef.current = expanded
   const handleContentChange = useCallback((document: EditorDocument) => {
-    if (expandedRef.current) detailsRef.current = document
+    if (expandedRef.current) {
+      detailsRef.current = document
+      const content = JSON.stringify(document.json())
+      for (const [key, item] of uploads.current) {
+        if (item.url && content.includes(JSON.stringify(item.url))) item.seen = true
+        else if (item.seen) uploads.current.delete(key)
+      }
+    }
   }, [])
 
   async function handleSubmit() {
@@ -290,6 +323,7 @@ export function FeedbackHeaderAnimated({
   }
 
   function resetForm() {
+    uploads.current.clear()
     setSelectedBoardId(defaultBoardId || '')
     title.set('')
     detailsRef.current = null
@@ -599,7 +633,7 @@ function TitleInput({
       maxLength={TITLE_MAX_LENGTH}
       placeholder={intl.formatMessage({
         id: 'portal.feedback.header.titlePlaceholder',
-        defaultMessage: 'Title',
+        defaultMessage: 'Enter a title here to create a post',
       })}
       value={value}
       aria-label={intl.formatMessage({

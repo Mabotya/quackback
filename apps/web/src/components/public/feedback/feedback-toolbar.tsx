@@ -143,10 +143,12 @@ export function FeedbackToolbar({
                 )}
               >
                 <Icon className={cn('h-3.5 w-3.5', isActive && 'text-primary')} />
-                {intl.formatMessage({
-                  id: option.messageId,
-                  defaultMessage: option.defaultMessage,
-                })}
+                <span className="[html[lang=ja]_&]:-translate-y-px">
+                  {intl.formatMessage({
+                    id: option.messageId,
+                    defaultMessage: option.defaultMessage,
+                  })}
+                </span>
               </button>
             )
           }

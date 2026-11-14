@@ -167,18 +167,18 @@ function detail(user: PortalUserDetail, role = 'admin') {
 }
 
 async function openMenu() {
-  fireEvent.click(screen.getByLabelText('More actions'))
+  fireEvent.click(screen.getByLabelText('その他の操作'))
   await screen.findAllByRole('menuitem')
 }
 
 describe('UserDetail team actions', () => {
   it('makes a signed-in portal user a teammate through the prefilled dialog', async () => {
     renderDetail(detail(BASE_USER))
-    expect(screen.getByText('User')).toBeInTheDocument()
+    expect(screen.getByText('ユーザー')).toBeInTheDocument()
 
     await openMenu()
-    expect(screen.queryByRole('menuitem', { name: 'Change role…' })).toBeNull()
-    fireEvent.click(screen.getByRole('menuitem', { name: 'Make teammate…' }))
+    expect(screen.queryByRole('menuitem', { name: '権限を変更…' })).toBeNull()
+    fireEvent.click(screen.getByRole('menuitem', { name: 'チームメンバーに追加…' }))
 
     expect(await screen.findByRole('dialog', { name: 'add people' })).toBeInTheDocument()
     expect(dialogs.add?.initialPerson).toEqual({
@@ -194,11 +194,11 @@ describe('UserDetail team actions', () => {
     const view = renderDetail(detail(BASE_USER))
     view.rerender(detail({ ...BASE_USER, teamRole: { role: 'member' } }))
     expect(screen.getByText('Member')).toBeInTheDocument()
-    expect(screen.queryByText('User')).toBeNull()
+    expect(screen.queryByText('ユーザー')).toBeNull()
 
     await openMenu()
-    expect(screen.queryByRole('menuitem', { name: 'Make teammate…' })).toBeNull()
-    fireEvent.click(screen.getByRole('menuitem', { name: 'Change role…' }))
+    expect(screen.queryByRole('menuitem', { name: 'チームメンバーに追加…' })).toBeNull()
+    fireEvent.click(screen.getByRole('menuitem', { name: '権限を変更…' }))
     expect(await screen.findByRole('dialog', { name: 'change role' })).toBeInTheDocument()
     expect(dialogs.change?.principalId).toBe('principal_1')
     expect(dialogs.change?.current).toEqual({ role: 'member', label: 'Member' })
@@ -207,23 +207,23 @@ describe('UserDetail team actions', () => {
   it('offers a teammate no portal-only actions', async () => {
     renderDetail(detail({ ...BASE_USER, teamRole: { role: 'member' } }))
     await openMenu()
-    expect(screen.getByRole('menuitem', { name: 'Change role…' })).toBeInTheDocument()
-    expect(screen.queryByRole('menuitem', { name: 'Block' })).toBeNull()
-    expect(screen.queryByRole('menuitem', { name: 'Remove from portal' })).toBeNull()
+    expect(screen.getByRole('menuitem', { name: '権限を変更…' })).toBeInTheDocument()
+    expect(screen.queryByRole('menuitem', { name: 'ブロック' })).toBeNull()
+    expect(screen.queryByRole('menuitem', { name: 'サイトから削除' })).toBeNull()
   })
 
   it('keeps Block and Remove from portal for a portal user', async () => {
     renderDetail(detail(BASE_USER))
     await openMenu()
-    expect(screen.getByRole('menuitem', { name: 'Block' })).toBeInTheDocument()
-    expect(screen.getByRole('menuitem', { name: 'Remove from portal' })).toBeInTheDocument()
+    expect(screen.getByRole('menuitem', { name: 'ブロック' })).toBeInTheDocument()
+    expect(screen.getByRole('menuitem', { name: 'サイトから削除' })).toBeInTheDocument()
   })
 
   it('offers no Change role on your own profile', () => {
     route.sessionUserId = 'user_1'
     renderDetail(detail({ ...BASE_USER, teamRole: { role: 'admin' } }))
     // Nothing else applies to your own teammate profile, so there is no menu.
-    expect(screen.queryByLabelText('More actions')).toBeNull()
+    expect(screen.queryByLabelText('その他の操作')).toBeNull()
     expect(screen.getByText('Admin')).toBeInTheDocument()
   })
 
@@ -240,18 +240,18 @@ describe('UserDetail team actions', () => {
   it('does not offer someone who has never signed in', async () => {
     renderDetail(detail({ ...BASE_USER, hasSignedIn: false }))
     await openMenu()
-    expect(screen.queryByRole('menuitem', { name: 'Make teammate…' })).toBeNull()
+    expect(screen.queryByRole('menuitem', { name: 'チームメンバーに追加…' })).toBeNull()
   })
 
   it('does not offer a lead to the team', async () => {
     renderDetail(detail({ ...BASE_USER, isLead: true, email: null }))
     await openMenu()
-    expect(screen.queryByRole('menuitem', { name: 'Make teammate…' })).toBeNull()
+    expect(screen.queryByRole('menuitem', { name: 'チームメンバーに追加…' })).toBeNull()
     expect(dialogs.add).toBeNull()
   })
 
   it('offers nothing to someone who cannot manage people', () => {
     renderDetail(detail(BASE_USER, 'member'))
-    expect(screen.queryByLabelText('More actions')).toBeNull()
+    expect(screen.queryByLabelText('その他の操作')).toBeNull()
   })
 })

@@ -76,6 +76,7 @@ import { getWidgetCapabilitiesFn } from '@/lib/server/functions/widget-capabilit
 import { TicketHeaderCard } from './ticket-header-card'
 import { useLocalDateFormatter } from '@/components/ui/local-date'
 import type { RequesterTicketDTO } from '@/lib/server/domains/tickets'
+import { TEAM_ATTACHMENT_LIMITS, VISITOR_ATTACHMENT_LIMITS } from '@/lib/client/attachment-policy'
 
 /** A message's time of day, e.g. "3:04 PM". */
 const TIME_LABEL: Intl.DateTimeFormatOptions = { hour: 'numeric', minute: '2-digit' }
@@ -147,6 +148,8 @@ export interface VisitorConversationThreadProps {
    *  the surface's own endpoint/headers/session-minting; failures surface on
    *  the tile that failed. */
   uploadFile: ComposerUploadFn
+  /** The portal passes its authenticated workspace role; widget sessions stay visitor-tier. */
+  isTeamMember?: boolean
   /** Team availability (online agents / office hours), owned by the surface so
    *  every sibling view shares one poll. */
   presence: VisitorConversationThreadPresence
@@ -201,6 +204,7 @@ export function VisitorConversationThread({
   sessionVersion = 0,
   currentUser,
   uploadFile,
+  isTeamMember = false,
   presence,
   onAgentActivity,
   helpSearch,
@@ -323,7 +327,7 @@ export function VisitorConversationThread({
     retry: retryAttachment,
     clear: clearAttachments,
     uploading,
-  } = useConversationComposerAttachments(uploadFile)
+  } = useConversationComposerAttachments(uploadFile, isTeamMember ? TEAM_ATTACHMENT_LIMITS : VISITOR_ATTACHMENT_LIMITS)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const composerPlaceholder = intl.formatMessage({
     id: 'widget.messenger.placeholder',

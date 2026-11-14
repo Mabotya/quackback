@@ -12,13 +12,13 @@ export interface SectionNavItem {
 }
 
 export const SECTION_NAV_ITEMS: SectionNavItem[] = [
-  { key: 'overview', label: 'Overview', icon: ChartBarIcon },
-  { key: 'visitors', label: 'Visitors', icon: GlobeAltIcon },
-  { key: 'feedback', label: 'Feedback', icon: ENTITY_ICONS.post },
-  { key: 'support', label: 'Support', icon: ENTITY_ICONS.conversation },
+  { key: 'overview', label: '概要', icon: ChartBarIcon },
+  { key: 'visitors', label: '訪問者', icon: GlobeAltIcon },
+  { key: 'feedback', label: 'フィードバック', icon: ENTITY_ICONS.post },
+  { key: 'support', label: 'サポート', icon: ENTITY_ICONS.conversation },
   { key: 'ai', label: 'Quackback AI', icon: SparklesIcon },
-  { key: 'changelog', label: 'Changelog', icon: ENTITY_ICONS.changelog },
-  { key: 'users', label: 'Users', icon: UsersIcon },
+  { key: 'changelog', label: '変更履歴', icon: ENTITY_ICONS.changelog },
+  { key: 'users', label: 'ユーザー', icon: UsersIcon },
 ]
 
 /** The section a `?section=` value names; anything unknown opens the overview. */

@@ -111,10 +111,10 @@ export function uploadFile(file: File, options: UploadFileOptions): Promise<Uplo
 
 /** Universal client-side pre-checks every surface enforces before ever
  *  touching the network — instant feedback; the server re-checks regardless. */
-export function checkFileBeforeUpload(file: File): UploadError | null {
+export function checkFileBeforeUpload(file: File, maxFileBytes?: number): UploadError | null {
   if (file.size === 0) return new UploadError('The file is empty', 'empty')
   const family = familyFor(file.name, file.type)
-  const maxBytes = maxBytesForFamily(family)
+  const maxBytes = maxFileBytes ?? maxBytesForFamily(family)
   if (file.size > maxBytes) {
     return new UploadError(`Over ${formatBytes(maxBytes)}`, 'too_large')
   }

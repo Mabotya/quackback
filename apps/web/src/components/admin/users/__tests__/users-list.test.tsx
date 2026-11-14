@@ -113,9 +113,9 @@ describe('<UsersList> toolbar', () => {
   it('orders the list through one Sort menu instead of a row of pills', async () => {
     const changes: Array<Partial<UsersFilters>> = []
     renderList(USERS, { onFiltersChange: (u) => changes.push(u) })
-    expect(screen.queryByRole('button', { name: 'Oldest' })).toBeNull()
-    fireEvent.click(screen.getByRole('button', { name: /並び順：Newest/ }))
-    fireEvent.click(await screen.findByRole('menuitemradio', { name: 'Most active' }))
+    expect(screen.queryByRole('button', { name: '古い順' })).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: /並び順：新しい順/ }))
+    fireEvent.click(await screen.findByRole('menuitemradio', { name: 'アクティブ順' }))
     expect(changes).toContainEqual({ sort: 'most_active' })
   })
 
@@ -123,7 +123,7 @@ describe('<UsersList> toolbar', () => {
     renderList(USERS, { onNewPerson: () => {} })
     const toolbar = document.querySelector('[data-slot="admin-list-search"]')!.parentElement!
     const labels = Array.from(toolbar.querySelectorAll('button')).map((b) => b.textContent?.trim())
-    expect(labels.slice(0, 2)).toEqual(['並び順：Newest', 'フィルター'])
+    expect(labels.slice(0, 2)).toEqual(['並び順：新しい順', 'フィルター'])
     expect(screen.queryByText('Add filter')).toBeNull()
   })
 
@@ -139,24 +139,24 @@ describe('<UsersList> toolbar', () => {
 describe('<UsersList> metric column headers', () => {
   it('labels the post, comment and vote counts as scannable table columns', () => {
     renderList()
-    expect(screen.getByText('Posts')).toBeInTheDocument()
-    expect(screen.getByText('Comments')).toBeInTheDocument()
-    expect(screen.getByText('Votes')).toBeInTheDocument()
+    expect(screen.getByText('投稿')).toBeInTheDocument()
+    expect(screen.getByText('コメント')).toBeInTheDocument()
+    expect(screen.getByText('投票')).toBeInTheDocument()
   })
 
   it('labels every field with a column header, not just the numeric columns', () => {
     renderList()
-    expect(screen.getByText('Name')).toBeInTheDocument()
-    expect(screen.getByText('Email')).toBeInTheDocument()
-    expect(screen.getByText('Joined')).toBeInTheDocument()
+    expect(screen.getByText('名前')).toBeInTheDocument()
+    expect(screen.getByText('メールアドレス')).toBeInTheDocument()
+    expect(screen.getByText('登録日')).toBeInTheDocument()
   })
 
   it('adds a Country column header once the field is turned on', async () => {
     renderList()
-    expect(screen.queryByText('Country')).toBeNull()
-    fireEvent.click(screen.getByRole('button', { name: 'Columns' }))
-    fireEvent.click(await screen.findByRole('menuitemcheckbox', { name: 'Country' }))
-    expect(await screen.findAllByText('Country')).not.toHaveLength(0)
+    expect(screen.queryByText('国')).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: '表示項目' }))
+    fireEvent.click(await screen.findByRole('menuitemcheckbox', { name: '国' }))
+    expect(await screen.findAllByText('国')).not.toHaveLength(0)
   })
 })
 
@@ -168,15 +168,15 @@ describe('<UsersList> column picker', () => {
 
   it('shows the Country field for every row once turned on from the Columns menu', async () => {
     renderList()
-    fireEvent.click(screen.getByRole('button', { name: 'Columns' }))
-    fireEvent.click(await screen.findByRole('menuitemcheckbox', { name: 'Country' }))
+    fireEvent.click(screen.getByRole('button', { name: '表示項目' }))
+    fireEvent.click(await screen.findByRole('menuitemcheckbox', { name: '国' }))
     expect(await screen.findByText('United States')).toBeInTheDocument()
   })
 
   it('remembers the Country column choice across remounts', async () => {
     const first = renderList()
-    fireEvent.click(screen.getByRole('button', { name: 'Columns' }))
-    fireEvent.click(await screen.findByRole('menuitemcheckbox', { name: 'Country' }))
+    fireEvent.click(screen.getByRole('button', { name: '表示項目' }))
+    fireEvent.click(await screen.findByRole('menuitemcheckbox', { name: '国' }))
     expect(await screen.findByText('United States')).toBeInTheDocument()
 
     first.unmount()
@@ -186,10 +186,10 @@ describe('<UsersList> column picker', () => {
 
   it('remembers turning the column back off across remounts', async () => {
     const first = renderList()
-    fireEvent.click(screen.getByRole('button', { name: 'Columns' }))
-    fireEvent.click(await screen.findByRole('menuitemcheckbox', { name: 'Country' }))
+    fireEvent.click(screen.getByRole('button', { name: '表示項目' }))
+    fireEvent.click(await screen.findByRole('menuitemcheckbox', { name: '国' }))
     expect(await screen.findByText('United States')).toBeInTheDocument()
-    fireEvent.click(await screen.findByRole('menuitemcheckbox', { name: 'Country' }))
+    fireEvent.click(await screen.findByRole('menuitemcheckbox', { name: '国' }))
     expect(screen.queryByText('United States')).toBeNull()
 
     first.unmount()
@@ -199,11 +199,11 @@ describe('<UsersList> column picker', () => {
 
   it('turning the column back off hides it again', async () => {
     renderList()
-    fireEvent.click(screen.getByRole('button', { name: 'Columns' }))
-    fireEvent.click(await screen.findByRole('menuitemcheckbox', { name: 'Country' }))
+    fireEvent.click(screen.getByRole('button', { name: '表示項目' }))
+    fireEvent.click(await screen.findByRole('menuitemcheckbox', { name: '国' }))
     expect(await screen.findByText('United States')).toBeInTheDocument()
 
-    fireEvent.click(await screen.findByRole('menuitemcheckbox', { name: 'Country' }))
+    fireEvent.click(await screen.findByRole('menuitemcheckbox', { name: '国' }))
     expect(screen.queryByText('United States')).toBeNull()
   })
 })

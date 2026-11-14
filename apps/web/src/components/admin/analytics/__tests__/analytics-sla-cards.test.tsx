@@ -69,16 +69,16 @@ describe('AnalyticsSlaCards', () => {
   it('tables attainment per clock with met and missed counts', async () => {
     hoisted.support.mockResolvedValue(REPORT)
     renderCards()
-    await screen.findByText('SLA attainment')
-    const first = screen.getAllByRole('cell', { name: 'First response' })[0].closest('tr')!
+    await screen.findByText('SLA達成状況')
+    const first = screen.getAllByRole('cell', { name: '初回返信' })[0].closest('tr')!
     expect(Array.from(first.querySelectorAll('td')).map((c) => c.textContent)).toEqual([
-      'First response',
+      '初回返信',
       '9',
       '1',
       '90%',
     ])
     // A clock with nothing tracked reads as a hyphen, not 0%.
-    const next = screen.getAllByRole('cell', { name: 'Next response' })[0].closest('tr')!
+    const next = screen.getAllByRole('cell', { name: '次の返信' })[0].closest('tr')!
     expect(next.textContent).toContain('-')
     expect(next.textContent).not.toContain('0%')
   })
@@ -86,7 +86,7 @@ describe('AnalyticsSlaCards', () => {
   it('asks the server for the range it is given', async () => {
     hoisted.support.mockResolvedValue(REPORT)
     renderCards()
-    await screen.findByText('SLA attainment')
+    await screen.findByText('SLA達成状況')
     expect(hoisted.support.mock.calls[0][0]).toEqual({ data: RANGE })
   })
 
@@ -101,36 +101,36 @@ describe('AnalyticsSlaCards', () => {
   it('totals workflow runs by outcome', async () => {
     hoisted.support.mockResolvedValue(REPORT)
     renderCards()
-    const runs = (await screen.findByText('Workflow runs')).closest(
+    const runs = (await screen.findByText('ワークフローの実行')).closest(
       '[data-slot="card"]'
     ) as HTMLElement
     const rowOf = (label: string) => within(runs).getByText(label).closest('tr')!.textContent
-    expect(rowOf('Started')).toContain('15')
-    expect(rowOf('Completed')).toContain('11')
-    expect(rowOf('Interrupted')).toContain('3')
+    expect(rowOf('開始')).toContain('15')
+    expect(rowOf('完了')).toContain('11')
+    expect(rowOf('中断')).toContain('3')
   })
 
   it('draws the breaches by hour and the time after a miss', async () => {
     hoisted.support.mockResolvedValue(REPORT)
     const { container } = renderCards()
-    expect(await screen.findByText('Breaches by hour')).toBeInTheDocument()
-    expect(container.querySelector('[title^="Tue 09:00"]')).not.toBeNull()
-    expect(screen.getByText('Time after a miss')).toBeInTheDocument()
+    expect(await screen.findByText('時間帯別の期限超過')).toBeInTheDocument()
+    expect(container.querySelector('[title^="火 09:00"]')).not.toBeNull()
+    expect(screen.getByText('期限超過後の時間')).toBeInTheDocument()
   })
 
   it('says so when no breach was recorded', async () => {
     hoisted.support.mockResolvedValue({ ...REPORT, slaHeatmap: [] })
     renderCards()
-    expect(await screen.findByText('No breaches in this period')).toBeInTheDocument()
+    expect(await screen.findByText('この期間に期限超過はありません')).toBeInTheDocument()
   })
 
   it('shows an error with a retry when the report fails to load', async () => {
     hoisted.support.mockRejectedValueOnce(new Error('boom'))
     renderCards()
-    expect(await screen.findByRole('alert')).toHaveTextContent(/could not be loaded/)
+    expect(await screen.findByRole('alert')).toHaveTextContent(/読み込めませんでした/)
     hoisted.support.mockResolvedValue(REPORT)
-    fireEvent.click(screen.getByRole('button', { name: 'Try again' }))
-    expect(await screen.findByText('SLA attainment')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: '再試行' }))
+    expect(await screen.findByText('SLA達成状況')).toBeInTheDocument()
     await waitFor(() => expect(screen.queryByRole('alert')).toBeNull())
   })
 })

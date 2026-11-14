@@ -16,12 +16,12 @@ interface TopPostsProps {
 
 export function AnalyticsTopPosts({ posts }: TopPostsProps) {
   if (posts.length === 0) {
-    return <AnalyticsEmpty message="No posts in this period" />
+    return <AnalyticsEmpty message="この期間の投稿はありません" />
   }
 
   return (
     <AnalyticsBarList
-      header={{ label: 'Post', value: 'Votes' }}
+      header={{ label: '投稿', value: '投票' }}
       rows={posts.map((post) => ({
         key: post.postId,
         value: post.voteCount,

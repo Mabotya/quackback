@@ -53,20 +53,20 @@ interface FilterCategoryDef {
 }
 
 const FILTER_CATEGORIES: FilterCategoryDef[] = [
-  { key: 'verified', label: 'Email Status', icon: EnvelopeIcon },
-  { key: 'emailDomain', label: 'Email Domain', icon: GlobeAltIcon },
-  { key: 'date', label: 'Date Joined', icon: CalendarIcon },
-  { key: 'postCount', label: 'Post Count', icon: DocumentTextIcon },
-  { key: 'voteCount', label: 'Vote Count', icon: HandThumbUpIcon },
-  { key: 'commentCount', label: 'Comment Count', icon: ChatBubbleLeftIcon },
+  { key: 'verified', label: 'メール認証', icon: EnvelopeIcon },
+  { key: 'emailDomain', label: 'メールドメイン', icon: GlobeAltIcon },
+  { key: 'date', label: '登録日', icon: CalendarIcon },
+  { key: 'postCount', label: '投稿数', icon: DocumentTextIcon },
+  { key: 'voteCount', label: '投票数', icon: HandThumbUpIcon },
+  { key: 'commentCount', label: 'コメント数', icon: ChatBubbleLeftIcon },
 ]
 
 const ACTIVITY_OPERATORS = [
-  { value: 'gte', label: 'at least' },
-  { value: 'gt', label: 'more than' },
-  { value: 'lte', label: 'at most' },
-  { value: 'lt', label: 'less than' },
-  { value: 'eq', label: 'exactly' },
+  { value: 'gte', label: '以上' },
+  { value: 'gt', label: 'より大きい' },
+  { value: 'lte', label: '以下' },
+  { value: 'lt', label: 'より小さい' },
+  { value: 'eq', label: '等しい' },
 ]
 
 function parseActivityValue(raw?: string): { op: string; value: string } | null {
@@ -129,7 +129,7 @@ function ActivityFilterInput({
           }
         }}
       >
-        Apply
+        適用
       </Button>
     </div>
   )
@@ -172,7 +172,7 @@ function TextFilterInput({
           }
         }}
       >
-        Apply
+        適用
       </Button>
     </div>
   )
@@ -198,13 +198,13 @@ function CustomAttrFilterInput({
   const operators = isNumeric
     ? ACTIVITY_OPERATORS
     : isBool
-      ? [{ value: 'eq', label: 'is' }]
+      ? [{ value: 'eq', label: 'が' }]
       : [
-          { value: 'eq', label: 'equals' },
-          { value: 'neq', label: 'not equals' },
-          { value: 'contains', label: 'contains' },
-          { value: 'is_set', label: 'is set' },
-          { value: 'is_not_set', label: 'is not set' },
+          { value: 'eq', label: '等しい' },
+          { value: 'neq', label: '等しくない' },
+          { value: 'contains', label: 'を含む' },
+          { value: 'is_set', label: 'が設定済み' },
+          { value: 'is_not_set', label: 'が未設定' },
         ]
 
   const isPresenceOp = op === 'is_set' || op === 'is_not_set'
@@ -236,15 +236,15 @@ function CustomAttrFilterInput({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="true">True</SelectItem>
-              <SelectItem value="false">False</SelectItem>
+              <SelectItem value="true">真</SelectItem>
+              <SelectItem value="false">偽</SelectItem>
             </SelectContent>
           </Select>
         ) : (
           <Input
             type={isNumeric ? 'number' : 'text'}
             className="h-7 text-xs"
-            placeholder={isNumeric ? '0' : 'value'}
+            placeholder={isNumeric ? '0' : '値'}
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={(e) => {
@@ -258,7 +258,7 @@ function CustomAttrFilterInput({
         disabled={!isPresenceOp && !value.trim()}
         onClick={handleApply}
       >
-        Apply
+        適用
       </Button>
     </div>
   )
@@ -389,7 +389,7 @@ export function UsersFilterButton({
               <>
                 <div className="border-b border-border/30 my-1" />
                 <div className="px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  Custom attributes
+                  カスタム属性
                 </div>
                 {availableCustomAttrs.map((attr) => (
                   <button
@@ -422,7 +422,7 @@ export function UsersFilterButton({
               className="w-full flex items-center gap-2 px-2.5 py-1.5 text-[13px] text-muted-foreground hover:text-foreground border-b border-border/50"
             >
               <ChevronRightIcon className="h-2.5 w-2.5 rotate-180" />
-              Back
+              戻る
             </button>
             <div className="max-h-[250px] overflow-y-auto">
               {activeCategory === 'verified' && (
@@ -432,14 +432,14 @@ export function UsersFilterButton({
                     onClick={() => handleSelectVerified(true)}
                     className="w-full flex items-center gap-2 px-2.5 py-1.5 text-[13px] hover:bg-muted/50 transition-colors"
                   >
-                    Verified only
+                    認証済みのみ
                   </button>
                   <button
                     type="button"
                     onClick={() => handleSelectVerified(false)}
                     className="w-full flex items-center gap-2 px-2.5 py-1.5 text-[13px] hover:bg-muted/50 transition-colors"
                   >
-                    Unverified only
+                    未認証のみ
                   </button>
                 </div>
               )}
@@ -523,15 +523,15 @@ function computeActiveFilters(
 
   // Verified filter
   const verifiedOptions: FilterOption[] = [
-    { id: 'verified', label: 'Verified' },
-    { id: 'unverified', label: 'Unverified' },
+    { id: 'verified', label: '認証済み' },
+    { id: 'unverified', label: '未認証' },
   ]
 
   if (filters.verified !== undefined) {
     result.push({
       key: 'verified',
       type: 'verified',
-      label: 'Email:',
+      label: 'メール:',
       value: filters.verified ? 'Verified' : 'Unverified',
       valueId: filters.verified ? 'verified' : 'unverified',
       options: verifiedOptions,
@@ -545,7 +545,7 @@ function computeActiveFilters(
     result.push({
       key: 'emailDomain',
       type: 'emailDomain',
-      label: 'Domain:',
+      label: 'ドメイン:',
       value: filters.emailDomain,
       valueId: filters.emailDomain,
       onRemove: () => onFiltersChange({ emailDomain: undefined }),
@@ -562,7 +562,7 @@ function computeActiveFilters(
     result.push({
       key: 'dateRange',
       type: 'dateRange',
-      label: 'Joined:',
+      label: '登録日:',
       value: `${formatDate(filters.dateFrom)} - ${formatDate(filters.dateTo)}`,
       valueId: 'custom',
       onRemove: () => onFiltersChange({ dateFrom: undefined, dateTo: undefined }),
@@ -574,7 +574,7 @@ function computeActiveFilters(
     result.push({
       key: 'dateFrom',
       type: 'dateFrom',
-      label: 'Joined:',
+      label: '登録日:',
       value: matchedPreset ? matchedPreset.label : formatDate(filters.dateFrom),
       valueId: matchedPreset?.value || filters.dateFrom,
       options: dateOptions,
@@ -590,7 +590,7 @@ function computeActiveFilters(
     result.push({
       key: 'dateTo',
       type: 'dateTo',
-      label: 'To:',
+      label: '終了:',
       value: formatDate(filters.dateTo),
       valueId: filters.dateTo,
       onRemove: () => onFiltersChange({ dateTo: undefined }),

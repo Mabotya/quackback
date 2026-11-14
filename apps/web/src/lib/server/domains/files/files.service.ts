@@ -13,6 +13,7 @@ import { isValidTypeId, type FileId, type PrincipalId } from '@quackback/ids'
 import {
   db,
   files,
+  principal,
   conversationMessages,
   eq,
   and,
@@ -37,6 +38,7 @@ import { stripInvisible } from '@/lib/shared/files/file-name'
 import { MAX_CONVERSATION_ATTACHMENTS, type UploadedFile } from '@/lib/shared/conversation/types'
 import { ValidationError } from '@/lib/shared/errors'
 import { logger } from '@/lib/server/logger'
+import { checkAttachmentLimits } from './attachment-limits'
 
 const log = logger.child({ component: 'files' })
 
@@ -74,6 +76,8 @@ export interface StoreFileInput {
    * verified, so executables and scripts are refused.
    */
   unverifiedSender: boolean
+  /** Server-chosen upload cap; omitted for internal email/import pipelines. */
+  maxBytes?: number
 }
 
 /**
@@ -118,7 +122,7 @@ export async function storeFile(input: StoreFileInput): Promise<FileRecord> {
   if (input.unverifiedSender && isRefusedFromUnverifiedSender(sniffed, name)) {
     throw new FileRejectedError('blocked', "This file type can't be sent")
   }
-  const cap = maxBytesForFamily(sniffed.family)
+  const cap = input.maxBytes ?? maxBytesForFamily(sniffed.family)
   if (size > cap) throw new FileRejectedError('too_large', `Over ${formatBytes(cap)}`)
 
   const key = generateStorageKey(FILES_PREFIX, name)
@@ -258,17 +262,28 @@ export async function resolveAttachments(
     : []
   const byId = new Map(rows.map((r) => [r.id as string, r]))
 
-  return raw.map((a) => {
-    if (typeof a?.fileId !== 'string') return legacyAttachment(a)
+  const role = sender.principalId
+    ? await db.query.principal.findFirst({ where: eq(principal.id, sender.principalId), columns: { role: true } })
+    : null
+  const team = role?.role === 'admin' || role?.role === 'member'
+  const resolved = raw.map((a) => {
+    // A legacy attachment's claimed size and ownership cannot be established
+    // from its metadata. Do not let portal senders bypass attachment limits.
+    if (typeof a?.fileId !== 'string') {
+      if (!sender.canAttachAnyFile) throw new ValidationError('VALIDATION_ERROR', 'Attach this file again')
+      return legacyAttachment(a)
+    }
     const row = byId.get(a.fileId)
     if (!row) throw new ValidationError('VALIDATION_ERROR', 'Invalid attachment')
-    if (!sender.canAttachAnyFile && row.uploadedById !== (sender.principalId ?? null)) {
+    if (!sender.canAttachAnyFile && (!sender.principalId || row.uploadedById !== sender.principalId)) {
       throw new ValidationError('VALIDATION_ERROR', 'Invalid attachment')
     }
     // Only the sender who may attach it learns that it is gone.
     if (row.deletedAt) throw fileExpiredError()
     return attachmentFromFile(row)
   })
+  checkAttachmentLimits(resolved.map((a) => a.size), team)
+  return resolved
 }
 
 /**

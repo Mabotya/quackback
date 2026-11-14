@@ -16,12 +16,13 @@ export const CHART_HEIGHT_CLASS = 'h-[clamp(300px,46vh,520px)]'
  *  (conversations.source). A source outside this map humanizes its key
  *  ('ticket_form' → 'Ticket form'). */
 export const CHANNEL_LABELS: Record<string, string> = {
-  widget: 'Widget',
-  email: 'Email',
-  ticket_form: 'Ticket form',
+  widget: 'ウィジェット',
+  email: 'メール',
+  ticket_form: 'チケットフォーム',
 }
 
 export function channelLabel(channel: string): string {
+  if (channel in CHANNEL_LABELS) return CHANNEL_LABELS[channel]
   const descriptor = getChannelDescriptor(channel)
   if (descriptor) return descriptor.label
   return (
@@ -43,18 +44,18 @@ export function channelColor(channel: string, index: number): string {
  *  as a hyphen. */
 export function formatResponseTime(minutes: number | null): string {
   if (minutes == null) return '-'
-  if (minutes < 1) return '<1m'
-  if (minutes < 60) return `${Math.round(minutes)}m`
+  if (minutes < 1) return '1分未満'
+  if (minutes < 60) return `${Math.round(minutes)}分`
   if (minutes < 1440) {
     const h = Math.floor(minutes / 60)
     const m = Math.round(minutes % 60)
-    return m === 0 ? `${h}h` : `${h}h ${m}m`
+    return m === 0 ? `${h}時間` : `${h}時間${m}分`
   }
-  return `${(minutes / 1440).toFixed(1)}d`
+  return `${(minutes / 1440).toFixed(1)}日`
 }
 
-const BUCKET_DAY = new Intl.DateTimeFormat('en-US', {
-  month: 'short',
+const BUCKET_DAY = new Intl.DateTimeFormat('ja-JP', {
+  month: 'numeric',
   day: 'numeric',
   timeZone: 'UTC',
 })

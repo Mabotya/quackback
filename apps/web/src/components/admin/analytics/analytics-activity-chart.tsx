@@ -7,12 +7,12 @@ interface ActivityChartProps {
 }
 
 const CHART_BINDINGS: Record<MetricKey, { dataKey: string; metric: string; label: string }> = {
-  posts: { dataKey: 'posts', metric: 'posts', label: 'Posts' },
-  votes: { dataKey: 'votes', metric: 'votes', label: 'Votes' },
+  posts: { dataKey: 'posts', metric: 'posts', label: '投稿' },
+  votes: { dataKey: 'votes', metric: 'votes', label: '投票' },
   // The metric key is 'postComments' but the daily rows and the color token
   // are both named 'comments'.
-  postComments: { dataKey: 'comments', metric: 'comments', label: 'Comments' },
-  users: { dataKey: 'users', metric: 'users', label: 'Users' },
+  postComments: { dataKey: 'comments', metric: 'comments', label: 'コメント' },
+  users: { dataKey: 'users', metric: 'users', label: 'ユーザー' },
 }
 
 export function AnalyticsActivityChart({ dailyStats, activeMetric }: ActivityChartProps) {

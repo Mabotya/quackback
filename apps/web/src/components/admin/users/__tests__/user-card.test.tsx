@@ -68,16 +68,16 @@ describe('<UserCard>', () => {
         onClick={vi.fn()}
       />
     )
-    expect(screen.getByTitle('Posts')).toHaveTextContent('3')
-    expect(screen.getByTitle('Comments')).toHaveTextContent('5')
-    expect(screen.getByTitle('Votes')).toHaveTextContent('2')
+    expect(screen.getByTitle('投稿')).toHaveTextContent('3')
+    expect(screen.getByTitle('コメント')).toHaveTextContent('5')
+    expect(screen.getByTitle('投票')).toHaveTextContent('2')
   })
 
   it('shows the counts even when they are zero, so the column stays scannable across rows', () => {
     render(<UserCard user={USER} isSelected={false} onClick={vi.fn()} />)
-    expect(screen.getByTitle('Posts')).toHaveTextContent('0')
-    expect(screen.getByTitle('Comments')).toHaveTextContent('0')
-    expect(screen.getByTitle('Votes')).toHaveTextContent('0')
+    expect(screen.getByTitle('投稿')).toHaveTextContent('0')
+    expect(screen.getByTitle('コメント')).toHaveTextContent('0')
+    expect(screen.getByTitle('投票')).toHaveTextContent('0')
   })
 
   it('surfaces last-seen as a tooltip on the joined cell rather than a second visible line', () => {

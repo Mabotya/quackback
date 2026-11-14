@@ -148,12 +148,34 @@ describe('POST /api/portal/upload', () => {
   it('returns 400 when file exceeds max size', async () => {
     vi.mocked(auth.api.getSession).mockResolvedValueOnce(identifiedSession)
     vi.mocked(db.query.principal.findFirst).mockResolvedValueOnce(identifiedPrincipal)
-    const oversized = new File([new Uint8Array(6 * 1024 * 1024)], 'big.jpg', {
+    const oversized = new File([new Uint8Array(10 * 1024 * 1024 + 1)], 'big.jpg', {
       type: 'image/jpeg',
     })
     const res = await handlePortalUpload({ request: makeRequest(oversized) })
     expect(res.status).toBe(400)
     expect(await res.json()).toMatchObject({ error: expect.stringContaining('too large') })
+  })
+
+  it('rejects an 11 MiB video from a regular user', async () => {
+    vi.mocked(auth.api.getSession).mockResolvedValueOnce(identifiedSession)
+    vi.mocked(db.query.principal.findFirst).mockResolvedValueOnce(mockPrincipal({ type: 'user', role: 'user' }))
+    const res = await handlePortalUpload({ request: makeRequest(mockVideoFile('large.mp4', 'video/mp4', 11 * 1024 * 1024)) })
+    expect(res.status).toBe(400)
+    expect(await res.json()).toMatchObject({ error: expect.stringContaining('10MB') })
+  })
+
+  it.each(['admin', 'member'] as const)('allows an 11 MiB video for a team %s', async (role) => {
+    vi.mocked(auth.api.getSession).mockResolvedValueOnce(identifiedSession)
+    vi.mocked(db.query.principal.findFirst).mockResolvedValueOnce(mockPrincipal({ type: 'user', role }))
+    const res = await handlePortalUpload({ request: makeRequest(mockVideoFile('large.mp4', 'video/mp4', 11 * 1024 * 1024)) })
+    expect(res.status).toBe(200)
+  })
+
+  it('does not grant team limits to an anonymous principal even if its role says admin', async () => {
+    vi.mocked(auth.api.getSession).mockResolvedValueOnce(anonymousSession)
+    vi.mocked(db.query.principal.findFirst).mockResolvedValueOnce(mockPrincipal({ type: 'anonymous', role: 'admin' }))
+    const res = await handlePortalUpload({ request: makeRequest(mockVideoFile('large.mp4', 'video/mp4', 11 * 1024 * 1024)) })
+    expect(res.status).toBe(400)
   })
 
   it('uploads image and returns publicUrl for identified user', async () => {

@@ -50,25 +50,25 @@ describe('<InvitationsView>', () => {
   it('uses the standard page header with a small Invite users action', () => {
     render(<InvitationsView status="pending" />)
     const header = document.querySelector('[data-page-header]')!
-    expect(header.querySelector('h1')?.textContent).toBe('Invitations')
+    expect(header.querySelector('h1')?.textContent).toBe('招待')
     const action = header.querySelector('button')!
-    expect(action.textContent?.trim()).toBe('Invite users')
+    expect(action.textContent?.trim()).toBe('ユーザーを招待')
     expect(action.className).toContain('h-8')
   })
 
   it('switches status through line tabs, without count pills', () => {
     render(<InvitationsView status="pending" />)
     const tabs = screen.getAllByRole('tab')
-    expect(tabs.map((t) => t.textContent)).toEqual(['Pending', 'Accepted', 'Expired', 'All'])
+    expect(tabs.map((t) => t.textContent)).toEqual(['招待中', '承認済み', '期限切れ', 'すべて'])
     expect(tabs[0].closest('[data-variant="line"]')).not.toBeNull()
-    fireEvent.click(screen.getByRole('tab', { name: 'Accepted' }))
+    fireEvent.click(screen.getByRole('tab', { name: '承認済み' }))
     expect(navigate).toHaveBeenCalled()
   })
 
   it('shows a compact empty state and keeps Invite users in the header only', () => {
     render(<InvitationsView status="all" />)
-    expect(screen.getByRole('heading', { name: 'No invitations yet' })).toBeInTheDocument()
-    const buttons = screen.getAllByRole('button', { name: 'Invite users' })
+    expect(screen.getByRole('heading', { name: '招待はまだありません' })).toBeInTheDocument()
+    const buttons = screen.getAllByRole('button', { name: 'ユーザーを招待' })
     expect(buttons).toHaveLength(1)
     fireEvent.click(buttons[0])
     expect(openDialog).toHaveBeenCalled()

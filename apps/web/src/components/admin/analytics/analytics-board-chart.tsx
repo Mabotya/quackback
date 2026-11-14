@@ -10,12 +10,12 @@ export function AnalyticsBoardChart({ data }: BoardChartProps) {
   const sorted = useMemo(() => [...data].sort((a, b) => b.count - a.count), [data])
 
   if (sorted.length === 0) {
-    return <AnalyticsEmpty message="No data for this period" />
+    return <AnalyticsEmpty message="この期間のデータはありません" />
   }
 
   return (
     <AnalyticsBarList
-      header={{ label: 'Board', value: 'Posts' }}
+      header={{ label: 'ボード', value: '投稿' }}
       rows={sorted.map((item, i) => ({
         // Board names aren't guaranteed unique, so disambiguate with the index.
         key: `${item.board}-${i}`,

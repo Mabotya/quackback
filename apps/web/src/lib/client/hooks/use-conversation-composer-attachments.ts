@@ -3,6 +3,7 @@ import type { ConversationAttachment, UploadedFile } from '@/lib/shared/conversa
 import { MAX_CONVERSATION_ATTACHMENTS } from '@/lib/shared/conversation/types'
 import { familyFor, type FileFamily } from '@/lib/shared/files/file-types'
 import { checkFileBeforeUpload, UploadError } from '@/lib/client/files/upload-file'
+import { VISITOR_ATTACHMENT_LIMITS, type AttachmentLimits } from '@/lib/client/attachment-policy'
 
 /** A tray tile. `error`/`retryable` only matter while `status === 'error'`;
  *  `file`/`previewUrl` are populated once there is something to show. */
@@ -10,6 +11,7 @@ export interface ComposerAttachmentItem {
   localId: string
   name: string
   size: number
+  maxFileBytes?: number
   family: FileFamily
   status: 'uploading' | 'ready' | 'error'
   /** 0..1. Meaningless once the item leaves 'uploading'. */
@@ -103,7 +105,7 @@ function makeCapNoticeItem(): ComposerAttachmentItem {
  * marks each failure `retryable` based on whether it carries a definitive
  * server/pre-check reason.
  */
-export function useConversationComposerAttachments(upload: ComposerUploadFn) {
+export function useConversationComposerAttachments(upload: ComposerUploadFn, limits: AttachmentLimits = VISITOR_ATTACHMENT_LIMITS) {
   const [items, setItems] = useState<ComposerAttachmentItem[]>([])
   const generationRef = useRef(0)
   // The authoritative slot count: every real tile `addFiles` stages counts
@@ -116,6 +118,7 @@ export function useConversationComposerAttachments(upload: ComposerUploadFn) {
   // last one, both see the true count instead of double- or under-counting
   // tiles that are still uploading.
   const countRef = useRef(0)
+  const reservedSizes = useRef(new Map<string, number>())
   // The original File per tile (kept for the lifetime of the tile, so a
   // failed upload can be retried) and the controller for whichever attempt is
   // currently in flight (replaced on retry, so remove() aborts the live one).
@@ -128,7 +131,7 @@ export function useConversationComposerAttachments(upload: ComposerUploadFn) {
 
   const runUpload = useCallback(
     (localId: string, file: File, generation: number): Promise<void> => {
-      const failure = checkFileBeforeUpload(file)
+      const failure = checkFileBeforeUpload(file, limits.maxFileBytes)
       if (failure) {
         patchItem(localId, {
           status: 'error',
@@ -170,7 +173,7 @@ export function useConversationComposerAttachments(upload: ComposerUploadFn) {
         }
       )
     },
-    [upload, patchItem]
+    [upload, patchItem, limits.maxFileBytes]
   )
 
   const addFiles = useCallback(
@@ -181,10 +184,21 @@ export function useConversationComposerAttachments(upload: ComposerUploadFn) {
       const list = incoming.slice(0, slotsLeft)
       const refused = incoming.length - list.length
 
+      let reserved = Array.from(reservedSizes.current.values()).reduce((a, b) => a + b, 0)
       const newItems = list.map((file) => {
         const previewUrl =
           familyFor(file.name, file.type) === 'image' ? URL.createObjectURL(file) : undefined
         const item = makeItem(file, previewUrl)
+        item.maxFileBytes = limits.maxFileBytes
+        const valid = !checkFileBeforeUpload(file, limits.maxFileBytes)
+        if (valid && limits.maxTotalBytes != null && reserved + file.size > limits.maxTotalBytes) {
+          item.status = 'error'
+          item.errorReason = 'total_limit'
+          item.retryable = false
+        } else if (valid) {
+          reserved += file.size
+          reservedSizes.current.set(item.localId, file.size)
+        }
         filesRef.current.set(item.localId, file)
         return item
       })
@@ -199,10 +213,10 @@ export function useConversationComposerAttachments(upload: ComposerUploadFn) {
       })
 
       if (newItems.length === 0) return Promise.resolve()
-      const settled = newItems.map((item, i) => runUpload(item.localId, list[i]!, generation))
+      const settled = newItems.map((item, i) => item.errorReason === 'total_limit' ? Promise.resolve() : runUpload(item.localId, list[i]!, generation))
       return Promise.all(settled).then(() => undefined)
     },
-    [runUpload]
+    [runUpload, limits.maxFileBytes, limits.maxTotalBytes]
   )
 
   const retry = useCallback(
@@ -226,6 +240,7 @@ export function useConversationComposerAttachments(upload: ComposerUploadFn) {
     controllersRef.current.get(localId)?.abort()
     controllersRef.current.delete(localId)
     filesRef.current.delete(localId)
+    reservedSizes.current.delete(localId)
     setItems((prev) => {
       const found = prev.find((it) => it.localId === localId)
       if (found?.previewUrl) URL.revokeObjectURL(found.previewUrl)
@@ -243,6 +258,7 @@ export function useConversationComposerAttachments(upload: ComposerUploadFn) {
     controllersRef.current.forEach((controller) => controller.abort())
     controllersRef.current.clear()
     filesRef.current.clear()
+    reservedSizes.current.clear()
     setItems((prev) => {
       prev.forEach((it) => {
         if (it.previewUrl) URL.revokeObjectURL(it.previewUrl)
@@ -258,6 +274,7 @@ export function useConversationComposerAttachments(upload: ComposerUploadFn) {
     controllersRef.current.forEach((controller) => controller.abort())
     controllersRef.current.clear()
     filesRef.current.clear()
+    reservedSizes.current.clear()
     countRef.current = attachments.length
     setItems((prev) => {
       prev.forEach((it) => {
@@ -265,8 +282,10 @@ export function useConversationComposerAttachments(upload: ComposerUploadFn) {
       })
       return attachments.map((a) => {
         const family = a.family ?? familyFor(a.name, a.contentType)
+        const localId = createLocalId()
+        reservedSizes.current.set(localId, a.size)
         return {
-          localId: createLocalId(),
+          localId,
           name: a.name,
           size: a.size,
           family,

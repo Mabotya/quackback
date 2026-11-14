@@ -20,7 +20,8 @@ import {
   PORTAL_MY_CONVERSATIONS_QUERY_KEY,
 } from '@/lib/client/queries/portal-support'
 import { isPortalSupportSurfaceEnabled } from '@/lib/shared/support-surfaces'
-import { useSessionContext, useWorkspaceSettings } from '@/lib/client/hooks/use-root-context'
+import { useSessionContext, useWorkspaceSettings, useUserRole } from '@/lib/client/hooks/use-root-context'
+import { isTeamMember } from '@/lib/shared/roles'
 
 export const Route = createFileRoute('/_portal/support/$conversationId')({
   component: SupportThreadPage,
@@ -38,6 +39,7 @@ function SupportThreadPage() {
   const queryClient = useQueryClient()
   const { conversationId } = Route.useParams()
   const session = useSessionContext()
+  const userRole = useUserRole()
   const settings = useWorkspaceSettings()
   const portalLoader = useLoaderData({ from: '/_portal' })
   const portalAvatar =
@@ -126,6 +128,7 @@ function SupportThreadPage() {
             linkPreviews={!!settings?.featureFlags?.supportInbox}
             currentUser={user ? { name: user.name, avatarUrl: portalAvatar ?? user.image } : null}
             uploadFile={upload}
+            isTeamMember={isTeamMember(userRole)}
             presence={presenceQuery.data ?? OFFLINE}
             embedOpenMode="navigate"
             onConversationStarted={onConversationStarted}

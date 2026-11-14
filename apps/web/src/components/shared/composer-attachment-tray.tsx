@@ -33,12 +33,17 @@ function localizedError(item: ComposerAttachmentItem, intl: IntlShape): string {
         defaultMessage: 'The file is empty',
       })
     case 'too_large': {
-      const mb = Math.round(maxBytesForFamily(item.family) / (1024 * 1024))
+      const mb = Math.round((item.maxFileBytes ?? maxBytesForFamily(item.family)) / (1024 * 1024))
       return intl.formatMessage(
         { id: 'files.upload.error.tooLarge', defaultMessage: 'Over {size} MB' },
         { size: intl.formatNumber(mb) }
       )
     }
+    case 'total_limit':
+      return intl.formatMessage({
+        id: 'files.upload.error.totalLimit',
+        defaultMessage: 'Attachments cannot total more than 40 MB.',
+      })
     case 'blocked':
       return intl.formatMessage({
         id: 'files.upload.error.blocked',

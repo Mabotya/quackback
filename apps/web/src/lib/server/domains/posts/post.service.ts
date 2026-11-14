@@ -62,6 +62,7 @@ import { getBaseUrl } from '@/lib/server/config'
 import { logger } from '@/lib/server/logger'
 import { isTestCustomer, notTestPrincipal } from '@/lib/server/test-data'
 import { resolveTestFeedbackActor } from '@/lib/server/test-customer-feedback'
+import { validatePublicPostMedia } from './post-media-limits'
 
 const log = logger.child({ component: 'posts' })
 
@@ -209,6 +210,7 @@ export async function createPost(
     contentType: 'post',
     principalId: author.principalId,
   })
+  if (!isTeamActor(createActor)) await validatePublicPostMedia(contentJson)
 
   const post = await db.transaction(async (tx) => {
     // Re-fetch the board (with its access matrix) under a row lock to close the

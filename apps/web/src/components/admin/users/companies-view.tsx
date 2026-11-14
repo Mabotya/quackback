@@ -62,11 +62,11 @@ export function SourceBadge({ source }: { source: 'api' | 'manual' }) {
 }
 
 const MRR_OPERATORS = [
-  { value: 'gte', label: 'at least' },
-  { value: 'gt', label: 'more than' },
-  { value: 'lte', label: 'at most' },
-  { value: 'lt', label: 'less than' },
-  { value: 'eq', label: 'exactly' },
+  { value: 'gte', label: '以上' },
+  { value: 'gt', label: 'より大きい' },
+  { value: 'lte', label: '以下' },
+  { value: 'lt', label: 'より小さい' },
+  { value: 'eq', label: '等しい' },
 ]
 
 const OP_LABELS: Record<string, string> = {
@@ -87,11 +87,11 @@ function splitParts(encoded?: string): string[] {
 }
 
 const STRING_FIELD_OPERATORS = [
-  { value: 'eq', label: 'equals' },
-  { value: 'neq', label: 'not equals' },
-  { value: 'contains', label: 'contains' },
-  { value: 'is_set', label: 'is set' },
-  { value: 'is_not_set', label: 'is not set' },
+  { value: 'eq', label: '等しい' },
+  { value: 'neq', label: '等しくない' },
+  { value: 'contains', label: 'を含む' },
+  { value: 'is_set', label: 'が設定済み' },
+  { value: 'is_not_set', label: 'が未設定' },
 ]
 
 /** One text/number/boolean predicate editor for a filter key. */
@@ -109,7 +109,7 @@ function FilterPredicateInput({
   const operators = isNumeric
     ? MRR_OPERATORS
     : isBool
-      ? [{ value: 'eq', label: 'is' }]
+      ? [{ value: 'eq', label: 'が' }]
       : STRING_FIELD_OPERATORS
   const [op, setOp] = useState(operators[0].value)
   const [value, setValue] = useState(isBool ? 'true' : '')
@@ -142,15 +142,15 @@ function FilterPredicateInput({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="true">True</SelectItem>
-              <SelectItem value="false">False</SelectItem>
+              <SelectItem value="true">真</SelectItem>
+              <SelectItem value="false">偽</SelectItem>
             </SelectContent>
           </Select>
         ) : (
           <Input
             type={isNumeric ? 'number' : 'text'}
             className="h-7 text-xs"
-            placeholder={isNumeric ? '0' : 'value'}
+            placeholder={isNumeric ? '0' : '値'}
             value={value}
             autoFocus={!isNumeric}
             onChange={(e) => setValue(e.target.value)}
@@ -168,10 +168,10 @@ function FilterPredicateInput({
 
 /** The standard-column filter categories (plan/mrr handled specially by kind). */
 const STANDARD_FILTER_CATEGORIES: { key: string; label: string; kind: 'string' | 'number' }[] = [
-  { key: 'plan', label: 'Plan', kind: 'string' },
-  { key: 'mrr', label: 'Monthly spend', kind: 'number' },
-  { key: 'size', label: 'Size', kind: 'string' },
-  { key: 'industry', label: 'Industry', kind: 'string' },
+  { key: 'plan', label: 'プラン', kind: 'string' },
+  { key: 'mrr', label: '月額利用額', kind: 'number' },
+  { key: 'size', label: '規模', kind: 'string' },
+  { key: 'industry', label: '業種', kind: 'string' },
 ]
 
 /** The Filter control that opens the category menu; lives in the list toolbar. */
@@ -253,7 +253,7 @@ function AddCompanyFilterButton({
             {sourceAvailable && (
               <button
                 type="button"
-                onClick={() => setCategory({ key: 'source', label: 'Source', kind: 'source' })}
+                onClick={() => setCategory({ key: 'source', label: '登録元', kind: 'source' })}
                 className="w-full flex items-center justify-between gap-2 px-2.5 py-1.5 text-[13px] text-left hover:bg-muted/50 transition-colors"
               >
                 <span className="flex items-center gap-2">
@@ -398,7 +398,7 @@ function NewCompanyDialog({
       onCreated(company.id)
     },
     onError: (error) => {
-      toastError(error, 'Failed to create company')
+      toastError(error, '企業を作成できませんでした')
     },
   })
 
@@ -406,7 +406,7 @@ function NewCompanyDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>New company</DialogTitle>
+          <DialogTitle>新しい企業</DialogTitle>
         </DialogHeader>
         <form
           className="space-y-4"
@@ -416,7 +416,7 @@ function NewCompanyDialog({
           }}
         >
           <div className="space-y-1.5">
-            <Label htmlFor="company-name">Name</Label>
+            <Label htmlFor="company-name">名前</Label>
             <Input
               id="company-name"
               value={name}
@@ -427,7 +427,7 @@ function NewCompanyDialog({
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="company-domain">
-              Email domain <span className="text-muted-foreground font-normal">(optional)</span>
+              メールドメイン <span className="text-muted-foreground font-normal">（任意）</span>
             </Label>
             <Input
               id="company-domain"
@@ -443,10 +443,10 @@ function NewCompanyDialog({
               onClick={() => onOpenChange(false)}
               disabled={create.isPending}
             >
-              Cancel
+              キャンセル
             </Button>
             <Button type="submit" disabled={!name.trim() || create.isPending}>
-              {create.isPending ? 'Creating...' : 'Create company'}
+              {create.isPending ? '作成中...' : '企業を作成'}
             </Button>
           </DialogFooter>
         </form>
@@ -511,7 +511,7 @@ export function CompaniesView({
       <AdminListHeader
         searchValue={searchValue}
         onSearchChange={setSearchValue}
-        searchPlaceholder="Search companies..."
+        searchPlaceholder="企業を検索..."
         filters={
           <AddCompanyFilterButton companyAttrs={companyAttrs} onChange={onCompanyAttrsChange} />
         }
@@ -520,10 +520,10 @@ export function CompaniesView({
             <Button variant="outline" size="sm" asChild>
               <a href={buildCompaniesExportUrl(search, companyAttrs)} download>
                 <ArrowDownTrayIcon className="h-3.5 w-3.5" />
-                Export CSV
+                CSVを出力
               </a>
             </Button>
-            {canManage && <NewButton noun="company" onClick={() => setCreateOpen(true)} />}
+            {canManage && <NewButton noun="company" onClick={() => setCreateOpen(true)}>新しい企業</NewButton>}
           </>
         }
       >
@@ -532,7 +532,7 @@ export function CompaniesView({
         </div>
 
         <div className="mt-2 text-xs text-muted-foreground">
-          {total} {total === 1 ? 'company' : 'companies'}
+          企業 {total}件
         </div>
       </AdminListHeader>
 
@@ -554,11 +554,11 @@ export function CompaniesView({
           <div className="rounded-xl overflow-hidden shadow-sm bg-card border border-border/50">
             <EmptyState
               icon={BuildingOffice2Icon}
-              title={hasActiveFilters ? 'No companies match your filters' : 'No companies yet'}
+              title={hasActiveFilters ? '条件に一致する企業はありません' : '企業はまだありません'}
               description={
                 hasActiveFilters
-                  ? "Try adjusting your filters to find what you're looking for."
-                  : 'Companies appear here when users are linked to one, via the API or an agent.'
+                  ? 'フィルターの条件を変更してみてください。'
+                  : 'APIや担当者によりユーザーと企業が関連付けられると、ここに表示されます。'
               }
               action={
                 hasActiveFilters ? (
@@ -570,7 +570,7 @@ export function CompaniesView({
                     }}
                     className="text-sm text-primary hover:underline"
                   >
-                    Clear filters
+                    フィルターを解除
                   </button>
                 ) : undefined
               }
@@ -582,13 +582,13 @@ export function CompaniesView({
             {/* Column header */}
             <div className="hidden sm:flex items-center gap-3 px-3 py-2">
               <div className="h-9 w-9 shrink-0" aria-hidden="true" />
-              <span className={cn('min-w-0 flex-1', MENU_LABEL)}>Company</span>
-              <span className={cn('w-24 text-left', MENU_LABEL)}>Plan</span>
+              <span className={cn('min-w-0 flex-1', MENU_LABEL)}>企業</span>
+              <span className={cn('w-24 text-left', MENU_LABEL)}>プラン</span>
               <span className={cn('w-28 whitespace-nowrap text-right', MENU_LABEL)}>
-                Monthly spend
+                月額利用額
               </span>
-              <span className={cn('w-16 text-right', MENU_LABEL)}>Users</span>
-              <span className={cn('w-16 text-right', MENU_LABEL)}>Source</span>
+              <span className={cn('w-16 text-right', MENU_LABEL)}>ユーザー</span>
+              <span className={cn('w-16 text-right', MENU_LABEL)}>登録元</span>
             </div>
             {companies.map((company) => (
               <button
@@ -603,7 +603,7 @@ export function CompaniesView({
                 <div className="flex-1 min-w-0">
                   <div className="truncate text-sm font-medium text-foreground">{company.name}</div>
                   <div className="truncate text-xs text-muted-foreground">
-                    {company.domain ?? 'No domain'}
+                    {company.domain ?? 'ドメイン未設定'}
                   </div>
                 </div>
                 <span className="w-24 shrink-0 hidden sm:block">

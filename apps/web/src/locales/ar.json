@@ -1,4 +1,6 @@
 {
+  "files.upload.error.totalLimit": "يجب ألا يتجاوز مجموع المرفقات 40 ميغابايت.",
+  "files.upload.error.singleLimit": "يجب ألا يتجاوز حجم الملف {size} ميغابايت.",
   "portal.settings.accountError.invalidPassword": "كلمة المرور الحالية غير صحيحة.",
   "portal.settings.accountError.rateLimited": "محاولات كثيرة جدًا. يرجى المحاولة لاحقًا.",
   "portal.settings.accountError.sameEmail": "هذا هو عنوان بريدك الإلكتروني بالفعل.",

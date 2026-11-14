@@ -381,7 +381,13 @@ async function createAuth() {
       ...socialProviderConfig(provider, creds),
       mapProfileToUser: mapProfileClaims,
     }
-    trustedProviders.push(provider.id)
+    // Trusted providers bypass Better Auth's provider email verification check
+    // during implicit linking. These public identity providers can report an
+    // unverified address, so require both their verified-email claim and the
+    // existing local account's verification before matching accounts by email.
+    if (!['google', 'discord', 'github'].includes(provider.id)) {
+      trustedProviders.push(provider.id)
+    }
   }
 
   // BASE_URL is required for auth callbacks and redirects. Under pooled
@@ -565,6 +571,7 @@ async function createAuth() {
       accountLinking: {
         enabled: true,
         trustedProviders,
+        requireLocalEmailVerified: true,
         // Let someone already signed in attach a provider whose address differs
         // from their account's. Without it a provider that releases no email —
         // and therefore signs people in under a placeholder address — can never

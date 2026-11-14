@@ -10,9 +10,11 @@
 import type { PrincipalId } from '@quackback/ids'
 import { isS3Usable } from '@/lib/server/storage/s3'
 import { readBodyWithLimit } from '@/lib/server/utils/read-body'
-import { familyFor, formatBytes, maxBytesForFamily } from '@/lib/shared/files/file-types'
+import { formatBytes } from '@/lib/shared/files/file-types'
+import { db, eq, principal } from '@/lib/server/db'
 import { logger } from '@/lib/server/logger'
 import { storeFile, toUploadedFile, FileRejectedError, type FileSource } from './files.service'
+import { TEAM_FILE_LIMIT, USER_FILE_LIMIT } from './attachment-limits'
 
 const log = logger.child({ component: 'file-upload' })
 
@@ -36,10 +38,11 @@ export async function handleFileUploadRequest(
   if (!name) return Response.json({ error: 'Missing file name' }, { status: 400 })
   const declaredType = request.headers.get('content-type')
 
-  // Read up to the cap the name or declared type allows. The bytes decide the
-  // real family afterwards, and storeFile re-checks against that family's cap,
-  // so a "video" that turns out to be a 90 MB PDF is still refused.
-  const readCap = maxBytesForFamily(familyFor(name, declaredType ?? ''))
+  // Membership is derived from the database, never from the file name or client.
+  const record = sender.uploadedById
+    ? await db.query.principal.findFirst({ where: eq(principal.id, sender.uploadedById), columns: { role: true } })
+    : null
+  const readCap = record?.role === 'admin' || record?.role === 'member' ? TEAM_FILE_LIMIT : USER_FILE_LIMIT
   const bytes = await readBodyWithLimit(request, readCap)
   if (!bytes) {
     return Response.json(
@@ -56,6 +59,7 @@ export async function handleFileUploadRequest(
       source: sender.source,
       uploadedById: sender.uploadedById,
       unverifiedSender: sender.unverifiedSender,
+      maxBytes: readCap,
     })
     return Response.json(toUploadedFile(row), { status: 201 })
   } catch (err) {

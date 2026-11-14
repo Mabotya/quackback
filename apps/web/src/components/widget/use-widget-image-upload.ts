@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { VISITOR_ATTACHMENT_LIMITS } from '@/lib/client/attachment-policy'
 import {
   useImageUpload,
   useMediaUpload,
@@ -79,7 +80,7 @@ export function useWidgetMediaUpload(options: UseWidgetImageUploadOptions = {}) 
 
   const upload = useCallback(
     async (file: File): Promise<string> => {
-      const invalid = validateMediaFile(file)
+      const invalid = validateMediaFile(file, VISITOR_ATTACHMENT_LIMITS.maxFileBytes)
       if (invalid) {
         onError?.(invalid)
         throw invalid

@@ -33,6 +33,7 @@ import { contentHoldReason } from '@/lib/server/content/content-holds'
 import { recordAuditEvent } from '@/lib/server/audit/log'
 import { logger } from '@/lib/server/logger'
 import { recalculateCanonicalVoteCount } from './post.merge-ids'
+import { validatePublicPostMedia } from './post-media-limits'
 
 const log = logger.child({ component: 'post-user-actions' })
 
@@ -173,6 +174,14 @@ export async function userEditPost(
     }
   }
 
+  const nextJson = input.contentJson ?? markdownToTiptapJson(input.content.trim())
+  if (!isTeamMember(actor.role)) {
+    await validatePublicPostMedia(
+      nextJson,
+      existingPost.contentJson ?? markdownToTiptapJson(existingPost.content)
+    )
+  }
+
   // Record edit history if enabled
   if (config.features.showPublicEditHistory) {
     await db.insert(postEditHistory).values({
@@ -185,7 +194,6 @@ export async function userEditPost(
   }
 
   const authorIsTeam = isTeamMember(actor.role)
-  const nextJson = input.contentJson ?? markdownToTiptapJson(input.content.trim())
   const holdReason = authorIsTeam
     ? null
     : contentHoldReason(

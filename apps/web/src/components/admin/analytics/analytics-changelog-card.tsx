@@ -7,12 +7,12 @@ interface ChangelogCardProps {
 
 export function AnalyticsChangelogCard({ topEntries }: ChangelogCardProps) {
   if (topEntries.length === 0) {
-    return <AnalyticsEmpty message="No changelog entries yet" />
+    return <AnalyticsEmpty message="変更履歴はまだありません" />
   }
 
   return (
     <AnalyticsBarList
-      header={{ label: 'Entry', value: 'Views' }}
+      header={{ label: '項目', value: '閲覧数' }}
       rows={topEntries.map((entry) => ({
         key: entry.id,
         label: entry.title,

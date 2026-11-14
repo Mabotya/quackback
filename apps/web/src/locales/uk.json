@@ -1,4 +1,6 @@
 {
+  "files.upload.error.totalLimit": "Загальний розмір вкладень не може перевищувати 40 МБ.",
+  "files.upload.error.singleLimit": "Кожен файл має бути не більшим за {size} МБ.",
   "portal.settings.accountError.invalidPassword": "Поточний пароль неправильний.",
   "portal.settings.accountError.rateLimited": "Забагато спроб. Повторіть пізніше.",
   "portal.settings.accountError.sameEmail": "Це вже ваша адреса електронної пошти.",

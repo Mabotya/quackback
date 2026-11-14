@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { act, renderHook } from '@testing-library/react'
 import { MAX_CONVERSATION_ATTACHMENTS } from '@/lib/shared/conversation/types'
 import { UploadError } from '@/lib/client/files/upload-file'
+import { TEAM_ATTACHMENT_LIMITS, MIB } from '@/lib/client/attachment-policy'
 import { useConversationComposerAttachments } from '../use-conversation-composer-attachments'
 
 function png(name: string, size = 1) {
@@ -174,7 +175,7 @@ describe('useConversationComposerAttachments', () => {
     const empty = result.current.items.find((i) => i.name === 'empty.txt')
     expect(huge).toMatchObject({
       status: 'error',
-      error: 'Over 25 MB',
+      error: 'Over 10 MB',
       errorReason: 'too_large',
       retryable: false,
     })
@@ -184,6 +185,27 @@ describe('useConversationComposerAttachments', () => {
       errorReason: 'empty',
       retryable: false,
     })
+  })
+
+  it('reserves the 40 MiB visitor total across additions and releases it on removal', async () => {
+    const upload = vi.fn((file: File) => Promise.resolve(uploadedFileFor(file)))
+    const { result } = renderHook(() => useConversationComposerAttachments(upload))
+    await act(async () => { await result.current.addFiles([1, 2, 3, 4].map((n) => txt(`${n}.txt`, 10 * MIB))) })
+    await act(async () => { await result.current.addFiles([txt('extra.txt', 1)]) })
+    expect(upload).toHaveBeenCalledTimes(4)
+    expect(result.current.items.find((i) => i.name === 'extra.txt')?.errorReason).toBe('total_limit')
+    const first = result.current.items.find((i) => i.name === '1.txt')!
+    act(() => result.current.remove(first.localId))
+    await act(async () => { await result.current.addFiles([txt('replacement.txt', 10 * MIB)]) })
+    expect(upload).toHaveBeenCalledTimes(5)
+  })
+
+  it('permits team members multiple 100 MiB files but rejects files above 100 MiB', async () => {
+    const upload = vi.fn((file: File) => Promise.resolve(uploadedFileFor(file)))
+    const { result } = renderHook(() => useConversationComposerAttachments(upload, TEAM_ATTACHMENT_LIMITS))
+    await act(async () => { await result.current.addFiles([txt('a.txt', 100 * MIB), txt('b.txt', 100 * MIB), txt('large.txt', 100 * MIB + 1)]) })
+    expect(upload).toHaveBeenCalledTimes(2)
+    expect(result.current.items.find((i) => i.name === 'large.txt')?.errorReason).toBe('too_large')
   })
 
   it('marks a definitive server rejection as not retryable and a network failure as retryable', async () => {

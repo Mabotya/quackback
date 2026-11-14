@@ -1,4 +1,6 @@
 {
+  "files.upload.error.totalLimit": "添付ファイルの合計は40 MBまでです。",
+  "files.upload.error.singleLimit": "ファイルは1件あたり{size} MBまでです。",
   "portal.settings.accountError.invalidPassword": "現在のパスワードが正しくありません。",
   "portal.settings.accountError.rateLimited": "試行回数が多すぎます。しばらくしてからもう一度お試しください。",
   "portal.settings.accountError.sameEmail": "そのメールアドレスは既に設定されています。",
@@ -226,7 +228,7 @@
   "portal.feedback.list.noPostsYetDescription": "{workspace}チームがすべてのご要望に目を通します。",
   "portal.feedback.header.postingTo": "投稿先",
   "portal.feedback.header.selectBoard": "ボードを選択してください",
-  "portal.feedback.header.titlePlaceholder": "タイトル",
+  "portal.feedback.header.titlePlaceholder": "ここにタイトルを入力して投稿を作成",
   "portal.feedback.header.detailsPlaceholder": "詳しい内容を入力",
   "portal.feedback.header.postingAs": "投稿者",
   "portal.feedback.header.signOut": "サインアウトする",

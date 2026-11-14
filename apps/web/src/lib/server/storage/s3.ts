@@ -1332,7 +1332,8 @@ export async function uploadImageFromFormData(
 /** Validate and upload an image or a browser-playable feedback video. */
 export async function uploadMediaFromFormData(
   formData: FormData,
-  storagePrefix: string
+  storagePrefix: string,
+  options?: { maxBytes?: number }
 ): Promise<Response> {
   const file = formData.get('file')
   if (!(file instanceof File)) {
@@ -1344,7 +1345,7 @@ export async function uploadMediaFromFormData(
   if (!contentType || !isAllowedMediaType(contentType)) {
     return Response.json({ error: 'Invalid file type' }, { status: 400 })
   }
-  const maxBytes = maxMediaFileSize(contentType)
+  const maxBytes = options?.maxBytes ?? maxMediaFileSize(contentType)
   if (file.size > maxBytes) {
     return Response.json(
       { error: `File too large. Maximum size is ${maxBytes / 1024 / 1024}MB` },

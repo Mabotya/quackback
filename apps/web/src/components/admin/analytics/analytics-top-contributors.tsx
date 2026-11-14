@@ -16,12 +16,12 @@ interface TopContributorsProps {
 
 export function AnalyticsTopContributors({ contributors }: TopContributorsProps) {
   if (contributors.length === 0) {
-    return <AnalyticsEmpty message="No contributor activity in this period" />
+    return <AnalyticsEmpty message="この期間に貢献者の活動はありません" />
   }
 
   return (
     <AnalyticsBarList
-      header={{ label: 'Contributor', value: 'Activity' }}
+      header={{ label: '貢献者', value: 'アクティビティ' }}
       rows={contributors.map((c) => ({
         key: c.principalId,
         value: c.total,
@@ -32,7 +32,7 @@ export function AnalyticsTopContributors({ contributors }: TopContributorsProps)
             className="relative size-5 shrink-0 text-xs"
           />
         ),
-        label: c.displayName ?? 'Anonymous',
+        label: c.displayName ?? '匿名',
       }))}
     />
   )

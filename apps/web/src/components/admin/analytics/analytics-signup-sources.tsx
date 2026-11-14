@@ -9,12 +9,12 @@ interface SignupSourcesProps {
  *  SSO, …), as a proportional bar list. */
 export function AnalyticsSignupSources({ sources }: SignupSourcesProps) {
   if (sources.length === 0) {
-    return <AnalyticsEmpty message="No signups in this period" />
+    return <AnalyticsEmpty message="この期間の新規登録はありません" />
   }
 
   return (
     <AnalyticsBarList
-      header={{ label: 'Source', value: 'Signups' }}
+      header={{ label: '登録元', value: '新規登録' }}
       rows={sources.map((s) => ({ key: s.source, label: s.source, value: s.count }))}
     />
   )

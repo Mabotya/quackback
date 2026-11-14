@@ -42,7 +42,7 @@ function AnalyticsStat({ label, value, suffix, delta, caption, muted }: Analytic
       {/* The delta line is always present (a delta, a scope caption, or an empty
           spacer) so every stat tile in a row is the same height. */}
       {delta !== undefined ? (
-        <TrendDelta value={delta} suffix="vs prev" className="mt-1.5" />
+        <TrendDelta value={delta} suffix="前期間比" className="mt-1.5" />
       ) : caption ? (
         <p className="mt-1.5 flex h-4 items-center text-xs leading-none text-muted-foreground">
           {caption}

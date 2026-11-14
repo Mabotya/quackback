@@ -44,7 +44,7 @@ export function AnalyticsConversationVolumeChart({
           CHART_HEIGHT_CLASS
         )}
       >
-        No conversations for this period
+        この期間の会話はありません
       </div>
     )
   }

@@ -64,7 +64,7 @@ export function UserCard({ user, isSelected, onClick, showCountry = false }: Use
         {displayEmail ? (
           <p className="text-sm text-muted-foreground truncate">{displayEmail}</p>
         ) : (
-          <p className="text-sm text-muted-foreground/50 italic truncate">No email</p>
+          <p className="text-sm text-muted-foreground/50 italic truncate">メールアドレスなし</p>
         )}
       </div>
 
@@ -100,13 +100,13 @@ export function UserCard({ user, isSelected, onClick, showCountry = false }: Use
           hidden when zero) so the column stays put and can be scanned straight
           down instead of decoded row by row. */}
       <div className="flex shrink-0 items-center gap-3 text-xs tabular-nums text-muted-foreground">
-        <span className={cn(METRIC_COLUMN_WIDTH, 'text-right')} title="Posts">
+        <span className={cn(METRIC_COLUMN_WIDTH, 'text-right')} title="投稿">
           {user.postCount}
         </span>
-        <span className={cn(METRIC_COLUMN_WIDTH, 'text-right')} title="Comments">
+        <span className={cn(METRIC_COLUMN_WIDTH, 'text-right')} title="コメント">
           {user.commentCount}
         </span>
-        <span className={cn(METRIC_COLUMN_WIDTH, 'text-right')} title="Votes">
+        <span className={cn(METRIC_COLUMN_WIDTH, 'text-right')} title="投票">
           {user.voteCount}
         </span>
       </div>

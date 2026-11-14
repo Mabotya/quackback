@@ -8,11 +8,11 @@ describe('<AnalyticsSectionSelect>', () => {
   it('renders the active section label in the trigger', () => {
     render(<AnalyticsSectionSelect items={SECTION_NAV_ITEMS} value="feedback" onChange={vi.fn()} />)
     // Radix Select renders the selected value text inside the trigger.
-    expect(screen.getByText('Feedback')).toBeInTheDocument()
+    expect(screen.getByText('フィードバック')).toBeInTheDocument()
   })
 
   it('exposes an accessible combobox labelled "Section"', () => {
     render(<AnalyticsSectionSelect items={SECTION_NAV_ITEMS} value="overview" onChange={vi.fn()} />)
-    expect(screen.getByRole('combobox', { name: 'Section' })).toBeInTheDocument()
+    expect(screen.getByRole('combobox', { name: 'セクション' })).toBeInTheDocument()
   })
 })
