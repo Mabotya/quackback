@@ -261,7 +261,9 @@ export const fetchPortalData = createServerFn({ method: 'GET' })
     }
 
     return {
-      boards: boardsRaw.map(serializePublicBoard),
+      boards: boardsRaw
+        .filter((board) => !board.settings?.hideFromFeedback)
+        .map(serializePublicBoard),
       posts,
       statuses,
       tags,

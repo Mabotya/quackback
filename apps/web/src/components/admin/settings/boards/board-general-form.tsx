@@ -3,6 +3,7 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
 import { updateBoardSchema, type UpdateBoardInput } from '@/lib/shared/schemas/boards'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { Switch } from '@/components/ui/switch'
 import {
   Form,
   FormControl,
@@ -20,6 +21,7 @@ interface Board {
   name: string
   slug: string
   description: string | null
+  settings?: { hideFromFeedback?: boolean }
 }
 
 interface BoardGeneralFormProps {
@@ -98,6 +100,23 @@ export function BoardGeneralForm({ board }: BoardGeneralFormProps) {
             </FormItem>
           )}
         />
+        <div className="flex items-center justify-between gap-4 rounded-lg border p-4">
+          <div>
+            <label htmlFor="hide-from-feedback" className="text-sm font-medium">
+              フィードバック一覧に表示しない
+            </label>
+            <p className="text-sm text-muted-foreground">
+              ロードマップや投稿の詳細は、閲覧権限に応じて表示されます。投稿をチームのみに制限する場合は「アクセス」で設定してください。
+            </p>
+          </div>
+          <Switch
+            id="hide-from-feedback"
+            checked={board.settings?.hideFromFeedback === true}
+            onCheckedChange={(checked) =>
+              mutation.mutate({ id: board.id, settings: { hideFromFeedback: checked } })
+            }
+          />
+        </div>
       </form>
     </Form>
   )

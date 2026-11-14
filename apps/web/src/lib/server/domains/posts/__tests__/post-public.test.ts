@@ -8,7 +8,10 @@ const mockIsNull = vi.fn((col) => ({ _tag: 'isNull', col }))
 const mockInArray = vi.fn((col, arr) => ({ _tag: 'inArray', col, arr }))
 const mockAnd = vi.fn((...args) => ({ _tag: 'and', args }))
 const mockDesc = vi.fn((col) => ({ _tag: 'desc', col }))
-const mockSql = vi.fn(() => ({ _tag: 'sql', as: vi.fn(() => ({ _tag: 'sql_as' })) }))
+const mockSql = vi.fn((..._args: unknown[]) => ({
+  _tag: 'sql',
+  as: vi.fn(() => ({ _tag: 'sql_as' })),
+}))
 const mockGte = vi.fn((col, val) => ({ _tag: 'gte', col, val }))
 
 const mockPosts = {
@@ -426,5 +429,22 @@ describe('tag portal visibility — tags embedded on listed posts', () => {
       col: mockPostTags.isPublic,
       val: true,
     })
+  })
+})
+
+describe('roadmap-only boards', () => {
+  it('excludes them from portal feed filtering but not other public queries', async () => {
+    const { buildPostFilterConditions } = await import('../post.public')
+    const actor = TEAM_ACTOR
+    mockSql.mockClear()
+    buildPostFilterConditions({ portalFeed: true }, actor)
+    expect(mockSql.mock.calls.some(([parts]) => String(parts).includes('hideFromFeedback'))).toBe(
+      true
+    )
+    mockSql.mockClear()
+    buildPostFilterConditions({}, actor)
+    expect(mockSql.mock.calls.some(([parts]) => String(parts).includes('hideFromFeedback'))).toBe(
+      false
+    )
   })
 })

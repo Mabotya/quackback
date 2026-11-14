@@ -103,3 +103,12 @@ describe('<BoardGeneralForm> rename navigation', () => {
     expect(navigate).not.toHaveBeenCalled()
   })
 })
+
+it('hides a board from feedback without overwriting its other settings', () => {
+  render(<BoardGeneralForm board={board} />)
+  fireEvent.click(screen.getByRole('switch', { name: 'フィードバック一覧に表示しない' }))
+  expect(mutate).toHaveBeenCalledWith({
+    id: board.id,
+    settings: { hideFromFeedback: true },
+  })
+})

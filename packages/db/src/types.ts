@@ -83,6 +83,7 @@ export type NewBoard = InferInsertModel<typeof boards>
 
 // Board settings (stored in boards.settings JSONB column)
 export interface BoardSettings {
+  hideFromFeedback?: boolean // Keep public roadmap/detail access while excluding feedback listings
   roadmapStatusIds?: PostStatusId[] // Status IDs to show on roadmap
   customFields?: BoardCustomField[] // Extra intake fields the submission form renders
 }

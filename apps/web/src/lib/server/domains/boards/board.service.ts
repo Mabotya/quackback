@@ -24,6 +24,7 @@ import {
   asc,
 } from '@/lib/server/db'
 import type { BoardId, PostId } from '@quackback/ids'
+import type { SQL } from 'drizzle-orm'
 import { emitBestEffort } from '@/lib/server/events/emit'
 import { boardCreated, boardDeleted } from '@/lib/server/events/catalogue'
 import { NotFoundError, ValidationError, ConflictError } from '@/lib/shared/errors'
@@ -231,11 +232,14 @@ export async function updateBoard(id: BoardId, input: UpdateBoardInput): Promise
   }
 
   // Build update data
-  const updateData: Partial<Board> = {}
+  const updateData: Partial<Pick<Board, 'name' | 'description' | 'slug'>> & { settings?: SQL } = {}
   if (input.name !== undefined) updateData.name = input.name.trim()
   if (input.description !== undefined) updateData.description = input.description?.trim() || null
   if (slug !== existingBoard.slug) updateData.slug = slug
-  if (input.settings !== undefined) updateData.settings = input.settings
+  if (input.settings !== undefined) {
+    // Merge in the database to preserve unrelated settings even across concurrent updates.
+    updateData.settings = sql`coalesce(${boards.settings}, '{}'::jsonb) || ${JSON.stringify(input.settings)}::jsonb`
+  }
 
   // Update the board
   const [updatedBoard] = await db
