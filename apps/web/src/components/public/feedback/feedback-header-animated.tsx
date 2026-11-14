@@ -408,7 +408,7 @@ export function FeedbackHeaderAnimated({
                   onDocumentChange={handleContentChange}
                   placeholder={intl.formatMessage({
                     id: 'portal.feedback.header.detailsPlaceholder',
-                    defaultMessage: 'Add more details... Type / for commands',
+                    defaultMessage: 'Enter details',
                   })}
                   minHeight="150px"
                   borderless
@@ -599,7 +599,7 @@ function TitleInput({
       maxLength={TITLE_MAX_LENGTH}
       placeholder={intl.formatMessage({
         id: 'portal.feedback.header.titlePlaceholder',
-        defaultMessage: "What's on your mind?",
+        defaultMessage: 'Title',
       })}
       value={value}
       aria-label={intl.formatMessage({
