@@ -17,7 +17,7 @@ export const SECTION_NAV_ITEMS: SectionNavItem[] = [
   { key: 'feedback', label: 'フィードバック', icon: ENTITY_ICONS.post },
   { key: 'support', label: 'サポート', icon: ENTITY_ICONS.conversation },
   { key: 'ai', label: 'Quackback AI', icon: SparklesIcon },
-  { key: 'changelog', label: '変更履歴', icon: ENTITY_ICONS.changelog },
+  { key: 'changelog', label: '更新履歴', icon: ENTITY_ICONS.changelog },
   { key: 'users', label: 'ユーザー', icon: UsersIcon },
 ]
 

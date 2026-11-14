@@ -7,7 +7,7 @@ interface ChangelogCardProps {
 
 export function AnalyticsChangelogCard({ topEntries }: ChangelogCardProps) {
   if (topEntries.length === 0) {
-    return <AnalyticsEmpty message="変更履歴はまだありません" />
+    return <AnalyticsEmpty message="更新履歴はまだありません" />
   }
 
   return (
