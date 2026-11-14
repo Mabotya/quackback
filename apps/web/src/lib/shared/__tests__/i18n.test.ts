@@ -4,6 +4,7 @@ import { join, relative } from 'node:path'
 import {
   normalizeLocale,
   portalLocaleCookie,
+  resolvePortalLocale,
   resolveLocale,
   isRtlLocale,
   SUPPORTED_LOCALES,
@@ -40,6 +41,14 @@ describe('portal language selection', () => {
     expect(resolveLocale('en-US,en;q=0.9', portalLocaleCookie('a=1; td_locale=ja'))).toBe('ja')
     expect(resolveLocale('ja-JP', portalLocaleCookie('td_locale=zh-tw'))).toBe('zh-tw')
     expect(resolveLocale('ja-JP', portalLocaleCookie('td_locale=invalid'))).toBe('ja')
+  })
+  it('offers four languages and falls back to Japanese', () => {
+    expect(resolvePortalLocale('fr-FR, en-US;q=0.8', null)).toBe('en')
+    expect(resolvePortalLocale('fr-FR', null)).toBe('ja')
+    expect(resolvePortalLocale('zh-Hant-HK, en;q=0.8', null)).toBe('zh-tw')
+    expect(resolvePortalLocale('en;q=0, zh-CN;q=0.8', null)).toBe('zh-cn')
+    expect(resolvePortalLocale('en', 'td_locale=ja')).toBe('ja')
+    expect(resolvePortalLocale('en', 'td_locale=fr')).toBe('en')
   })
 })
 

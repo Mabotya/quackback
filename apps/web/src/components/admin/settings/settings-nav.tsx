@@ -1,5 +1,7 @@
 import { memo, useContext, useMemo, type ComponentType, type ReactNode } from 'react'
 import { Link, useRouterState } from '@tanstack/react-router'
+import { useIntl } from 'react-intl'
+import { adminSettingsLabel } from './admin-japanese-labels'
 import { cn } from '@/lib/shared/utils'
 import { NAV_ICON_CLASS, NAV_ITEM_CLASS } from '@/components/shared/nav-tokens'
 import { FilterSection } from '@/components/shared/filter-section'
@@ -62,12 +64,13 @@ export function SettingsNavProvider({ children }: { children: ReactNode }) {
  */
 export function SettingsNav() {
   const navSections = useContext(SettingsNavContext)
+  const { locale } = useIntl()
   if (!navSections) throw new Error('SettingsNav renders inside SettingsNavProvider')
 
   return (
     <div>
       {navSections.map((section) => (
-        <FilterSection key={section.label} title={section.label}>
+        <FilterSection key={section.label} title={adminSettingsLabel(section.label, locale)}>
           <div className="space-y-0.5">
             {section.items.map((entry) =>
               isNavModule(entry) ? (
@@ -108,7 +111,11 @@ function rowContent(label: string, iconPath: string) {
  */
 const NavLink = memo(
   function NavLink({ item }: { item: NavItem }) {
-    const content = useMemo(() => rowContent(item.label, item.to), [item.label, item.to])
+    const { locale } = useIntl()
+    const content = useMemo(
+      () => rowContent(adminSettingsLabel(item.label, locale), item.to),
+      [item.label, item.to, locale]
+    )
     return (
       <Link
         to={item.to}
@@ -131,10 +138,14 @@ const NavLink = memo(
  * when the location moves into or out of the module.
  */
 const ModuleNavLink = memo(function ModuleNavLink({ module }: { module: NavModule }) {
+  const { locale } = useIntl()
   const active = useRouterState({
     select: (s) => module.pages.some((page) => pathIsUnder(s.location.pathname, page.to)),
   })
-  const content = useMemo(() => rowContent(module.label, module.id), [module.label, module.id])
+  const content = useMemo(
+    () => rowContent(adminSettingsLabel(module.label, locale), module.id),
+    [module.label, module.id, locale]
+  )
   return (
     <Link
       to={module.pages[0]!.to}

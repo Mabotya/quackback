@@ -96,6 +96,9 @@ export const Route = createFileRoute('/admin')({
       user,
       principal,
       permissions,
+      // Child admin loaders use this context when loading area-specific
+      // messages. Do not let the visitor's portal selection change them.
+      acceptLanguageLocale: 'ja' as const,
     }
   },
   loader: async ({ context, location }) => {

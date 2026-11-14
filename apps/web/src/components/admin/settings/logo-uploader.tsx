@@ -16,9 +16,11 @@ interface LogoUploaderProps {
   onLogoChange?: (url: string | null) => void
   /** Scroll the control into view and highlight it briefly (a deep link to the logo). */
   focus?: boolean
+  locale?: string
 }
 
-export function LogoUploader({ workspaceName, onLogoChange, focus }: LogoUploaderProps) {
+export function LogoUploader({ workspaceName, onLogoChange, focus, locale }: LogoUploaderProps) {
+  const ja = locale?.startsWith('ja') ?? false
   const fileInputRef = useRef<HTMLInputElement>(null)
   const rootRef = useRef<HTMLDivElement>(null)
   const uploadButtonRef = useRef<HTMLButtonElement>(null)
@@ -51,11 +53,15 @@ export function LogoUploader({ workspaceName, onLogoChange, focus }: LogoUploade
     if (!file) return
 
     if (!RASTER_IMAGE_TYPES.includes(file.type)) {
-      toast.error('Invalid file type. Allowed: JPEG, PNG, GIF, WebP')
+      toast.error(
+        ja
+          ? '対応する画像形式はJPEG、PNG、GIF、WebPです。'
+          : 'Invalid file type. Allowed: JPEG, PNG, GIF, WebP'
+      )
       return
     }
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('File too large. Maximum size is 5MB')
+      toast.error(ja ? '画像サイズの上限は5MBです。' : 'File too large. Maximum size is 5MB')
       return
     }
 
@@ -70,8 +76,9 @@ export function LogoUploader({ workspaceName, onLogoChange, focus }: LogoUploade
       setCropImageSrc(null)
     }
     uploadMutation.mutate(croppedBlob, {
-      onSuccess: () => toast.success('Logo updated'),
-      onError: (error) => toastError(error, 'Failed to upload logo'),
+      onSuccess: () => toast.success(ja ? 'ロゴを更新しました' : 'Logo updated'),
+      onError: (error) =>
+        toastError(error, ja ? 'ロゴをアップロードできませんでした' : 'Failed to upload logo'),
     })
   }
 
@@ -128,9 +135,23 @@ export function LogoUploader({ workspaceName, onLogoChange, focus }: LogoUploade
         size="sm"
         onClick={() => fileInputRef.current?.click()}
         disabled={uploadMutation.isPending}
-        aria-label={hasCustomLogo ? 'Change logo' : 'Upload logo'}
+        aria-label={
+          ja
+            ? hasCustomLogo
+              ? 'ロゴを変更'
+              : 'ロゴをアップロード'
+            : hasCustomLogo
+              ? 'Change logo'
+              : 'Upload logo'
+        }
       >
-        {hasCustomLogo ? 'Change' : 'Upload logo'}
+        {ja
+          ? hasCustomLogo
+            ? '変更'
+            : 'ロゴをアップロード'
+          : hasCustomLogo
+            ? 'Change'
+            : 'Upload logo'}
       </Button>
       {hasCustomLogo && (
         <button
@@ -138,16 +159,23 @@ export function LogoUploader({ workspaceName, onLogoChange, focus }: LogoUploade
           onClick={() =>
             deleteMutation.mutate(undefined, {
               onSuccess: () => {
-                toast.success('Logo removed')
+                toast.success(ja ? 'ロゴを削除しました' : 'Logo removed')
                 onLogoChange?.(null)
               },
-              onError: (error) => toastError(error, 'Failed to remove logo'),
+              onError: (error) =>
+                toastError(error, ja ? 'ロゴを削除できませんでした' : 'Failed to remove logo'),
             })
           }
           disabled={deleteMutation.isPending}
           className="text-xs text-muted-foreground hover:text-destructive transition-colors"
         >
-          {deleteMutation.isPending ? 'Removing…' : 'Remove'}
+          {ja
+            ? deleteMutation.isPending
+              ? '削除中…'
+              : '削除'
+            : deleteMutation.isPending
+              ? 'Removing…'
+              : 'Remove'}
         </button>
       )}
 
@@ -167,7 +195,7 @@ export function LogoUploader({ workspaceName, onLogoChange, focus }: LogoUploade
           onCropComplete={handleCropComplete}
           aspectRatio={1}
           maxOutputSize={512}
-          title="Crop your logo"
+          title={ja ? 'ロゴを切り抜く' : 'Crop your logo'}
         />
       )}
     </div>

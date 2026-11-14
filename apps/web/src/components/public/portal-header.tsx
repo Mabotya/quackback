@@ -45,6 +45,17 @@ import { useAuthBroadcast } from '@/lib/client/hooks/use-auth-broadcast'
 import { NotificationBell } from '@/components/notifications'
 import { useSessionContext, useWorkspaceSettings } from '@/lib/client/hooks/use-root-context'
 
+const SOURCE_LABELS: Record<string, string> = {
+  ja: 'ソースコード',
+  'zh-tw': '原始碼',
+  'zh-cn': '源代码',
+}
+const SOURCE_SHORT_LABELS: Record<string, string> = {
+  ja: 'ソース',
+  'zh-tw': '原始碼',
+  'zh-cn': '源码',
+}
+
 interface PortalHeaderProps {
   orgName: string
   orgLogo?: string | null
@@ -189,6 +200,21 @@ export function PortalHeader({
   // render of the header would tear these menus down and build them again.
   const authButtons = (
     <div className="flex items-center">
+      <a
+        href="https://github.com/Mabotya/quackback"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={SOURCE_LABELS[intl.locale.toLowerCase()] ?? 'Source code'}
+        className="me-2 rounded-md p-1 text-sm text-foreground hover:underline"
+      >
+        <span aria-hidden="true">&lt;/&gt;</span>
+        <span className="ms-1 sm:hidden" aria-hidden="true">
+          {SOURCE_SHORT_LABELS[intl.locale.toLowerCase()] ?? 'Code'}
+        </span>
+        <span className="ms-1 hidden sm:inline">
+          {SOURCE_LABELS[intl.locale.toLowerCase()] ?? 'Source code'}
+        </span>
+      </a>
       <label className="me-2 flex items-center gap-1 text-sm" aria-label="Language / 言語">
         <span aria-hidden="true">🌐</span>
         <select

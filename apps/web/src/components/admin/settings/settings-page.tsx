@@ -5,6 +5,7 @@ import { BackLink } from '@/components/ui/back-link'
 import { PageHeader, type PageCrumb } from '@/components/shared/page-header'
 import { cn } from '@/lib/shared/utils'
 import { SaveStatus } from './save-status'
+import { adminSettingsLabel } from './admin-japanese-labels'
 import { moduleOfPage, type NavModule, type NavSection } from './settings-nav-sections'
 import {
   AUTOMATION_PAGES,
@@ -90,11 +91,13 @@ export function SettingsPage({
     <div data-settings-page-body="" className={cn('space-y-6', WIDTH_CLASS[width])}>
       {backLink && !hasBackCrumb && (
         <div className="lg:hidden">
-          <BackLink to="/admin/settings">Settings</BackLink>
+          <BackLink to="/admin/settings">
+            {intl.locale.startsWith('ja') ? '設定' : 'Settings'}
+          </BackLink>
         </div>
       )}
       <PageHeader
-        title={module ? module.label : resolvedTitle!}
+        title={adminSettingsLabel(module ? module.label : resolvedTitle!, intl.locale)}
         description={module ? undefined : description}
         badge={badge}
         crumbs={shownCrumbs}
@@ -120,6 +123,7 @@ export function SettingsPage({
  * starting with the current tab in view.
  */
 function ModuleTabs({ module, current }: { module: NavModule; current: string }) {
+  const { locale } = useIntl()
   const barRef = useRef<HTMLElement>(null)
   useEffect(() => {
     const bar = barRef.current
@@ -133,7 +137,7 @@ function ModuleTabs({ module, current }: { module: NavModule; current: string })
   return (
     <nav
       ref={barRef}
-      aria-label={module.label}
+      aria-label={adminSettingsLabel(module.label, locale)}
       data-slot="tabs-list"
       data-variant="line"
       className="scrollbar-none relative flex items-center overflow-x-auto"
@@ -148,7 +152,7 @@ function ModuleTabs({ module, current }: { module: NavModule; current: string })
           aria-current={tab.to === current ? 'page' : undefined}
           className="inline-flex shrink-0 items-center text-sm whitespace-nowrap transition-colors"
         >
-          {tab.label}
+          {adminSettingsLabel(tab.label, locale)}
         </Link>
       ))}
     </nav>

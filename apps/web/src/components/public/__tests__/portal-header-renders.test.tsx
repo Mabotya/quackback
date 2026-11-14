@@ -128,6 +128,17 @@ const activeTabs = (container: HTMLElement) =>
   [...container.querySelectorAll('.portal-nav__item--active')].map((a) => a.getAttribute('href'))
 
 describe('PortalHeader renders', () => {
+  it('exposes the language selection and source link to portal visitors', async () => {
+    await mount()
+    const picker = screen.getByRole('combobox', { name: 'Language / 言語' })
+    expect([...picker.querySelectorAll('option')].map((option) => option.value)).toEqual([
+      'ja', 'en', 'zh-tw', 'zh-cn',
+    ])
+    expect(screen.getByRole('link', { name: 'Source code' }).getAttribute('href')).toBe(
+      'https://github.com/Mabotya/quackback'
+    )
+  })
+
   it('renders nothing for a search-only navigation', async () => {
     const { router, container } = await mount()
     expect(activeTabs(container)).toEqual(['/'])

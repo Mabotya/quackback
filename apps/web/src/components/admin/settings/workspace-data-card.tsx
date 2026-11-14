@@ -5,18 +5,23 @@ import { SettingRow, SettingRows } from '@/components/admin/settings/setting-row
 import { SettingsCard } from '@/components/admin/settings/settings-card'
 
 /** Export lives on Imports & exports; this row points there. */
-export function WorkspaceDataCard() {
+export function WorkspaceDataCard({ locale }: { locale?: string }) {
+  const ja = locale?.startsWith('ja') ?? false
   return (
-    <SettingsCard title="Data">
+    <SettingsCard title={ja ? 'データ' : 'Data'}>
       <SettingRows>
         <SettingRow
-          label="Export workspace data"
-          description="Downloads stay in this workspace. They never include platform keys."
+          label={ja ? 'ワークスペースのデータをエクスポート' : 'Export workspace data'}
+          description={
+            ja
+              ? 'ダウンロードはこのワークスペースに保存され、プラットフォームキーは含まれません。'
+              : 'Downloads stay in this workspace. They never include platform keys.'
+          }
           control={
             <Button variant="outline" size="sm" asChild>
               <Link to="/admin/settings/imports">
                 <ArrowRightIcon className="size-4" />
-                Imports &amp; exports
+                {ja ? 'インポートとエクスポート' : 'Imports & exports'}
               </Link>
             </Button>
           }

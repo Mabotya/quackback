@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useIntl } from 'react-intl'
+import { adminSettingsLabel } from '@/components/admin/settings/admin-japanese-labels'
 import { PERMISSIONS } from '@/lib/shared/permissions'
 import { assertRoutePermission } from '@/lib/shared/route-permission'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -52,6 +54,8 @@ export const Route = createFileRoute('/admin/settings/general')({
 })
 
 function GeneralSettingsPage() {
+  const { locale } = useIntl()
+  const ja = locale.startsWith('ja')
   const settings = useWorkspaceSettings()
   const managedFieldPaths = useManagedFieldPaths()
   const { cloudIdentity } = Route.useLoaderData()
@@ -136,11 +140,16 @@ function GeneralSettingsPage() {
         onWorkspaceNameChange={handleNameChange}
         maxLength={cloudIdentity ? 80 : undefined}
         focusLogo={focus === 'logo'}
+        locale={locale}
       />
 
       <SettingsCard
-        title="Modules"
-        description="Choose the Quackback modules available to your team and customers."
+        title={ja ? '機能' : 'Modules'}
+        description={
+          ja
+            ? 'チームと利用者が使うQuackbackの機能を選択します。'
+            : 'Choose the Quackback modules available to your team and customers.'
+        }
       >
         <SettingRows>
           {PRODUCT_DEFINITIONS.map((product) => {
@@ -150,13 +159,26 @@ function GeneralSettingsPage() {
             return (
               <SettingRow
                 key={product.id}
-                label={product.label}
-                description={product.description}
+                label={adminSettingsLabel(product.label, locale)}
+                description={
+                  ja
+                    ? (
+                        {
+                          feedback:
+                            '利用者からアイデア、投票、コメントを集め、ロードマップを公開します。',
+                          support: '利用者との会話やチケットを受信箱でまとめて管理します。',
+                          helpCenter: '利用者が回答を探せるヘルプ記事を公開します。',
+                          changelog: '製品の更新情報を公開して利用者に知らせます。',
+                          status: 'サービスの稼働状況、障害、メンテナンスや稼働履歴を公開します。',
+                        } satisfies Record<ProductId, string>
+                      )[product.id]
+                    : product.description
+                }
                 htmlFor={alwaysOn ? undefined : `product-${product.id}`}
                 control={
                   alwaysOn ? (
                     <Badge id={`product-${product.id}`} variant="secondary">
-                      Always on
+                      {ja ? '常に有効' : 'Always on'}
                     </Badge>
                   ) : (
                     <Switch
@@ -173,7 +195,7 @@ function GeneralSettingsPage() {
         </SettingRows>
       </SettingsCard>
 
-      <WorkspaceDataCard />
+      <WorkspaceDataCard locale={locale} />
 
       <WorkspaceDangerCard
         cloudEnabled={Boolean(cloudIdentity)}

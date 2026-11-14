@@ -37,6 +37,13 @@ export function documentLocale(
   routeIds: readonly string[],
   resolved: SupportedLocale
 ): SupportedLocale {
+  // The authenticated admin layout is deliberately Japanese regardless of
+  // the public portal's language selection. Keep public auth pages English
+  // until their standalone forms are translated.
+  const isAdminAuth = routeIds.some((id) => id === '/admin/login' || id === '/admin/signup')
+  const isAdmin = routeIds.some((id) => id === '/admin' || id.startsWith('/admin/'))
+  if (isAdmin && !isAdminAuth) return 'ja'
+
   const localized =
     routeIds.includes(PORTAL_LAYOUT_ROUTE_ID) || routeIds.some((id) => LOCALIZED_ROUTE_IDS.has(id))
   return localized ? resolved : DEFAULT_LOCALE

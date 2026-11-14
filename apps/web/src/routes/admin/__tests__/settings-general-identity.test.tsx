@@ -13,6 +13,13 @@ vi.mock('@/components/admin/settings/logo-uploader', () => ({
 }))
 
 describe('General workspace identity', () => {
+  it('shows Japanese labels when the admin locale is Japanese', () => {
+    render(
+      <WorkspaceIdentityCard workspaceName="Acme" managed={false} onWorkspaceNameChange={vi.fn()} locale="ja" />
+    )
+    expect(screen.getByRole('heading', { name: 'ワークスペース' })).toBeInTheDocument()
+    expect(screen.getByLabelText('ワークスペース名')).toHaveValue('Acme')
+  })
   it('shows logo and name with no Workspace URL field', () => {
     render(
       <WorkspaceIdentityCard workspaceName="Acme" managed={false} onWorkspaceNameChange={vi.fn()} />

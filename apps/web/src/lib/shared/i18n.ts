@@ -24,6 +24,30 @@ export function portalLocaleCookie(cookie: string | null | undefined): string | 
   return cookie?.split(';').map((part) => part.trim()).find((part) => part.startsWith('td_locale='))?.slice('td_locale='.length)
 }
 
+/** Languages offered by the public TRAIN DAYS portal. */
+export const PORTAL_LOCALES = ['ja', 'en', 'zh-tw', 'zh-cn'] as const
+
+/** Select only an offered language; Japanese is the default for other visitors. */
+export function resolvePortalLocale(
+  acceptLanguage: string | null | undefined,
+  cookie: string | null | undefined
+): SupportedLocale {
+  const allowed: readonly string[] = PORTAL_LOCALES
+  const saved = normalizeLocale(portalLocaleCookie(cookie) ?? '')
+  if (saved && allowed.includes(saved)) return saved
+  const choices = (acceptLanguage ?? '')
+    .split(',')
+    .map((entry) => {
+      const [tag, ...params] = entry.trim().split(';')
+      const qParam = params.find((param) => /^\s*q\s*=/i.test(param))
+      const q = qParam ? Number.parseFloat(qParam.split('=')[1]) : 1
+      return { locale: normalizeLocale(tag.trim()), q: Number.isFinite(q) ? q : 0 }
+    })
+    .filter((entry) => entry.q > 0 && entry.locale && allowed.includes(entry.locale))
+    .sort((a, b) => b.q - a.q)
+  return choices[0]?.locale ?? 'ja'
+}
+
 const RTL_LOCALES = new Set(['ar', 'he', 'fa', 'ur'])
 
 /**

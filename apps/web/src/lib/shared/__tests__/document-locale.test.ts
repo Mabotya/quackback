@@ -14,7 +14,7 @@ describe('documentLocale', () => {
     expect(documentLocale(['__root__', '/widget'], 'ar')).toBe('ar')
     expect(documentLocale(['__root__', '/unsubscribe'], 'ar')).toBe('ar')
   })
-  it('localizes the AI & Automation pages under settings and the workflow builder', () => {
+  it('uses Japanese for AI & Automation pages regardless of the portal language', () => {
     for (const id of [
       '/admin/settings/agent',
       '/admin/settings/copilot',
@@ -24,10 +24,10 @@ describe('documentLocale', () => {
       '/admin/settings/workflows',
       '/admin/settings_/workflows/$workflowId',
     ]) {
-      expect(documentLocale(['__root__', '/admin', id], 'zh-cn'), id).toBe('zh-cn')
+      expect(documentLocale(['__root__', '/admin', id], 'zh-cn'), id).toBe('ja')
     }
   })
-  it('keeps the other settings pages on the default', () => {
+  it('keeps admin settings in Japanese regardless of the portal language', () => {
     for (const id of [
       '/admin/settings',
       '/admin/settings/general',
@@ -35,7 +35,7 @@ describe('documentLocale', () => {
       '/admin/settings/integrations',
       '/admin/settings/widget',
     ]) {
-      expect(documentLocale(['__root__', '/admin', '/admin/settings', id], 'zh-cn'), id).toBe('en')
+      expect(documentLocale(['__root__', '/admin', '/admin/settings', id], 'zh-cn'), id).toBe('ja')
     }
   })
   it('keeps untranslated auth utility pages on the default locale', () => {
@@ -47,11 +47,11 @@ describe('documentLocale', () => {
     expect(documentLocale(['__root__', '/auth/auth-complete'], 'zh-cn')).toBe('en')
     expect(documentLocale(['__root__', '/auth/widget-handoff'], 'zh-tw')).toBe('en')
   })
-  it('keeps the admin app (incl. its English-first login) and system routes on the default', () => {
+  it('keeps English-first login and system routes on the default', () => {
     // /admin/login renders an English heading + email stage on first paint, so
     // it stays English until that copy is localized.
     expect(documentLocale(['__root__', '/admin/login'], 'ar')).toBe('en')
-    expect(documentLocale(['__root__', '/admin/posts'], 'zh-cn')).toBe('en')
+    expect(documentLocale(['__root__', '/admin/posts'], 'zh-cn')).toBe('ja')
     expect(documentLocale(['__root__', '/onboarding'], 'ar')).toBe('en')
     expect(documentLocale(['__root__', '/apps'], 'zh-cn')).toBe('en')
     expect(documentLocale(['__root__', '/verify-magic-link'], 'zh-cn')).toBe('en')

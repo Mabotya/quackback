@@ -8,7 +8,7 @@ import {
   type Theme,
 } from '@/lib/shared/theme'
 import { getUpdateBannerDismissedVersionCookie } from '@/lib/shared/update-banner-cookie'
-import { resolveLocale, portalLocaleCookie, type SupportedLocale } from '@/lib/shared/i18n'
+import { resolvePortalLocale, type SupportedLocale } from '@/lib/shared/i18n'
 import { starPromptAllowedHere } from '@/lib/server/github-star-prompt'
 import { redactSettingsForClient } from '@/lib/shared/redact-portal-config'
 import {
@@ -262,7 +262,7 @@ const getBootstrapDataInternal = createServerOnlyFn(async (): Promise<BootstrapD
   const updateBannerDismissedVersion = getUpdateBannerDismissedVersionCookie(
     headers.get('cookie') ?? null
   )
-  const acceptLanguageLocale = resolveLocale(headers.get('accept-language') || 'ja', portalLocaleCookie(headers.get('cookie')))
+  const acceptLanguageLocale = resolvePortalLocale(headers.get('accept-language'), headers.get('cookie'))
 
   // Ask for the prefers-color-scheme client hint, so Chromium sends the OS
   // preference with later requests and a `system` theme is rendered here. A

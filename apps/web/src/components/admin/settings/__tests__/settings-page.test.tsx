@@ -49,6 +49,16 @@ const tabLabels = (name: string) =>
     .map((link) => link.textContent)
 
 describe('SettingsPage', () => {
+  it('shows the settings page title in Japanese for the Japanese admin', () => {
+    render(
+      <IntlProvider locale="ja" defaultLocale="en">
+        <QueryClientProvider client={new QueryClient()}>
+          <SettingsPage page="/admin/settings/general">body</SettingsPage>
+        </QueryClientProvider>
+      </IntlProvider>
+    )
+    expect(screen.getByRole('heading', { level: 1, name: '一般' })).toBeInTheDocument()
+  })
   it('takes the title from the registry for a registered page', () => {
     renderPage(<SettingsPage page="/admin/settings/office-hours">body</SettingsPage>)
     expect(screen.getByRole('heading', { level: 1, name: 'Office hours' })).toBeInTheDocument()
