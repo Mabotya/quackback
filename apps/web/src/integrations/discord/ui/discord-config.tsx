@@ -32,21 +32,27 @@ interface DiscordConfigProps {
 const DISCORD_EVENT_CONFIG: EventConfig[] = [
   {
     id: 'post.created',
-    label: 'New post submitted',
-    shortLabel: 'New post',
-    description: 'When someone submits a new post',
+    label: '新しい投稿',
+    shortLabel: '投稿',
+    description: '新しい投稿が作成されたとき',
   },
   {
     id: 'post.status_changed',
-    label: 'Post status changed',
-    shortLabel: 'Status',
-    description: "When a post's status is updated",
+    label: 'ステータスの変更',
+    shortLabel: 'ステータス',
+    description: '投稿のステータスが変更されたとき',
   },
   {
     id: 'comment.created',
-    label: 'New comment posted',
-    shortLabel: 'Comment',
-    description: 'When someone comments on a post',
+    label: '新しいコメント',
+    shortLabel: 'コメント',
+    description: '投稿にコメントが追加されたとき',
+  },
+  {
+    id: 'changelog.published',
+    label: '更新履歴の公開',
+    shortLabel: '更新履歴',
+    description: '更新履歴が公開されたとき',
   },
 ]
 
@@ -121,10 +127,10 @@ export function DiscordConfig({
       <div className="flex items-center justify-between">
         <div>
           <Label htmlFor="enabled-toggle" className="text-base font-medium">
-            Notifications enabled
+            通知を有効にする
           </Label>
           <p className="text-xs text-muted-foreground">
-            Turn off to pause all Discord notifications
+            オフにするとDiscordへの通知を停止します
           </p>
         </div>
         <Switch
@@ -139,9 +145,9 @@ export function DiscordConfig({
 
       <div className="space-y-3">
         <div>
-          <Label className="text-base font-medium">Notification routing</Label>
+          <Label className="text-base font-medium">通知先</Label>
           <p className="text-xs text-muted-foreground">
-            Choose which events reach each Discord channel
+            チャンネルごとに通知する内容を選択します
           </p>
         </div>
 

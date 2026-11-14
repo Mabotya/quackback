@@ -4,9 +4,9 @@
  */
 
 import type { EventData } from '@/lib/server/events/types'
-import { stripHtml, truncate, formatStatus, getStatusEmoji } from '@/lib/server/events/hook-utils'
+import { stripHtml, truncate, getStatusEmoji } from '@/lib/server/events/hook-utils'
 import { commentPlainText } from '@/lib/server/markdown-tiptap'
-import { getAuthorName, buildPostUrl } from '@/lib/server/integrations/message-utils'
+import { buildPostUrl } from '@/lib/server/integrations/message-utils'
 
 interface DiscordEmbed {
   title?: string
@@ -54,7 +54,7 @@ export function buildDiscordMessage(event: EventData, rootUrl: string): DiscordM
       const { post } = event.data
       const postUrl = buildPostUrl(rootUrl, post.boardSlug, post.id)
       const content = truncate(stripHtml(post.content), 300)
-      const author = getAuthorName(post)
+      const author = post.authorName || 'ユーザー'
 
       return {
         embeds: [
@@ -63,8 +63,7 @@ export function buildDiscordMessage(event: EventData, rootUrl: string): DiscordM
             url: postUrl,
             description: content || undefined,
             color: COLORS.blue,
-            author: { name: `📬 New feedback from ${author}` },
-            footer: { text: `Board: ${post.boardSlug}` },
+            author: { name: `📬 新しい投稿：${author}` },
             timestamp: event.timestamp,
           },
         ],
@@ -75,16 +74,16 @@ export function buildDiscordMessage(event: EventData, rootUrl: string): DiscordM
       const { post, previousStatus, newStatus } = event.data
       const postUrl = buildPostUrl(rootUrl, post.boardSlug, post.id)
       const emoji = getStatusEmoji(newStatus)
-      const actor = event.actor.email || 'System'
+      const actor = event.actor.displayName || 'システム'
 
       return {
         embeds: [
           {
             title: truncate(post.title, 256),
             url: postUrl,
-            description: `${formatStatus(previousStatus)} → **${formatStatus(newStatus)}**`,
+            description: `${previousStatus} → **${newStatus}**`,
             color: getStatusColor(newStatus),
-            author: { name: `${emoji} Status changed by ${actor}` },
+            author: { name: `${emoji} ステータス変更：${actor}` },
             timestamp: event.timestamp,
           },
         ],
@@ -94,7 +93,7 @@ export function buildDiscordMessage(event: EventData, rootUrl: string): DiscordM
     case 'post.updated': {
       const { post, changedFields } = event.data
       const postUrl = buildPostUrl(rootUrl, post.boardSlug, post.id)
-      const actor = event.actor.email || 'System'
+      const actor = event.actor.displayName || 'システム'
       const fields = changedFields.join(', ')
 
       return {
@@ -102,9 +101,9 @@ export function buildDiscordMessage(event: EventData, rootUrl: string): DiscordM
           {
             title: truncate(post.title, 256),
             url: postUrl,
-            description: `Changed: ${fields}`,
+            description: `変更項目：${fields}`,
             color: COLORS.yellow,
-            author: { name: `✏️ Post updated by ${actor}` },
+            author: { name: `✏️ 投稿を更新：${actor}` },
             timestamp: event.timestamp,
           },
         ],
@@ -113,14 +112,14 @@ export function buildDiscordMessage(event: EventData, rootUrl: string): DiscordM
 
     case 'post.deleted': {
       const { post } = event.data
-      const actor = event.actor.email || 'System'
+      const actor = event.actor.displayName || 'システム'
 
       return {
         embeds: [
           {
             title: truncate(post.title, 256),
             color: COLORS.grey,
-            author: { name: `🗑️ Post deleted by ${actor}` },
+            author: { name: `🗑️ 投稿を削除：${actor}` },
             timestamp: event.timestamp,
           },
         ],
@@ -130,16 +129,16 @@ export function buildDiscordMessage(event: EventData, rootUrl: string): DiscordM
     case 'post.merged': {
       const { duplicatePost, canonicalPost } = event.data
       const canonicalUrl = buildPostUrl(rootUrl, canonicalPost.boardSlug, canonicalPost.id)
-      const actor = event.actor.email || 'System'
+      const actor = event.actor.displayName || 'システム'
 
       return {
         embeds: [
           {
             title: truncate(canonicalPost.title, 256),
             url: canonicalUrl,
-            description: `"${duplicatePost.title}" merged into this post`,
+            description: `「${duplicatePost.title}」をこの投稿に統合しました`,
             color: COLORS.orange,
-            author: { name: `🔀 Post merged by ${actor}` },
+            author: { name: `🔀 投稿を統合：${actor}` },
             timestamp: event.timestamp,
           },
         ],
@@ -150,7 +149,7 @@ export function buildDiscordMessage(event: EventData, rootUrl: string): DiscordM
       const { comment, post } = event.data
       const postUrl = buildPostUrl(rootUrl, post.boardSlug, post.id)
       const content = truncate(commentPlainText(comment), 300)
-      const author = getAuthorName(comment)
+      const author = comment.authorName || 'ユーザー'
 
       return {
         embeds: [
@@ -159,10 +158,24 @@ export function buildDiscordMessage(event: EventData, rootUrl: string): DiscordM
             url: postUrl,
             description: content || undefined,
             color: COLORS.blue,
-            author: { name: `💬 New comment from ${author}` },
+            author: { name: `💬 新しいコメント：${author}` },
             timestamp: event.timestamp,
           },
         ],
+      }
+    }
+
+    case 'changelog.published': {
+      const { changelog } = event.data
+      return {
+        embeds: [{
+          title: truncate(changelog.title, 256),
+          url: `${rootUrl}/changelog/${encodeURIComponent(changelog.id)}`,
+          description: truncate(stripHtml(changelog.contentPreview || ''), 300) || undefined,
+          color: COLORS.green,
+          author: { name: '📢 更新履歴を公開しました' },
+          timestamp: event.timestamp,
+        }],
       }
     }
 

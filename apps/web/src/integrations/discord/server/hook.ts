@@ -39,7 +39,7 @@ export const discordHook: IntegrationHook = {
           Authorization: `Bot ${accessToken}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(message),
+        body: JSON.stringify({ ...message, allowed_mentions: { parse: [] } }),
       })
 
       if (!response.ok) {

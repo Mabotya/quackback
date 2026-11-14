@@ -21,6 +21,7 @@ import type { JobSqlExecutor } from '@/lib/server/jobs/job-queue'
 import { getBaseUrl } from '@/lib/server/config'
 import { contentJsonToMarkdown } from '@/lib/server/markdown-tiptap'
 import { getIntegrationAuth } from '../token-refresh'
+import { canNotifyDiscordPost } from '@/integrations/discord/server/visibility'
 import { installationIdentity, syncDestination, syncHash, syncOperationKey } from './identity'
 import { queueSyncOperation, markSyncDispatched, type SyncTransaction } from './ledger'
 import type { SyncClaim, SyncOutcome } from './types'
@@ -157,6 +158,8 @@ export async function executeHookSync(
         with: { author: { with: { user: { columns: { name: true, email: true } } } } },
       })
     : null
+  if (hookType === 'discord' && eventPost && !post)
+    return { state: 'cancelled', errorCode: 'source_unavailable' }
   const channel = (target as { channelId?: unknown } | null)?.channelId
   if (
     !mappings.some((m) => {
@@ -173,6 +176,11 @@ export async function executeHookSync(
   if (post && 'post' in event.data) {
     const board = await db.query.boards.findFirst({ where: eq(boards.id, post.boardId) })
     if (!board) return { state: 'cancelled', errorCode: 'source_unavailable' }
+    // Discord channels can have a broader audience than a board. Only send
+    // published posts from boards visible without signing in.
+    if (hookType === 'discord' && !canNotifyDiscordPost(board, post)) {
+      return { state: 'cancelled', errorCode: 'source_unavailable' }
+    }
     event.data.post = {
       id: post.id,
       title: post.title,
