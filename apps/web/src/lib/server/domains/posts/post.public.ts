@@ -205,9 +205,7 @@ export function buildPostFilterConditions(
 
   // A roadmap-only board remains publicly viewable by direct link and on the
   // roadmap, but does not appear in the feedback feed or any of its facets.
-  if (params.portalFeed) {
-    conditions.push(sql`COALESCE(${boards.settings}->>'hideFromFeedback', 'false') <> 'true'`)
-  }
+  if (params.portalFeed) conditions.push(sql`COALESCE(${boards.settings}->>'hideFromFeedback', 'false') <> 'true'`)
 
   if (boardSlug && !omit.includes('board')) {
     conditions.push(eq(boards.slug, boardSlug))

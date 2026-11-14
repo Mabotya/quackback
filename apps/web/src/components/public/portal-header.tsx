@@ -275,7 +275,7 @@ export function PortalHeader({
               <Avatar className="h-9 w-9" src={avatarUrl} name={name} />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuContent align="end" className="w-max min-w-[min(16rem,calc(100vw-1rem))] max-w-[calc(100vw-1rem)]">
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium">{name}</p>
@@ -283,7 +283,7 @@ export function PortalHeader({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <div className="px-2 py-2">
+            <div className="overflow-x-auto px-2 py-2">
               <UserStatsBar />
             </div>
             <DropdownMenuSeparator />

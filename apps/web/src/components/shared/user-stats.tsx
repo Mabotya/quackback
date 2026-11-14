@@ -17,8 +17,8 @@ function StatItem({
   return (
     <div
       className={cn(
-        'flex flex-col items-center rounded-md bg-muted/40',
-        compact ? 'py-1.5 px-1' : 'py-2 px-2'
+        'flex min-w-0 flex-col items-center rounded-md bg-muted/40',
+        compact ? 'px-1 py-1.5' : 'px-1.5 py-2'
       )}
     >
       <span
@@ -26,7 +26,7 @@ function StatItem({
       >
         {value ?? '-'}
       </span>
-      <span className={cn('text-muted-foreground mt-0.5', compact ? 'text-xs' : 'text-xs')}>
+      <span className="mt-0.5 whitespace-nowrap text-xs text-muted-foreground">
         {label}
       </span>
     </div>
@@ -50,7 +50,7 @@ export function UserStatsBar({ compact, className, headers, fetchStats }: UserSt
   })
 
   return (
-    <div className={cn('grid grid-cols-3 gap-1', className)}>
+    <div className={cn('grid grid-cols-[repeat(3,minmax(max-content,1fr))] gap-1', className)}>
       <StatItem
         value={data?.ideas}
         label={intl.formatMessage({ id: 'common.userStats.ideas', defaultMessage: 'Posts' })}

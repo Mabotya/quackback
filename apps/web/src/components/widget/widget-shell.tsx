@@ -529,7 +529,7 @@ function UserAvatarPopover({
       </button>
 
       {open && (
-        <div className="absolute end-0 top-full mt-1.5 z-50 w-56 rounded-lg border border-border bg-card shadow-lg">
+        <div className="absolute end-0 top-full z-50 mt-1.5 w-max min-w-[min(16rem,calc(100vw-1rem))] max-w-[calc(100vw-1rem)] rounded-lg border border-border bg-card shadow-lg">
           <div className="px-3 py-3">
             <div className="flex items-center gap-2.5">
               <Avatar src={user.avatarUrl} name={user.name} className="size-9 text-sm" />
@@ -539,7 +539,7 @@ function UserAvatarPopover({
               </div>
             </div>
           </div>
-          <div className="border-t border-border px-3 py-2.5">
+          <div className="overflow-x-auto border-t border-border px-3 py-2.5">
             <UserStatsBar
               compact
               fetchStats={() => widgetGetUserStatsFn({ headers: getWidgetAuthHeaders() })}

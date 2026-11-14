@@ -80,19 +80,23 @@ export function StatusPills({
     setFilters({ status: inOrder.length > 0 ? inOrder : undefined })
   }
 
-  return ordered.map((status) => (
-    <FilterPill
-      key={status.id}
-      pressed={picked.includes(status.slug)}
-      onClick={() => toggle(status.slug)}
-      color={status.color}
-      count={countText(counts?.[status.slug])}
-      size={size}
-      title={status.name}
-    >
-      {status.name}
-    </FilterPill>
-  ))
+  return (
+    <div className="flex w-full flex-col items-start gap-1.5">
+      {ordered.map((status) => (
+        <FilterPill
+          key={status.id}
+          pressed={picked.includes(status.slug)}
+          onClick={() => toggle(status.slug)}
+          color={status.color}
+          count={countText(counts?.[status.slug])}
+          size={size}
+          title={status.name}
+        >
+          {status.name}
+        </FilterPill>
+      ))}
+    </div>
+  )
 }
 
 export function TagPills({ filters, setFilters, size, tags }: GroupProps & { tags: PostTag[] }) {
