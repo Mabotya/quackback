@@ -9,6 +9,7 @@ import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
 import { PencilIcon } from '@heroicons/react/24/solid'
 import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
 import {
   LazyRichTextEditor,
   RichTextEditorPlaceholder,
@@ -90,6 +91,9 @@ export function FeedbackHeaderAnimated({
   const uploads = useRef(new Map<symbol, { size: number; url?: string; seen: boolean }>())
   const [expanded, setExpanded] = useState(false)
   const [error, setError] = useState('')
+  const [confirmBoard, setConfirmBoard] = useState<{ id: string; name: string } | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const submittingRef = useRef(false)
   const { openAuthPopover } = useAuthPopover()
 
   const createPost = useCreatePublicPost()
@@ -205,12 +209,17 @@ export function FeedbackHeaderAnimated({
     }
   }, [])
 
-  async function handleSubmit() {
+  async function handleSubmit(confirmed = false) {
+    if (submittingRef.current) return
     setError('')
+    const fail = (message: string) => {
+      if (confirmed) setConfirmBoard(null)
+      setError(message)
+    }
     const typedTitle = title.get()
 
     if (!selectedBoardId) {
-      setError(
+      fail(
         intl.formatMessage({
           id: 'portal.feedback.header.errorSelectBoard',
           defaultMessage: 'Please select a board',
@@ -220,7 +229,7 @@ export function FeedbackHeaderAnimated({
     }
 
     if (!typedTitle.trim()) {
-      setError(
+      fail(
         intl.formatMessage({
           id: 'portal.feedback.header.errorAddTitle',
           defaultMessage: 'Please add a title',
@@ -230,7 +239,7 @@ export function FeedbackHeaderAnimated({
     }
 
     if (!canSubmit) {
-      setError(
+      fail(
         noAccess
           ? intl.formatMessage({
               id: 'portal.feedback.header.errorNoAccess',
@@ -247,14 +256,14 @@ export function FeedbackHeaderAnimated({
     if (boardCustomFields.length > 0) {
       const parsed = validatePostCustomFieldValues(boardCustomFields, customFieldValues)
       if (!parsed.ok) {
-        setError(parsed.errors[0].message)
+        fail(parsed.errors[0].message)
         return
       }
     }
 
     // The server refuses longer details, and retrying would not change that.
     if ((detailsRef.current?.markdown().length ?? 0) > DETAILS_MAX_LENGTH) {
-      setError(
+      fail(
         intl.formatMessage(
           {
             id: 'portal.feedback.header.errorDetailsTooLong',
@@ -266,6 +275,20 @@ export function FeedbackHeaderAnimated({
       return
     }
 
+    if (!confirmed) {
+      if (!selectedBoard) return
+      setConfirmBoard({ id: selectedBoard.id, name: selectedBoard.name })
+      return
+    }
+    // Recheck the destination and permissions after confirmation. The board
+    // may have changed while the dialog was open (e.g. a route update).
+    if (!confirmBoard || confirmBoard.id !== selectedBoardId) {
+      setConfirmBoard(null)
+      return
+    }
+
+    submittingRef.current = true
+    setIsSubmitting(true)
     try {
       if (!effectiveUser && canPostAnonymously) {
         const ok = await ensureAnonSession()
@@ -319,6 +342,10 @@ export function FeedbackHeaderAnimated({
           defaultMessage: 'Could not submit your feedback. Please try again.',
         })
       )
+    } finally {
+      submittingRef.current = false
+      setIsSubmitting(false)
+      setConfirmBoard(null)
     }
   }
 
@@ -336,7 +363,7 @@ export function FeedbackHeaderAnimated({
     setExpanded(false)
   }
 
-  const handleKeyDown = useKeyboardSubmit(handleSubmit, handleCancel)
+  const handleKeyDown = useKeyboardSubmit(() => void handleSubmit(), handleCancel)
 
   return (
     <motion.div
@@ -348,7 +375,7 @@ export function FeedbackHeaderAnimated({
           : '0 1px 2px 0 rgb(0 0 0 / 0.05)',
       }}
       transition={{ duration: 0.2 }}
-      onKeyDown={handleKeyDown}
+      onKeyDown={(event) => { if (!confirmBoard) handleKeyDown(event) }}
       // The editor renders once the header expands; hovering warms its chunk.
       onPointerEnter={preloadRichTextEditor}
     >
@@ -563,14 +590,14 @@ export function FeedbackHeaderAnimated({
                   variant="ghost"
                   size="sm"
                   onClick={handleCancel}
-                  disabled={createPost.isPending}
+                  disabled={isSubmitting || createPost.isPending}
                 >
                   <FormattedMessage id="portal.feedback.header.cancel" defaultMessage="Cancel" />
                 </Button>
                 <Button
                   size="sm"
-                  onClick={handleSubmit}
-                  disabled={createPost.isPending || !canSubmit}
+                  onClick={() => void handleSubmit()}
+                  disabled={isSubmitting || createPost.isPending || !canSubmit}
                   title={
                     !canSubmit
                       ? noAccess
@@ -586,7 +613,7 @@ export function FeedbackHeaderAnimated({
                   }
                   className="portal-submit-button bg-[var(--portal-button-background)] text-[var(--portal-button-foreground)] hover:bg-[var(--portal-button-background)]/90"
                 >
-                  {createPost.isPending ? (
+                  {isSubmitting || createPost.isPending ? (
                     <FormattedMessage
                       id="portal.feedback.header.submitting"
                       defaultMessage="Posting..."
@@ -600,6 +627,23 @@ export function FeedbackHeaderAnimated({
           </motion.div>
         )}
       </AnimatePresence>
+      <Dialog open={!!confirmBoard} onOpenChange={(open) => { if (!open && !submittingRef.current) setConfirmBoard(null) }}>
+        <DialogContent className="max-w-md" showCloseButton={!isSubmitting}>
+          <DialogHeader>
+            <DialogTitle><FormattedMessage id="portal.feedback.header.confirmTitle" defaultMessage="Confirm destination" /></DialogTitle>
+            <DialogDescription><FormattedMessage id="portal.feedback.header.confirmDescription" defaultMessage="Post your feedback to this board?" /></DialogDescription>
+          </DialogHeader>
+          <div className="rounded-lg border border-border bg-muted/40 px-4 py-3 font-medium break-words">{confirmBoard?.name}</div>
+          <DialogFooter>
+            <Button type="button" variant="ghost" disabled={isSubmitting} onClick={() => setConfirmBoard(null)}>
+              <FormattedMessage id="portal.feedback.header.confirmBack" defaultMessage="Go back" />
+            </Button>
+            <Button type="button" disabled={isSubmitting} onClick={() => void handleSubmit(true)}>
+              {isSubmitting ? <FormattedMessage id="portal.feedback.header.submitting" defaultMessage="Posting..." /> : <FormattedMessage id="portal.feedback.header.confirmPost" defaultMessage="Post to this board" />}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   )
 }

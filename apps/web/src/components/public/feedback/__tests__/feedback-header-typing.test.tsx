@@ -259,6 +259,7 @@ describe('feedback header title', () => {
     typeTitleByKey('Light mode')
     await screen.findByTestId('editor')
     fireEvent.click(screen.getByRole('button', { name: 'Post' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Post to this board' }))
 
     await waitFor(() => expect(createPost).toHaveBeenCalledTimes(1))
     expect(createPost.mock.calls[0]![0]).toMatchObject({ title: 'Light mode' })
@@ -278,6 +279,35 @@ describe('feedback header title', () => {
 })
 
 describe('feedback header post composer', () => {
+  it('shows the destination before posting and keeps the draft when going back', async () => {
+    renderHeader()
+    typeTitle('Dark mode')
+    await screen.findByTestId('editor')
+    typeDetails('Please add it')
+    fireEvent.click(screen.getByRole('button', { name: 'Post' }))
+    expect(await screen.findByRole('dialog', { name: 'Confirm destination' })).toBeTruthy()
+    expect(screen.getByText('Ideas')).toBeTruthy()
+    expect(createPost).not.toHaveBeenCalled()
+    fireEvent.click(screen.getByRole('button', { name: 'Go back' }))
+    expect(screen.getByRole<HTMLInputElement>('textbox', { name: 'Feedback title' }).value).toBe('Dark mode')
+    fireEvent.click(screen.getByRole('button', { name: 'Post' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Post to this board' }))
+    await waitFor(() => expect(createPost).toHaveBeenCalledTimes(1))
+    expect(createPost.mock.calls[0]![0]).toMatchObject({ boardId: BOARD.id, content: 'Please add it' })
+  })
+  it('does not post twice while confirmation is being processed', async () => {
+    let resolvePost!: (value: { id: string; board: { slug: string } }) => void
+    createPost.mockImplementation(() => new Promise((resolve) => { resolvePost = resolve }))
+    renderHeader()
+    typeTitle('One post')
+    await screen.findByTestId('editor')
+    fireEvent.click(screen.getByRole('button', { name: 'Post' }))
+    const confirm = await screen.findByRole('button', { name: 'Post to this board' })
+    fireEvent.click(confirm)
+    fireEvent.click(confirm)
+    expect(createPost).toHaveBeenCalledTimes(1)
+    await act(async () => resolvePost({ id: 'post_1', board: { slug: 'ideas' } }))
+  })
   it('limits one visitor draft to 40 MiB and releases removed media', async () => {
     renderHeader()
     typeTitle('Images')
@@ -314,6 +344,7 @@ describe('feedback header post composer', () => {
     typeDetails('Please add it')
 
     fireEvent.click(screen.getByRole('button', { name: 'Post' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Post to this board' }))
 
     await waitFor(() => expect(createPost).toHaveBeenCalledTimes(1))
     expect(createPost.mock.calls[0]![0]).toEqual({
@@ -334,6 +365,7 @@ describe('feedback header post composer', () => {
     typeTitle('Light mode')
     await screen.findByTestId('editor')
     fireEvent.click(screen.getByRole('button', { name: 'Post' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Post to this board' }))
 
     await waitFor(() => expect(createPost).toHaveBeenCalledTimes(1))
     expect(createPost.mock.calls[0]![0]).toStrictEqual({
@@ -347,6 +379,7 @@ describe('feedback header post composer', () => {
     renderHeader()
     typeTitle('Dark mode')
     fireEvent.click(screen.getByRole('button', { name: 'Post' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Post to this board' }))
 
     await waitFor(() => expect(createPost).toHaveBeenCalledTimes(1))
     const payload = createPost.mock.calls[0]![0]
@@ -391,6 +424,7 @@ describe('feedback header post composer', () => {
     typeTitle('Dark mode')
     await screen.findByTestId('editor')
     fireEvent.click(screen.getByRole('button', { name: 'Post' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Post to this board' }))
 
     expect(
       await screen.findByText('Could not submit your feedback. Please try again.')
