@@ -4,6 +4,8 @@
  * setup, and a viewer who cannot open that page sees the row without the link.
  */
 import { EnvelopeIcon, GlobeAltIcon, LockClosedIcon } from '@heroicons/react/24/solid'
+import { useContext } from 'react'
+import { IntlContext } from 'react-intl'
 import { SettingsCard } from '@/components/admin/settings/settings-card'
 import { RowIcon, SettingsList, SettingsListRow } from '@/components/admin/settings/settings-list'
 import { StateBadge } from '@/components/shared/state-badge'
@@ -27,13 +29,18 @@ export function HelpCenterAddressSection({
   domain: HelpCenterDomainSummary
   canOpen: boolean
 }) {
+  const ja = useContext(IntlContext)?.locale?.toLowerCase().startsWith('ja') ?? false
   return (
-    <SettingsCard title={WEB_ADDRESSES_TITLE} description={WEB_ADDRESSES_DESCRIPTION} flush>
+    <SettingsCard
+      title={ja ? 'カスタムドメイン' : WEB_ADDRESSES_TITLE}
+      description={ja ? 'ポータルとヘルプセンターの公開先です。' : WEB_ADDRESSES_DESCRIPTION}
+      flush
+    >
       <SettingsList>
         <SettingsListRow
           leading={<RowIcon icon={GlobeAltIcon} />}
           title={domain.domain}
-          meta="Help center"
+          meta={ja ? 'ヘルプセンター' : 'Help center'}
           badges={domain.verified ? undefined : <StateBadge state="pending" />}
           {...(canOpen
             ? { to: '/admin/settings/help-center', search: { tab: 'domains-languages' } }
@@ -44,9 +51,9 @@ export function HelpCenterAddressSection({
   )
 }
 
-function sendingMeta(domain: SendingDomainSummary): string | undefined {
+function sendingMeta(domain: SendingDomainSummary, ja: boolean): string | undefined {
   const parts = [domain.localParts.join(', ')]
-  if (domain.ownershipProven) parts.push('Ownership verified')
+  if (domain.ownershipProven) parts.push(ja ? '所有権を確認済み' : 'Ownership verified')
   return parts.filter(Boolean).join(' · ') || undefined
 }
 
@@ -59,10 +66,15 @@ export function EmailSendingSection({
   canOpen: boolean
   now?: Date
 }) {
+  const ja = useContext(IntlContext)?.locale?.toLowerCase().startsWith('ja') ?? false
   return (
     <SettingsCard
-      title="Email sending"
-      description="Domains replies and announcements are sent from."
+      title={ja ? 'メール送信' : 'Email sending'}
+      description={
+        ja
+          ? '返信やお知らせの送信元ドメインです。'
+          : 'Domains replies and announcements are sent from.'
+      }
       flush
     >
       <SettingsList>
@@ -71,7 +83,7 @@ export function EmailSendingSection({
             key={d.id}
             leading={<RowIcon icon={EnvelopeIcon} />}
             title={d.domain}
-            meta={sendingMeta(d)}
+            meta={sendingMeta(d, ja)}
             badges={<PhaseBadge phase={domainPhase(d, now)} />}
             to={canOpen ? '/admin/settings/channels/email' : undefined}
           />
@@ -81,9 +93,13 @@ export function EmailSendingSection({
   )
 }
 
-function signInMeta(d: SignInDomainSummary): string | undefined {
+function signInMeta(d: SignInDomainSummary, ja: boolean): string | undefined {
   if (d.verified) return d.provenBy ? verifiedThroughLabel(d.provenBy) : undefined
-  return d.provenBy ? 'Already verified. Click Verify to use it.' : undefined
+  return d.provenBy
+    ? ja
+      ? '確認済みです。「確認」を押して利用できます。'
+      : 'Already verified. Click Verify to use it.'
+    : undefined
 }
 
 export function SignInSection({
@@ -93,15 +109,24 @@ export function SignInSection({
   domains: SignInDomainSummary[]
   canOpen: boolean
 }) {
+  const ja = useContext(IntlContext)?.locale?.toLowerCase().startsWith('ja') ?? false
   return (
-    <SettingsCard title="Sign-in" description="Email domains that can use single sign-on." flush>
+    <SettingsCard
+      title={ja ? 'ログイン' : 'Sign-in'}
+      description={
+        ja
+          ? 'シングルサインオンを利用できるメールドメインです。'
+          : 'Email domains that can use single sign-on.'
+      }
+      flush
+    >
       <SettingsList>
         {domains.map((d) => (
           <SettingsListRow
             key={d.id}
             leading={<RowIcon icon={LockClosedIcon} />}
             title={d.name}
-            meta={signInMeta(d)}
+            meta={signInMeta(d, ja)}
             badges={d.verified ? undefined : <StateBadge state="pending" />}
             to={canOpen ? '/admin/settings/security/authentication' : undefined}
           />
@@ -112,9 +137,12 @@ export function SignInSection({
 }
 
 export function NoDomains() {
+  const ja = useContext(IntlContext)?.locale?.toLowerCase().startsWith('ja') ?? false
   return (
     <p className="text-sm text-muted-foreground">
-      No domains yet. Add one from Email, Help center or Security.
+      {ja
+        ? 'ドメインはまだありません。メール、ヘルプセンター、セキュリティの設定から追加できます。'
+        : 'No domains yet. Add one from Email, Help center or Security.'}
     </p>
   )
 }

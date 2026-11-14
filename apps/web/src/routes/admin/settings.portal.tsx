@@ -1,4 +1,14 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react'
+import {
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from 'react'
+import { IntlContext } from 'react-intl'
 import { PERMISSIONS } from '@/lib/shared/permissions'
 import { assertRoutePermission } from '@/lib/shared/route-permission'
 import { ClientOnly, createFileRoute, useBlocker, useRouter } from '@tanstack/react-router'
@@ -93,6 +103,7 @@ export const Route = createFileRoute('/admin/settings/portal')({
 })
 
 function PortalPage() {
+  const ja = useContext(IntlContext)?.locale?.toLowerCase().startsWith('ja') ?? false
   const router = useRouter()
   const settings = useWorkspaceSettings()
   const session = useSessionContext()
@@ -155,7 +166,11 @@ function PortalPage() {
   useBlocker({
     shouldBlockFn: () => {
       if (!isDirty || saving) return false
-      return !window.confirm('You have unsaved portal changes. Leave without saving?')
+      return !window.confirm(
+        ja
+          ? 'ポータルの変更が保存されていません。保存せずに移動しますか？'
+          : 'You have unsaved portal changes. Leave without saving?'
+      )
     },
     enableBeforeUnload: () => isDirty,
   })
@@ -167,7 +182,11 @@ function PortalPage() {
       (i) => i.type === 'link' && !!i.url && !isValidNavLinkUrl(i.url)
     )
     if (navDirty && brokenLink) {
-      toast.error('Fix the link URL before saving (links need a full https:// address).')
+      toast.error(
+        ja
+          ? '保存する前にリンクのURLを修正してください（https://から始まる完全なアドレスが必要です）。'
+          : 'Fix the link URL before saving (links need a full https:// address).'
+      )
       return
     }
 
@@ -261,8 +280,12 @@ function PortalPage() {
       <div className="grid grid-cols-1 xl:grid-cols-[minmax(360px,440px)_minmax(0,1fr)] gap-6 items-start">
         <div className="space-y-4 min-w-0">
           <SettingsCard
-            title="Appearance"
-            description="Theme, color palette and typography, also applied to the embedded widget."
+            title={ja ? '外観' : 'Appearance'}
+            description={
+              ja
+                ? 'テーマ、配色、フォントを設定します。埋め込みウィジェットにも適用されます。'
+                : 'Theme, color palette and typography, also applied to the embedded widget.'
+            }
           >
             <AppearanceSettings
               themeMode={state.themeMode}
@@ -280,8 +303,12 @@ function PortalPage() {
           </SettingsCard>
 
           <SettingsCard
-            title="Navigation"
-            description="The portal's top tabs. They apply to the help center and status pages too."
+            title={ja ? 'ナビゲーション' : 'Navigation'}
+            description={
+              ja
+                ? 'ポータル上部のタブです。ヘルプセンターと稼働状況のページにも適用されます。'
+                : "The portal's top tabs. They apply to the help center and status pages too."
+            }
           >
             <PortalNavEditor
               items={navItems}
@@ -290,13 +317,19 @@ function PortalPage() {
               onReset={resetNavItems}
             />
             <p className="mt-3 text-xs text-muted-foreground">
-              Renamed tabs show your text in every language; untouched labels stay translated.
+              {ja
+                ? '名前を変更したタブはすべての言語でその名前が表示されます。変更していないタブは翻訳されます。'
+                : 'Renamed tabs show your text in every language; untouched labels stay translated.'}
             </p>
           </SettingsCard>
 
           <SettingsCard
-            title="Welcome message"
-            description="Shown above the post list on your portal home. Leave empty to show nothing."
+            title={ja ? 'ウェルカムメッセージ' : 'Welcome message'}
+            description={
+              ja
+                ? 'ポータルのホームで投稿一覧の上に表示します。空欄の場合は表示されません。'
+                : 'Shown above the post list on your portal home. Leave empty to show nothing.'
+            }
           >
             <WelcomeBodyEditor value={welcomeBody} onChange={setWelcomeBody} />
           </SettingsCard>
@@ -305,7 +338,9 @@ function PortalPage() {
         {/* ── Live portal preview ── */}
         <div className="xl:sticky xl:top-6 min-w-0 self-start">
           <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2">
-            <span className="text-sm font-medium whitespace-nowrap">Live preview</span>
+            <span className="text-sm font-medium whitespace-nowrap">
+              {ja ? 'プレビュー' : 'Live preview'}
+            </span>
             <div className="ms-auto flex flex-wrap items-center gap-1.5">
               <PreviewControls
                 previewMode={state.previewMode}
@@ -316,7 +351,7 @@ function PortalPage() {
               />
               <Button variant="outline" size="sm" asChild className="whitespace-nowrap">
                 <a href="/" target="_blank" rel="noopener noreferrer">
-                  Open portal
+                  {ja ? 'ポータルを開く' : 'Open portal'}
                   <NewTabHint />
                   <ArrowTopRightOnSquareIcon className="size-3.5 ms-1.5" />
                 </a>
@@ -385,15 +420,16 @@ const AppearanceSettings = memo(function AppearanceSettings({
   cssText,
   setCssText,
 }: AppearanceSettingsProps) {
+  const ja = useContext(IntlContext)?.locale?.toLowerCase().startsWith('ja') ?? false
   return (
     <div className="space-y-4">
       <div className="space-y-1.5">
-        <Label className="text-[13px] font-medium">Theme mode</Label>
+        <Label className="text-[13px] font-medium">{ja ? 'テーマモード' : 'Theme mode'}</Label>
         <ThemeModeTiles value={themeMode} onChange={setThemeMode} />
       </div>
 
       <div className="space-y-1.5">
-        <Label className="text-[13px] font-medium">Preset</Label>
+        <Label className="text-[13px] font-medium">{ja ? 'プリセット' : 'Preset'}</Label>
         <div className="grid grid-cols-3 gap-2">
           {primaryPresetIds.map((presetId) => {
             const preset = themePresets[presetId]
@@ -425,7 +461,7 @@ const AppearanceSettings = memo(function AppearanceSettings({
       </div>
 
       <div className="space-y-1.5">
-        <Label className="text-[13px] font-medium">Font</Label>
+        <Label className="text-[13px] font-medium">{ja ? 'フォント' : 'Font'}</Label>
         <Select
           value={currentFontId}
           onValueChange={(id) => {
@@ -444,7 +480,8 @@ const AppearanceSettings = memo(function AppearanceSettings({
           <SelectTrigger className="w-full">
             <SelectValue>
               <span style={{ fontFamily: font }}>
-                {FONT_OPTIONS.find((f) => f.id === currentFontId)?.name || 'Select font'}
+                {FONT_OPTIONS.find((f) => f.id === currentFontId)?.name ||
+                  (ja ? 'フォントを選択' : 'Select font')}
               </span>
             </SelectValue>
           </SelectTrigger>
@@ -458,9 +495,9 @@ const AppearanceSettings = memo(function AppearanceSettings({
       </div>
 
       <div className="space-y-1.5">
-        <Label className="text-[13px] font-medium">Corner roundness</Label>
+        <Label className="text-[13px] font-medium">{ja ? '角の丸み' : 'Corner roundness'}</Label>
         <div className="flex items-center gap-3">
-          <span className="text-xs text-muted-foreground w-12">Sharp</span>
+          <span className="text-xs text-muted-foreground w-12">{ja ? '角ばる' : 'Sharp'}</span>
           <Slider
             value={[radius * 100]}
             onValueChange={([v]) => setRadius(v / 100)}
@@ -469,7 +506,9 @@ const AppearanceSettings = memo(function AppearanceSettings({
             step={5}
             className="flex-1"
           />
-          <span className="text-xs text-muted-foreground w-12 text-right">Round</span>
+          <span className="text-xs text-muted-foreground w-12 text-right">
+            {ja ? '丸い' : 'Round'}
+          </span>
           <div className="h-6 w-6 bg-primary shrink-0" style={{ borderRadius: `${radius}rem` }} />
         </div>
       </div>
@@ -495,6 +534,7 @@ const PreviewControls = memo(function PreviewControls({
   viewport,
   setViewport,
 }: PreviewControlsProps) {
+  const ja = useContext(IntlContext)?.locale?.toLowerCase().startsWith('ja') ?? false
   return (
     <>
       <div className="flex items-center gap-1 rounded-lg border border-border p-0.5">
@@ -502,13 +542,13 @@ const PreviewControls = memo(function PreviewControls({
           active={previewMode === 'light'}
           disabled={previewModeDisabled === 'light'}
           onClick={() => setPreviewMode('light')}
-          label="Light"
+          label={ja ? 'ライト' : 'Light'}
         />
         <PreviewToggleButton
           active={previewMode === 'dark'}
           disabled={previewModeDisabled === 'dark'}
           onClick={() => setPreviewMode('dark')}
-          label="Dark"
+          label={ja ? 'ダーク' : 'Dark'}
         />
       </div>
       <div className="flex items-center gap-1 rounded-lg border border-border p-0.5">
@@ -516,14 +556,14 @@ const PreviewControls = memo(function PreviewControls({
           active={viewport === 'desktop'}
           onClick={() => setViewport('desktop')}
           icon={ComputerDesktopIcon}
-          label="Desktop"
+          label={ja ? 'デスクトップ' : 'Desktop'}
           iconOnly
         />
         <PreviewToggleButton
           active={viewport === 'mobile'}
           onClick={() => setViewport('mobile')}
           icon={DevicePhoneMobileIcon}
-          label="Mobile"
+          label={ja ? 'モバイル' : 'Mobile'}
           iconOnly
         />
       </div>
@@ -539,6 +579,7 @@ function WelcomeBodyEditor({
   value: TiptapContent
   onChange: (v: TiptapContent) => void
 }) {
+  const ja = useContext(IntlContext)?.locale?.toLowerCase().startsWith('ja') ?? false
   const { upload: uploadImage } = useImageUpload({ prefix: 'portal-welcome' })
   // The editor reports its document once it mounts. The same document again
   // is not an edit, and adopting that copy would re-render the whole page.
@@ -555,7 +596,11 @@ function WelcomeBodyEditor({
     <RichTextEditor
       value={value}
       onDocumentChange={handleChange}
-      placeholder="Tell visitors what kind of feedback you'd love to hear…"
+      placeholder={
+        ja
+          ? '利用者に募集したいフィードバックを伝えましょう…'
+          : "Tell visitors what kind of feedback you'd love to hear…"
+      }
       minHeight="160px"
       className="[&_button]:size-6 [&_button_svg]:size-3.5"
       features={{

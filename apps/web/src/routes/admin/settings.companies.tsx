@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { useIntl } from 'react-intl'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { PERMISSIONS } from '@/lib/shared/permissions'
 import { assertRoutePermission } from '@/lib/shared/route-permission'
@@ -20,10 +21,11 @@ export const Route = createFileRoute('/admin/settings/companies')({
 
 function CompaniesPage() {
   const companyAttrsQuery = useSuspenseQuery(adminQueries.companyAttributes())
+  const { locale } = useIntl()
 
   return (
     <SettingsPage page="/admin/settings/companies">
-      <CompanyAttributesList initialAttributes={companyAttrsQuery.data} />
+      <CompanyAttributesList initialAttributes={companyAttrsQuery.data} locale={locale} />
     </SettingsPage>
   )
 }

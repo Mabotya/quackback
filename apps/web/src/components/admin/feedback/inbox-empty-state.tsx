@@ -13,6 +13,7 @@ interface InboxEmptyStateProps {
 
 export function InboxEmptyState({ type, onClearFilters }: InboxEmptyStateProps) {
   const intl = useIntl()
+  const isJapanese = intl.locale.toLowerCase().startsWith('ja')
   const userRole = useUserRole()
   const activationAction = useActivationAction('feedback_empty')
   const isAdmin = userRole === 'admin'
@@ -21,12 +22,16 @@ export function InboxEmptyState({ type, onClearFilters }: InboxEmptyStateProps) 
     return (
       <EmptyState
         icon={MagnifyingGlassIcon}
-        title="No results for these filters"
-        description="Try adjusting your search or filter criteria."
+        title={isJapanese ? '条件に一致する投稿がありません' : 'No results for these filters'}
+        description={
+          isJapanese
+            ? '検索条件や絞り込みを変更してください。'
+            : 'Try adjusting your search or filter criteria.'
+        }
         action={
           onClearFilters && (
             <Button variant="outline" onClick={onClearFilters}>
-              Clear all filters
+              {isJapanese ? '絞り込みをすべて解除' : 'Clear all filters'}
             </Button>
           )
         }
@@ -63,8 +68,12 @@ export function InboxEmptyState({ type, onClearFilters }: InboxEmptyStateProps) 
   return (
     <EmptyState
       icon={DocumentIcon}
-      title="Select a post"
-      description="Choose a post from the list to view its details."
+      title={isJapanese ? '投稿を選択' : 'Select a post'}
+      description={
+        isJapanese
+          ? '一覧から投稿を選ぶと詳細を表示します。'
+          : 'Choose a post from the list to view its details.'
+      }
       className="h-full"
     />
   )

@@ -1,4 +1,6 @@
 import { FORM_WIDTH_CLASS } from '@/components/admin/settings/settings-page'
+import { useContext } from 'react'
+import { IntlContext } from 'react-intl'
 import { useNavigate } from '@tanstack/react-router'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { PortalAuthTab } from './portal-auth-tab'
@@ -52,6 +54,7 @@ export function AuthSettings({
   // to a route would just append paths under TanStack Router's
   // relative-resolution rules. Same goes for useSearch.
   const navigate = useNavigate()
+  const ja = useContext(IntlContext)?.locale?.toLowerCase().startsWith('ja') ?? false
 
   return (
     <Tabs
@@ -73,9 +76,11 @@ export function AuthSettings({
       className="space-y-6"
     >
       <TabsList className={FORM_WIDTH_CLASS}>
-        <TabsTrigger value="portal-access">Portal access</TabsTrigger>
-        <TabsTrigger value="sign-in">Sign-in</TabsTrigger>
-        <TabsTrigger value="audit-log">Audit log</TabsTrigger>
+        <TabsTrigger value="portal-access">
+          {ja ? 'ポータルへのアクセス' : 'Portal access'}
+        </TabsTrigger>
+        <TabsTrigger value="sign-in">{ja ? 'ログイン' : 'Sign-in'}</TabsTrigger>
+        <TabsTrigger value="audit-log">{ja ? '監査ログ' : 'Audit log'}</TabsTrigger>
       </TabsList>
 
       <TabsContent value="portal-access">

@@ -1,4 +1,5 @@
 import { useState, useCallback, lazy, Suspense } from 'react'
+import { useIntl } from 'react-intl'
 import { useKeyboardSubmit } from '@/lib/client/hooks/use-keyboard-submit'
 import { ModalFooter } from '@/components/shared/modal-footer'
 import { useForm, Controller } from 'react-hook-form'
@@ -59,6 +60,7 @@ export function CreatePostDialog({
   onOpenChange: controlledOnOpenChange,
   trigger,
 }: CreatePostDialogProps) {
+  const isJapanese = useIntl().locale.toLowerCase().startsWith('ja')
   const defaultStatusId = statuses.find((s) => s.isDefault)?.id || statuses[0]?.id || ''
   const [internalOpen, setInternalOpen] = useState(false)
   const isControlled = controlledOpen !== undefined
@@ -159,13 +161,17 @@ export function CreatePostDialog({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       {(!isControlled || trigger) && (
-        <DialogTrigger asChild>{trigger ?? <NewButton noun="post" />}</DialogTrigger>
+        <DialogTrigger asChild>
+          {trigger ?? <NewButton noun="post">{isJapanese ? '新規投稿' : undefined}</NewButton>}
+        </DialogTrigger>
       )}
       <DialogContent
         className="w-[95vw] max-w-5xl p-0 gap-0 overflow-hidden"
         onKeyDown={handleKeyDown}
       >
-        <DialogTitle className="sr-only">Create new post</DialogTitle>
+        <DialogTitle className="sr-only">
+          {isJapanese ? '新しい投稿を作成' : 'Create new post'}
+        </DialogTitle>
 
         <Form {...form}>
           <form onSubmit={handleSubmit}>
@@ -182,7 +188,9 @@ export function CreatePostDialog({
 
                   <TitleInput
                     control={form.control}
-                    placeholder="What's the feedback about?"
+                    placeholder={
+                      isJapanese ? 'フィードバックのタイトルを入力' : "What's the feedback about?"
+                    }
                     autoFocus
                   />
 
@@ -203,7 +211,11 @@ export function CreatePostDialog({
                             <LazyRichTextEditor
                               value={contentJson || ''}
                               onDocumentChange={handleContentChange}
-                              placeholder="Add more details... Type / for commands"
+                              placeholder={
+                                isJapanese
+                                  ? '詳細を入力... / でコマンドを表示'
+                                  : 'Add more details... Type / for commands'
+                              }
                               minHeight="200px"
                               borderless
                               toolbarPosition="bottom"
@@ -251,7 +263,7 @@ export function CreatePostDialog({
                   <div className="space-y-1.5">
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <UserIcon className="h-4 w-4" />
-                      <span>Author</span>
+                      <span>{isJapanese ? '投稿者' : 'Author'}</span>
                     </div>
                     <AuthorSelector
                       value={authorPrincipalId}
@@ -267,7 +279,7 @@ export function CreatePostDialog({
                   <div className="space-y-1.5">
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <FolderIcon className="h-4 w-4" />
-                      <span>Board</span>
+                      <span>{isJapanese ? 'ボード' : 'Board'}</span>
                     </div>
                     <FormField
                       control={form.control}
@@ -277,8 +289,11 @@ export function CreatePostDialog({
                           <Select onValueChange={field.onChange} value={field.value as string}>
                             <FormControl>
                               <SelectTrigger size="sm" className="w-full text-xs">
-                                <SelectValue placeholder="Select board">
-                                  {selectedBoard?.name || 'Select board'}
+                                <SelectValue
+                                  placeholder={isJapanese ? 'ボードを選択' : 'Select board'}
+                                >
+                                  {selectedBoard?.name ||
+                                    (isJapanese ? 'ボードを選択' : 'Select board')}
                                 </SelectValue>
                               </SelectTrigger>
                             </FormControl>
@@ -298,7 +313,9 @@ export function CreatePostDialog({
 
                   {/* Status */}
                   <div className="space-y-1.5">
-                    <span className="text-sm text-muted-foreground">Status</span>
+                    <span className="text-sm text-muted-foreground">
+                      {isJapanese ? 'ステータス' : 'Status'}
+                    </span>
                     <FormField
                       control={form.control}
                       name="statusId"
@@ -348,7 +365,7 @@ export function CreatePostDialog({
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <TagIcon className="h-4 w-4" />
-                        <span>Tags</span>
+                        <span>{isJapanese ? 'タグ' : 'Tags'}</span>
                       </div>
                       <Controller
                         control={form.control}
@@ -411,8 +428,8 @@ export function CreatePostDialog({
                         <FormControl>
                           <SelectTrigger size="sm" className="text-xs">
                             <FolderIcon className="h-3.5 w-3.5 mr-1 text-muted-foreground" />
-                            <SelectValue placeholder="Board">
-                              {selectedBoard?.name || 'Board'}
+                            <SelectValue placeholder={isJapanese ? 'ボード' : 'Board'}>
+                              {selectedBoard?.name || (isJapanese ? 'ボード' : 'Board')}
                             </SelectValue>
                           </SelectTrigger>
                         </FormControl>
@@ -438,7 +455,7 @@ export function CreatePostDialog({
                       >
                         <FormControl>
                           <SelectTrigger size="sm" className="text-xs">
-                            <SelectValue placeholder="Status">
+                            <SelectValue placeholder={isJapanese ? 'ステータス' : 'Status'}>
                               {selectedStatus && (
                                 <div className="flex items-center gap-1.5">
                                   <span
@@ -510,9 +527,17 @@ export function CreatePostDialog({
 
             <ModalFooter
               onCancel={() => setOpen(false)}
-              submitLabel={createPostMutation.isPending ? 'Creating...' : 'Create post'}
+              submitLabel={
+                createPostMutation.isPending
+                  ? isJapanese
+                    ? '作成中...'
+                    : 'Creating...'
+                  : isJapanese
+                    ? '投稿を作成'
+                    : 'Create post'
+              }
               isPending={createPostMutation.isPending}
-              hintAction="to create"
+              hintAction={isJapanese ? 'で作成' : 'to create'}
             />
           </form>
         </Form>

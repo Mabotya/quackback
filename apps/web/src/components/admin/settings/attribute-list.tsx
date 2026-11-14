@@ -41,6 +41,7 @@ interface AttributeListProps {
   emptyDescription?: string
   /** Dialogs owned by the entity-specific list. */
   children?: ReactNode
+  locale?: string
 }
 
 /**
@@ -48,16 +49,28 @@ interface AttributeListProps {
  * header with the create action, one row per field, and the empty state. The
  * entity lists own their dialogs, built-in field sets and mutations.
  */
-export function AttributeList({ items, onNew, emptyDescription, children }: AttributeListProps) {
+export function AttributeList({
+  items,
+  onNew,
+  emptyDescription,
+  children,
+  locale,
+}: AttributeListProps) {
+  const ja = locale?.startsWith('ja') ?? false
+  const newButton = (
+    <NewButton noun="attribute" onClick={onNew}>
+      {ja ? '属性を追加' : undefined}
+    </NewButton>
+  )
   return (
-    <SettingsCard title="Attributes" flush action={<NewButton noun="attribute" onClick={onNew} />}>
+    <SettingsCard title={ja ? '属性' : 'Attributes'} flush action={newButton}>
       {items.length === 0 ? (
         <EmptyState
           size="compact"
           icon={Squares2X2Icon}
-          title="No attributes yet"
+          title={ja ? '属性がまだありません' : 'No attributes yet'}
           description={emptyDescription}
-          action={<NewButton noun="attribute" onClick={onNew} />}
+          action={newButton}
         />
       ) : (
         <SettingsList>
@@ -77,7 +90,19 @@ export function AttributeList({ items, onNew, emptyDescription, children }: Attr
                   </>
                 }
                 meta={item.description || undefined}
-                actions={item.builtin ? BUILTIN_ACTIONS : item.actions}
+                actions={
+                  item.builtin
+                    ? ja
+                      ? [
+                          {
+                            ...BUILTIN_ACTIONS[0],
+                            label: '削除',
+                            hint: '標準の属性は削除できません',
+                          },
+                        ]
+                      : BUILTIN_ACTIONS
+                    : item.actions
+                }
               />
             </div>
           ))}

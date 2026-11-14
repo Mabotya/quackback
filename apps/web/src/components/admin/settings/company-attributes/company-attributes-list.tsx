@@ -59,11 +59,40 @@ const COPY: ScalarAttributeCopy = {
     'This removes the attribute definition. Existing values on companies are kept but lose their friendly label.',
 }
 
-interface CompanyAttributesListProps {
-  initialAttributes: CompanyAttributeItem[]
+const COPY_JA: ScalarAttributeCopy = {
+  createTitle: '企業属性を追加',
+  keyHint: '企業のカスタム属性フィールドに対応',
+  keyPlaceholder: 'contract_value',
+  labelPlaceholder: '契約額',
+  descriptionPlaceholder: '米ドルでの年間契約額',
+  externalSystem: 'CRM',
+  externalPlaceholder: 'annual_contract_value',
+  externalHint:
+    '外部の属性名をこの属性の内部キーに対応付けます。空欄の場合は上記のキーを使います。',
+  deleteDescription:
+    '属性の定義を削除します。既存の企業データの値は保持されますが、表示名は使われなくなります。',
 }
 
-export function CompanyAttributesList({ initialAttributes }: CompanyAttributesListProps) {
+const COMPANY_FIELDS_JA: Record<string, { label: string; description: string }> = {
+  name: { label: '名前', description: '企業名。' },
+  domain: { label: 'メールドメイン', description: '企業を識別するメールドメイン（一意）。' },
+  plan: { label: 'プラン', description: 'エージェントのサイドバーに表示されるプラン名。' },
+  mrr: {
+    label: '月額支出',
+    description: '月間経常収益。セント単位で保存し、通貨として表示します。',
+  },
+  size: { label: '規模', description: '企業の規模（例：11〜50人）。' },
+  website: { label: 'ウェブサイト', description: '企業のウェブサイトURL。' },
+  industry: { label: '業種', description: '企業が事業を行う業種。' },
+}
+
+interface CompanyAttributesListProps {
+  initialAttributes: CompanyAttributeItem[]
+  locale?: string
+}
+
+export function CompanyAttributesList({ initialAttributes, locale }: CompanyAttributesListProps) {
+  const ja = locale?.startsWith('ja') ?? false
   const createAttr = useCreateCompanyAttribute()
   const updateAttr = useUpdateCompanyAttribute()
   const deleteAttr = useDeleteCompanyAttribute()
@@ -71,8 +100,16 @@ export function CompanyAttributesList({ initialAttributes }: CompanyAttributesLi
   return (
     <ScalarAttributeList
       initialAttributes={initialAttributes}
-      builtinFields={COMPANY_STANDARD_FIELDS}
-      copy={COPY}
+      builtinFields={
+        ja
+          ? COMPANY_STANDARD_FIELDS.map((field) => ({
+              ...field,
+              ...(COMPANY_FIELDS_JA[field.key] ?? {}),
+            }))
+          : COMPANY_STANDARD_FIELDS
+      }
+      copy={ja ? COPY_JA : COPY}
+      locale={locale}
       isCreating={createAttr.isPending}
       isUpdating={updateAttr.isPending}
       isDeleting={deleteAttr.isPending}

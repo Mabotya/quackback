@@ -68,6 +68,19 @@ const ENTITIES = [
   },
 ] as const
 
+it('shows the Japanese user settings while preserving custom attribute values', async () => {
+  const user = userEvent.setup()
+  render(<UserAttributesList initialAttributes={[stored()] as never} locale="ja" />)
+  expect(screen.getByRole('heading', { name: '属性' })).toBeTruthy()
+  expect(screen.getByText('メールアドレス')).toBeTruthy()
+  expect(screen.getByText('メール認証')).toBeTruthy()
+  expect(screen.getByText('Seats')).toBeTruthy()
+  await user.click(screen.getByRole('button', { name: '属性を追加' }))
+  const dialog = await screen.findByRole('dialog')
+  expect(within(dialog).getByText('ユーザー属性を追加')).toBeTruthy()
+  expect(within(dialog).getByLabelText('表示名')).toBeTruthy()
+})
+
 describe.each(ENTITIES)('ScalarAttributeList for $name', (entity) => {
   const renderList = (attrs: ReturnType<typeof stored>[] = [stored()]) =>
     render(<entity.Component initialAttributes={attrs as never} />)

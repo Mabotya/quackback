@@ -126,6 +126,16 @@ vi.mock('@tanstack/react-router', () => ({
 import { OverviewDashboard } from '../admin-overview'
 
 describe('OverviewDashboard', () => {
+  it('renders workspace filters in Japanese', () => {
+    rtlRender(
+      <IntlProvider locale="ja" messages={{}}>
+        <OverviewDashboard />
+      </IntlProvider>
+    )
+    expect(screen.getByRole('tab', { name: 'すべて' })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'サポート' })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'フィードバック' })).toBeInTheDocument()
+  })
   it('keeps a fresh workspace quiet until real data exists', () => {
     const previous = state.data
     state.data = {

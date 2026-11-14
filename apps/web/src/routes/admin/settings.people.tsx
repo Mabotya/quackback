@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { useIntl } from 'react-intl'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { PERMISSIONS } from '@/lib/shared/permissions'
 import { assertRoutePermission } from '@/lib/shared/route-permission'
@@ -20,13 +21,18 @@ export const Route = createFileRoute('/admin/settings/people')({
 
 function PeoplePage() {
   const attrsQuery = useSuspenseQuery(adminQueries.userAttributes())
+  const { locale } = useIntl()
 
   return (
     <SettingsPage
       page="/admin/settings/people"
-      description="Custom attributes on users, used in segments."
+      description={
+        locale.startsWith('ja')
+          ? 'セグメントで使用するユーザーのカスタム属性を管理します。'
+          : 'Custom attributes on users, used in segments.'
+      }
     >
-      <UserAttributesList initialAttributes={attrsQuery.data} />
+      <UserAttributesList initialAttributes={attrsQuery.data} locale={locale} />
     </SettingsPage>
   )
 }

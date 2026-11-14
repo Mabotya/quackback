@@ -2,6 +2,7 @@ import { Fragment, Suspense, lazy, useState } from 'react'
 import { useNavigate, useRouteContext } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { ChevronDownIcon } from '@heroicons/react/24/solid'
+import { useIntl } from 'react-intl'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -49,6 +50,7 @@ const ReportIncidentDialog = lazy(() =>
 )
 
 export function HomeActions({ flags }: { flags: Partial<FeatureFlags> | undefined }) {
+  const isJapanese = useIntl().locale.toLowerCase().startsWith('ja')
   const groups = homeActionGroups(flags)
   const [action, setAction] = useState<HomeActionId | null>(null)
   const close = () => setAction(null)
@@ -60,7 +62,7 @@ export function HomeActions({ flags }: { flags: Partial<FeatureFlags> | undefine
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="sm">
-            Actions
+            {isJapanese ? '操作' : 'Actions'}
             <ChevronDownIcon className="size-3.5" />
           </Button>
         </DropdownMenuTrigger>
@@ -70,11 +72,32 @@ export function HomeActions({ flags }: { flags: Partial<FeatureFlags> | undefine
               {index > 0 ? <DropdownMenuSeparator /> : null}
               <DropdownMenuGroup>
                 <DropdownMenuLabel className="uppercase tracking-wide text-muted-foreground">
-                  {group.label}
+                  {isJapanese
+                    ? ((
+                        {
+                          feedback: 'フィードバックとロードマップ',
+                          changelog: '更新履歴',
+                          support: 'サポート',
+                          helpCenter: 'ヘルプセンター',
+                          status: '稼働状況',
+                        } as Record<string, string>
+                      )[group.productId] ?? group.label)
+                    : group.label}
                 </DropdownMenuLabel>
                 {group.actions.map((item) => (
                   <DropdownMenuItem key={item.id} onClick={() => setAction(item.id)}>
-                    {item.label}
+                    {isJapanese
+                      ? (
+                          {
+                            'new-post': '新しい投稿',
+                            'new-changelog': '新しい更新履歴',
+                            'new-conversation': '新しい会話',
+                            'new-ticket': '新しいチケット',
+                            'new-article': '新しい記事',
+                            'report-incident': '障害を報告',
+                          } as Record<HomeActionId, string>
+                        )[item.id]
+                      : item.label}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuGroup>

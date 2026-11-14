@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useIntl } from 'react-intl'
 import { PERMISSIONS, type PermissionKey } from '@/lib/shared/permissions'
 import { assertRouteAnyPermission } from '@/lib/shared/route-permission'
 import { DOMAINS_PAGE_PERMISSIONS } from '@/lib/shared/domains-permissions'
@@ -80,11 +81,17 @@ async function loadOperatorHostnames(context: {
 }
 
 function DomainsSettingsPage() {
+  const ja = useIntl().locale.toLowerCase().startsWith('ja')
   const { operator, sending, signIn, helpCenterDomain, canOpenHelpCenter } = Route.useLoaderData()
   const empty = !operator && !helpCenterDomain && sending.length === 0 && signIn.length === 0
 
   return (
-    <SettingsPage page="/admin/settings/domains" description="Every domain this workspace uses.">
+    <SettingsPage
+      page="/admin/settings/domains"
+      description={
+        ja ? 'このワークスペースで使用しているドメインです。' : 'Every domain this workspace uses.'
+      }
+    >
       {operator && <OperatorHostnames {...operator} />}
       {helpCenterDomain && (
         <HelpCenterAddressSection domain={helpCenterDomain} canOpen={canOpenHelpCenter} />

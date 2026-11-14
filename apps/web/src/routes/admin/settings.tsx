@@ -4,6 +4,7 @@ import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { SettingsNav, SettingsNavProvider } from '@/components/admin/settings/settings-nav'
 import { PageHeader } from '@/components/shared/page-header'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { useIntl } from 'react-intl'
 
 export const Route = createFileRoute('/admin/settings')({
   loader: async ({ context }) => {
@@ -14,6 +15,7 @@ export const Route = createFileRoute('/admin/settings')({
 })
 
 function SettingsLayout() {
+  const { locale } = useIntl()
   return (
     <SettingsNavProvider>
       <div className="flex h-full bg-background">
@@ -22,7 +24,7 @@ function SettingsLayout() {
           className="hidden lg:flex w-64 xl:w-72 shrink-0 flex-col border-e border-chrome-hairline bg-background overflow-hidden"
         >
           <div className="shrink-0 px-5 py-3.5">
-            <PageHeader as="h2" title="Settings" />
+            <PageHeader as="h2" title={locale.startsWith('ja') ? '設定' : 'Settings'} />
           </div>
           <ScrollArea
             className="min-h-0 flex-1"

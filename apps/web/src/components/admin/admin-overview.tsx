@@ -54,6 +54,7 @@ export function OverviewDashboard({
    */
   emptyStates?: boolean
 }) {
+  const isJapanese = useIntl().locale.toLowerCase().startsWith('ja')
   const overview = useQuery(adminOverviewQueries.get())
   const [filter, setFilter] = useState<Filter>('all')
   const data = overview.data
@@ -65,11 +66,15 @@ export function OverviewDashboard({
   }, [data?.attention, filter])
 
   const filters = useMemo(() => {
-    const kinds: Array<{ id: Filter; label: string }> = [{ id: 'all', label: 'All' }]
-    if (data?.sections.support.enabled) kinds.push({ id: 'support', label: 'Support' })
-    if (data?.sections.feedback.enabled) kinds.push({ id: 'feedback', label: 'Feedback' })
+    const kinds: Array<{ id: Filter; label: string }> = [
+      { id: 'all', label: isJapanese ? 'すべて' : 'All' },
+    ]
+    if (data?.sections.support.enabled)
+      kinds.push({ id: 'support', label: isJapanese ? 'サポート' : 'Support' })
+    if (data?.sections.feedback.enabled)
+      kinds.push({ id: 'feedback', label: isJapanese ? 'フィードバック' : 'Feedback' })
     return kinds
-  }, [data?.sections])
+  }, [data?.sections, isJapanese])
 
   const momentum = data?.momentum ?? []
   const changelog = data?.changelog ?? []
@@ -92,7 +97,7 @@ export function OverviewDashboard({
           {actions ? <div className="flex shrink-0 items-center gap-2">{actions}</div> : null}
         </div>
       ) : (
-        <PageHeader title="Home" actions={actions} />
+        <PageHeader title={isJapanese ? 'ホーム' : 'Home'} actions={actions} />
       )}
 
       {banner}
@@ -100,8 +105,10 @@ export function OverviewDashboard({
       {overview.isError ? (
         <SettingsCard flush>
           <Quiet>
-            Couldn’t load this page.{' '}
-            <RetryButton onClick={() => void overview.refetch()}>Try again</RetryButton>
+            {isJapanese ? 'ページを読み込めませんでした。' : 'Couldn’t load this page.'}{' '}
+            <RetryButton onClick={() => void overview.refetch()}>
+              {isJapanese ? '再試行' : 'Try again'}
+            </RetryButton>
           </Quiet>
         </SettingsCard>
       ) : data?.hasRealData === false ? (
@@ -149,7 +156,9 @@ export function OverviewDashboard({
                   {feedError && attention.length > 0 ? (
                     <p className="border-b border-border px-3 py-2.5 text-sm text-muted-foreground sm:px-4">
                       {feedError}{' '}
-                      <RetryButton onClick={() => void overview.refetch()}>Try again</RetryButton>
+                      <RetryButton onClick={() => void overview.refetch()}>
+                        {isJapanese ? '再試行' : 'Try again'}
+                      </RetryButton>
                     </p>
                   ) : null}
                   {attention.length > 0 ? (
@@ -161,10 +170,12 @@ export function OverviewDashboard({
                   ) : feedError ? (
                     <Quiet>
                       {feedError}{' '}
-                      <RetryButton onClick={() => void overview.refetch()}>Try again</RetryButton>
+                      <RetryButton onClick={() => void overview.refetch()}>
+                        {isJapanese ? '再試行' : 'Try again'}
+                      </RetryButton>
                     </Quiet>
                   ) : (
-                    <Quiet>Nothing to review</Quiet>
+                    <Quiet>{isJapanese ? '確認する項目はありません' : 'Nothing to review'}</Quiet>
                   )}
                 </>
               )}
@@ -174,11 +185,11 @@ export function OverviewDashboard({
               <Skeleton className="hidden h-40 rounded-xl lg:block" />
             ) : hasAside ? (
               <aside className="min-w-0 space-y-6">
-                <ModuleCard title="Feedback" items={momentum}>
+                <ModuleCard title={isJapanese ? 'フィードバック' : 'Feedback'} items={momentum}>
                   {(item) => <MomentumRow key={item.postId} item={item} />}
                 </ModuleCard>
                 <ModuleCard
-                  title="Changelog"
+                  title={isJapanese ? '更新履歴' : 'Changelog'}
                   items={changelog}
                   error={changelogError}
                   onRetry={() => void overview.refetch()}
@@ -186,7 +197,7 @@ export function OverviewDashboard({
                   {(item) => <DeskRow key={item.id} item={item} />}
                 </ModuleCard>
                 <ModuleCard
-                  title="Help center"
+                  title={isJapanese ? 'ヘルプセンター' : 'Help center'}
                   items={helpCenter}
                   error={helpError}
                   onRetry={() => void overview.refetch()}
@@ -419,12 +430,19 @@ function MomentumRow({ item }: { item: OverviewMomentumItem }) {
 }
 
 function DeskRow({ item }: { item: OverviewPublishItem }) {
+  const isJapanese = useIntl().locale.toLowerCase().startsWith('ja')
   return (
     <OverviewEntityRow
       link={item.link}
       entity={item.entity}
       title={item.title}
-      badge={publishStatusLabel(item.status)}
+      badge={
+        isJapanese
+          ? item.status === 'scheduled'
+            ? '公開予定'
+            : '下書き'
+          : publishStatusLabel(item.status)
+      }
       meta={item.meta}
     />
   )
@@ -443,11 +461,15 @@ function ModuleCard<T>({
   onRetry?: () => void
   children: (item: T) => ReactNode
 }) {
+  const isJapanese = useIntl().locale.toLowerCase().startsWith('ja')
   if (error) {
     return (
       <SettingsCard title={title} flush>
         <Quiet>
-          {error} {onRetry ? <RetryButton onClick={onRetry}>Try again</RetryButton> : null}
+          {error}{' '}
+          {onRetry ? (
+            <RetryButton onClick={onRetry}>{isJapanese ? '再試行' : 'Try again'}</RetryButton>
+          ) : null}
         </Quiet>
       </SettingsCard>
     )

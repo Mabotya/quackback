@@ -99,10 +99,19 @@ interface ScalarAttributeListProps<T extends ScalarAttribute> {
   isCreating?: boolean
   isUpdating?: boolean
   isDeleting?: boolean
+  locale?: string
 }
 
-function typeLabel(type: string, currencyCode?: string | null): string {
-  const base = ATTRIBUTE_TYPES.find((t) => t.value === type)?.label ?? type
+function typeLabel(type: string, currencyCode?: string | null, ja = false): string {
+  const translations: Record<string, string> = {
+    string: 'テキスト',
+    number: '数値',
+    boolean: '真偽値',
+    date: '日付',
+    currency: '通貨',
+  }
+  const base =
+    (ja && translations[type]) || ATTRIBUTE_TYPES.find((t) => t.value === type)?.label || type
   return type === 'currency' && currencyCode ? `${base} · ${currencyCode}` : base
 }
 
@@ -114,6 +123,7 @@ interface AttributeFormDialogProps {
   isEditing?: boolean
   onSubmit: (values: ScalarAttributeFormValues) => Promise<void>
   isPending?: boolean
+  ja?: boolean
 }
 
 function AttributeFormDialog({
@@ -124,6 +134,7 @@ function AttributeFormDialog({
   isEditing = false,
   onSubmit,
   isPending,
+  ja = false,
 }: AttributeFormDialogProps) {
   const [key, setKey] = useState(initialValues?.key ?? '')
   const [label, setLabel] = useState(initialValues?.label ?? '')
@@ -155,13 +166,15 @@ function AttributeFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>{isEditing ? 'Edit attribute' : copy.createTitle}</DialogTitle>
+          <DialogTitle>
+            {isEditing ? (ja ? '属性を編集' : 'Edit attribute') : copy.createTitle}
+          </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="attr-key">
-              Key{' '}
+              {ja ? 'キー' : 'Key'}{' '}
               <span className="text-muted-foreground font-normal text-xs">({copy.keyHint})</span>
             </Label>
             <Input
@@ -175,13 +188,15 @@ function AttributeFormDialog({
             />
             {!isEditing && (
               <p className="text-[11px] text-muted-foreground">
-                Lowercase letters, numbers, underscores only. Cannot be changed after creation.
+                {ja
+                  ? '半角小文字、数字、アンダースコアのみ使用できます。作成後は変更できません。'
+                  : 'Lowercase letters, numbers, underscores only. Cannot be changed after creation.'}
               </p>
             )}
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="attr-label">Display label</Label>
+            <Label htmlFor="attr-label">{ja ? '表示名' : 'Display label'}</Label>
             <Input
               id="attr-label"
               value={label}
@@ -192,7 +207,7 @@ function AttributeFormDialog({
           </div>
 
           <div className="space-y-1.5">
-            <Label>Type</Label>
+            <Label>{ja ? '種類' : 'Type'}</Label>
             <Select value={type} onValueChange={(v) => setType(v as ScalarAttributeType)}>
               <SelectTrigger>
                 <SelectValue />
@@ -200,7 +215,7 @@ function AttributeFormDialog({
               <SelectContent>
                 {ATTRIBUTE_TYPES.map((t) => (
                   <SelectItem key={t.value} value={t.value}>
-                    {t.label}
+                    {ja ? typeLabel(t.value, null, true) : t.label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -209,7 +224,7 @@ function AttributeFormDialog({
 
           {type === 'currency' && (
             <div className="space-y-1.5">
-              <Label>Currency</Label>
+              <Label>{ja ? '通貨' : 'Currency'}</Label>
               <Select value={currencyCode} onValueChange={setCurrencyCode}>
                 <SelectTrigger className="w-[120px]">
                   <SelectValue />
@@ -227,7 +242,10 @@ function AttributeFormDialog({
 
           <div className="space-y-1.5">
             <Label htmlFor="attr-desc">
-              Description <span className="text-muted-foreground font-normal">(optional)</span>
+              {ja ? '説明' : 'Description'}{' '}
+              <span className="text-muted-foreground font-normal">
+                {ja ? '（任意）' : '(optional)'}
+              </span>
             </Label>
             <Textarea
               id="attr-desc"
@@ -241,8 +259,10 @@ function AttributeFormDialog({
 
           <div className="space-y-1.5">
             <Label htmlFor="attr-external-key">
-              {copy.externalSystem} attribute name{' '}
-              <span className="text-muted-foreground font-normal text-xs">(optional)</span>
+              {copy.externalSystem} {ja ? '属性名' : 'attribute name'}{' '}
+              <span className="text-muted-foreground font-normal text-xs">
+                {ja ? '（任意）' : '(optional)'}
+              </span>
             </Label>
             <Input
               id="attr-external-key"
@@ -260,10 +280,20 @@ function AttributeFormDialog({
               onClick={() => onOpenChange(false)}
               disabled={isPending}
             >
-              Cancel
+              {ja ? 'キャンセル' : 'Cancel'}
             </Button>
             <Button type="submit" disabled={!canSubmit || isPending}>
-              {isPending ? 'Saving...' : isEditing ? 'Save changes' : 'Create attribute'}
+              {ja
+                ? isPending
+                  ? '保存中…'
+                  : isEditing
+                    ? '変更を保存'
+                    : '属性を作成'
+                : isPending
+                  ? 'Saving...'
+                  : isEditing
+                    ? 'Save changes'
+                    : 'Create attribute'}
             </Button>
           </DialogFooter>
         </form>
@@ -290,7 +320,9 @@ export function ScalarAttributeList<T extends ScalarAttribute>({
   isCreating,
   isUpdating,
   isDeleting,
+  locale,
 }: ScalarAttributeListProps<T>) {
+  const ja = locale?.startsWith('ja') ?? false
   const [attributes, setAttributes] = useState(initialAttributes)
   const [createOpen, setCreateOpen] = useState(false)
   const [editTarget, setEditTarget] = useState<T | null>(null)
@@ -321,7 +353,7 @@ export function ScalarAttributeList<T extends ScalarAttribute>({
       id: `builtin:${f.key}`,
       label: f.label,
       attrKey: f.key,
-      typeLabel: typeLabel(f.type),
+      typeLabel: typeLabel(f.type, null, ja),
       description: f.description,
       builtin: true,
     })),
@@ -329,11 +361,11 @@ export function ScalarAttributeList<T extends ScalarAttribute>({
       id: a.id,
       label: a.label,
       attrKey: a.key,
-      typeLabel: typeLabel(a.type, a.currencyCode),
+      typeLabel: typeLabel(a.type, a.currencyCode, ja),
       description: a.description,
       actions: [
-        { label: 'Edit', onSelect: () => setEditTarget(a) },
-        { label: 'Delete', onSelect: () => setDeleteTarget(a), destructive: true },
+        { label: ja ? '編集' : 'Edit', onSelect: () => setEditTarget(a) },
+        { label: ja ? '削除' : 'Delete', onSelect: () => setDeleteTarget(a), destructive: true },
       ],
     })),
   ]
@@ -343,6 +375,7 @@ export function ScalarAttributeList<T extends ScalarAttribute>({
       items={items}
       onNew={() => setCreateOpen(true)}
       emptyDescription={emptyDescription}
+      locale={locale}
     >
       <AttributeFormDialog
         open={createOpen}
@@ -350,6 +383,7 @@ export function ScalarAttributeList<T extends ScalarAttribute>({
         copy={copy}
         onSubmit={handleCreate}
         isPending={isCreating}
+        ja={ja}
       />
 
       <AttributeFormDialog
@@ -357,6 +391,7 @@ export function ScalarAttributeList<T extends ScalarAttribute>({
         onOpenChange={(open) => !open && setEditTarget(null)}
         copy={copy}
         isEditing
+        ja={ja}
         initialValues={
           editTarget
             ? {
@@ -376,9 +411,9 @@ export function ScalarAttributeList<T extends ScalarAttribute>({
       <ConfirmDialog
         open={!!deleteTarget}
         onOpenChange={(open) => !open && setDeleteTarget(null)}
-        title="Delete attribute?"
+        title={ja ? '属性を削除しますか？' : 'Delete attribute?'}
         description={`"${deleteTarget?.label}": ${copy.deleteDescription}`}
-        confirmLabel="Delete attribute"
+        confirmLabel={ja ? '属性を削除' : 'Delete attribute'}
         variant="destructive"
         isPending={isDeleting}
         onConfirm={handleDelete}

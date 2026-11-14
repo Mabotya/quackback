@@ -10,6 +10,7 @@
 import { forwardRef, type ComponentType } from 'react'
 import { act, cleanup, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { IntlProvider } from 'react-intl'
 import {
   Outlet,
   RouterProvider,
@@ -117,7 +118,7 @@ async function mount(initial: string) {
     history: createMemoryHistory({ initialEntries: [initial] }),
     context: {},
   })
-  const view = render(<RouterProvider router={router} />)
+  const view = render(<IntlProvider locale="en"><RouterProvider router={router} /></IntlProvider>)
   await screen.findByText(`${initial.split('/').pop()} page`)
   for (const key of Object.keys(iconRenders)) iconRenders[key] = 0
   rowRenders.length = 0

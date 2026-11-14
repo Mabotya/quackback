@@ -2,6 +2,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { IntlProvider } from 'react-intl'
 
 vi.mock('@/components/admin/feedback/create-post-dialog', () => ({
   CreatePostDialog: () => <div>create-post-dialog</div>,
@@ -49,7 +50,11 @@ const allOn = {
 describe('HomeActions', () => {
   it('lists create actions grouped by module', async () => {
     const user = userEvent.setup()
-    render(<HomeActions flags={allOn} />)
+    render(
+      <IntlProvider locale="en">
+        <HomeActions flags={allOn} />
+      </IntlProvider>
+    )
 
     await user.click(screen.getByRole('button', { name: 'Actions' }))
 
@@ -64,11 +69,27 @@ describe('HomeActions', () => {
 
   it('opens the matching create dialog', async () => {
     const user = userEvent.setup()
-    render(<HomeActions flags={{ feedback: true, changelog: true }} />)
+    render(
+      <IntlProvider locale="en">
+        <HomeActions flags={{ feedback: true, changelog: true }} />
+      </IntlProvider>
+    )
 
     await user.click(screen.getByRole('button', { name: 'Actions' }))
     await user.click(screen.getByRole('menuitem', { name: 'New changelog' }))
 
     expect(await screen.findByText('create-changelog-dialog')).toBeInTheDocument()
+  })
+
+  it('shows the actions and their groups in Japanese', async () => {
+    const user = userEvent.setup()
+    render(
+      <IntlProvider locale="ja">
+        <HomeActions flags={allOn} />
+      </IntlProvider>
+    )
+    await user.click(screen.getByRole('button', { name: '操作' }))
+    expect(screen.getByText('フィードバックとロードマップ')).toBeInTheDocument()
+    expect(screen.getByRole('menuitem', { name: '新しい会話' })).toBeInTheDocument()
   })
 })
