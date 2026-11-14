@@ -202,10 +202,10 @@ export function PortalHeader({
           }}
           className="max-w-[7rem] cursor-pointer appearance-none border-0 bg-transparent p-0 text-sm font-medium leading-none text-foreground outline-none [html[lang=ja]_&]:-translate-y-px"
         >
-          <option value="ja">日本語</option>
-          <option value="en">English</option>
-          <option value="zh-tw">繁體中文</option>
-          <option value="zh-cn">简体中文</option>
+          <option value="ja" style={{ backgroundColor: 'var(--popover)', color: 'var(--popover-foreground)' }}>日本語</option>
+          <option value="en" style={{ backgroundColor: 'var(--popover)', color: 'var(--popover-foreground)' }}>English</option>
+          <option value="zh-tw" style={{ backgroundColor: 'var(--popover)', color: 'var(--popover-foreground)' }}>繁體中文</option>
+          <option value="zh-cn" style={{ backgroundColor: 'var(--popover)', color: 'var(--popover-foreground)' }}>简体中文</option>
         </select>
         <ChevronDownIcon className="pointer-events-none h-3 w-3 shrink-0" aria-hidden="true" />
       </label>
