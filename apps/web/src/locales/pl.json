@@ -1,4 +1,10 @@
 {
+  "portal.settings.linked.title": "Połączone metody logowania",
+  "portal.settings.linked.description": "Połącz inne konto, aby zalogować się do tego profilu.",
+  "portal.settings.linked.connected": "Połączono",
+  "portal.settings.linked.connecting": "Łączenie…",
+  "portal.settings.linked.connect": "Połącz",
+  "portal.settings.linked.error": "Nie udało się rozpocząć łączenia. Spróbuj ponownie.",
   "files.upload.error.totalLimit": "Łączny rozmiar załączników nie może przekraczać 40 MB.",
   "files.upload.error.singleLimit": "Każdy plik może mieć maksymalnie {size} MB.",
   "portal.settings.accountError.invalidPassword": "Obecne hasło jest nieprawidłowe.",

@@ -276,7 +276,7 @@ export const fetchUserProfile = createServerFn({ method: 'GET' })
     // Resolve once server-side so the page doesn't fan out to
     // listAccounts on the client + so we can hide sections that aren't
     // meaningful for this user.
-    const [userRecord, credentialAccount] = await Promise.all([
+    const [userRecord, credentialAccount, linkedAccounts] = await Promise.all([
       db.query.user.findFirst({
         where: eq(user.id, userId),
         columns: { imageKey: true, image: true, twoFactorEnabled: true, email: true },
@@ -284,6 +284,10 @@ export const fetchUserProfile = createServerFn({ method: 'GET' })
       db.query.account.findFirst({
         where: and(eq(account.userId, userId), eq(account.providerId, 'credential')),
         columns: { id: true },
+      }),
+      db.query.account.findMany({
+        where: eq(account.userId, userId),
+        columns: { providerId: true },
       }),
     ])
 
@@ -318,6 +322,7 @@ export const fetchUserProfile = createServerFn({ method: 'GET' })
       hasCustomAvatar,
       twoFactorEnabled: userRecord?.twoFactorEnabled === true,
       hasPassword: !!credentialAccount,
+      linkedProviderIds: linkedAccounts.map((entry) => entry.providerId),
       ssoEnforced,
     }
   })

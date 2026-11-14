@@ -1,4 +1,10 @@
 {
+  "portal.settings.linked.title": "已連結的登入方式",
+  "portal.settings.linked.description": "連結其他帳號，即可登入此個人帳號。",
+  "portal.settings.linked.connected": "已連結",
+  "portal.settings.linked.connecting": "正在連結…",
+  "portal.settings.linked.connect": "連結",
+  "portal.settings.linked.error": "無法開始連結，請再試一次。",
   "files.upload.error.totalLimit": "附件總大小不能超過40 MB。",
   "files.upload.error.singleLimit": "每個檔案不能超過 {size} MB。",
   "portal.settings.accountError.invalidPassword": "目前的密碼不正確。",

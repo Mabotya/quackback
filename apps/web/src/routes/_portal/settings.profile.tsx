@@ -8,6 +8,7 @@ import { UserIcon } from '@heroicons/react/24/solid'
 import { PortalPageHeader } from '@/components/public/portal-page-header'
 import { ProfileForm } from '@/components/settings/profile-form'
 import { TwoFactorSection } from '@/components/settings/two-factor-section'
+import { LinkedSignInMethods } from '@/components/settings/linked-sign-in-methods'
 
 export const Route = createFileRoute('/_portal/settings/profile')({
   loader: async ({ context }) => {
@@ -33,6 +34,7 @@ export const Route = createFileRoute('/_portal/settings/profile')({
 
     return {
       user: session.user,
+      registeredAuthProviders: context.registeredAuthProviders ?? [],
     }
   },
   component: ProfilePage,
@@ -41,7 +43,7 @@ export const Route = createFileRoute('/_portal/settings/profile')({
 function ProfilePage() {
   const intl = useIntl()
   const router = useRouter()
-  const { user } = Route.useLoaderData()
+  const { user, registeredAuthProviders } = Route.useLoaderData()
   const { data: userProfile } = useSuspenseQuery(settingsQueries.userProfile(user.id as UserId))
 
   // 2FA only gates password sign-ins, so the section is only meaningful
@@ -76,6 +78,11 @@ function ProfilePage() {
           }}
         />
       </div>
+
+      <LinkedSignInMethods
+        enabled={registeredAuthProviders}
+        linked={userProfile.linkedProviderIds ?? []}
+      />
 
       {showTwoFactor && (
         <div

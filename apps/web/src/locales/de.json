@@ -1,4 +1,10 @@
 {
+  "portal.settings.linked.title": "Verknüpfte Anmeldemethoden",
+  "portal.settings.linked.description": "Verknüpfe ein weiteres Konto, um dich bei diesem Profil anzumelden.",
+  "portal.settings.linked.connected": "Verknüpft",
+  "portal.settings.linked.connecting": "Verknüpfung läuft…",
+  "portal.settings.linked.connect": "Verknüpfen",
+  "portal.settings.linked.error": "Die Verknüpfung konnte nicht gestartet werden. Bitte versuche es erneut.",
   "files.upload.error.totalLimit": "Anhänge dürfen insgesamt 40 MB nicht überschreiten.",
   "files.upload.error.singleLimit": "Jede Datei darf höchstens {size} MB groß sein.",
   "portal.settings.accountError.invalidPassword": "Ihr aktuelles Passwort ist falsch.",

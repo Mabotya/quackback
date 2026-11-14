@@ -1,4 +1,10 @@
 {
+  "portal.settings.linked.title": "連携済みのログイン方法",
+  "portal.settings.linked.description": "別のアカウントを連携すると、このプロフィールにログインできます。",
+  "portal.settings.linked.connected": "連携済み",
+  "portal.settings.linked.connecting": "連携中…",
+  "portal.settings.linked.connect": "連携する",
+  "portal.settings.linked.error": "連携を開始できませんでした。もう一度お試しください。",
   "files.upload.error.totalLimit": "添付ファイルの合計は40 MBまでです。",
   "files.upload.error.singleLimit": "ファイルは1件あたり{size} MBまでです。",
   "portal.settings.accountError.invalidPassword": "現在のパスワードが正しくありません。",

@@ -1,4 +1,10 @@
 {
+  "portal.settings.linked.title": "Connected sign-in methods",
+  "portal.settings.linked.description": "Connect another account to sign in to this profile.",
+  "portal.settings.linked.connected": "Connected",
+  "portal.settings.linked.connecting": "Connecting…",
+  "portal.settings.linked.connect": "Connect",
+  "portal.settings.linked.error": "Could not start connecting. Please try again.",
   "files.upload.error.totalLimit": "Attachments cannot total more than 40 MB.",
   "files.upload.error.singleLimit": "Each file must be {size} MB or smaller.",
   "portal.settings.accountError.invalidPassword": "Your current password is incorrect.",

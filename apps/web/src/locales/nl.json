@@ -1,4 +1,10 @@
 {
+  "portal.settings.linked.title": "Gekoppelde aanmeldmethoden",
+  "portal.settings.linked.description": "Koppel een ander account om je bij dit profiel aan te melden.",
+  "portal.settings.linked.connected": "Gekoppeld",
+  "portal.settings.linked.connecting": "Koppelen…",
+  "portal.settings.linked.connect": "Koppelen",
+  "portal.settings.linked.error": "Koppelen kon niet worden gestart. Probeer het opnieuw.",
   "files.upload.error.totalLimit": "Bijlagen mogen samen niet groter zijn dan 40 MB.",
   "files.upload.error.singleLimit": "Elk bestand mag maximaal {size} MB zijn.",
   "portal.settings.accountError.invalidPassword": "Uw huidige wachtwoord is onjuist.",

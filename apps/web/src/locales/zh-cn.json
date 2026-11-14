@@ -1,4 +1,10 @@
 {
+  "portal.settings.linked.title": "已关联的登录方式",
+  "portal.settings.linked.description": "关联其他账号，即可登录此个人账号。",
+  "portal.settings.linked.connected": "已关联",
+  "portal.settings.linked.connecting": "正在关联…",
+  "portal.settings.linked.connect": "关联",
+  "portal.settings.linked.error": "无法开始关联，请重试。",
   "files.upload.error.totalLimit": "附件总大小不能超过40 MB。",
   "files.upload.error.singleLimit": "每个文件不能超过 {size} MB。",
   "portal.settings.accountError.invalidPassword": "当前密码不正确。",

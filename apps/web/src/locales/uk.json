@@ -1,4 +1,10 @@
 {
+  "portal.settings.linked.title": "Пов’язані способи входу",
+  "portal.settings.linked.description": "Пов’яжіть інший обліковий запис для входу в цей профіль.",
+  "portal.settings.linked.connected": "Пов’язано",
+  "portal.settings.linked.connecting": "Підключення…",
+  "portal.settings.linked.connect": "Пов’язати",
+  "portal.settings.linked.error": "Не вдалося почати підключення. Спробуйте ще раз.",
   "files.upload.error.totalLimit": "Загальний розмір вкладень не може перевищувати 40 МБ.",
   "files.upload.error.singleLimit": "Кожен файл має бути не більшим за {size} МБ.",
   "portal.settings.accountError.invalidPassword": "Поточний пароль неправильний.",

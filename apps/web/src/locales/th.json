@@ -1,4 +1,10 @@
 {
+  "portal.settings.linked.title": "วิธีลงชื่อเข้าใช้ที่เชื่อมโยง",
+  "portal.settings.linked.description": "เชื่อมโยงบัญชีอื่นเพื่อลงชื่อเข้าใช้โปรไฟล์นี้",
+  "portal.settings.linked.connected": "เชื่อมโยงแล้ว",
+  "portal.settings.linked.connecting": "กำลังเชื่อมโยง…",
+  "portal.settings.linked.connect": "เชื่อมโยง",
+  "portal.settings.linked.error": "เริ่มเชื่อมโยงไม่ได้ โปรดลองอีกครั้ง",
   "files.upload.error.totalLimit": "ไฟล์แนบรวมกันต้องไม่เกิน 40 MB",
   "files.upload.error.singleLimit": "แต่ละไฟล์ต้องมีขนาดไม่เกิน {size} MB",
   "portal.settings.accountError.invalidPassword": "รหัสผ่านปัจจุบันไม่ถูกต้อง",

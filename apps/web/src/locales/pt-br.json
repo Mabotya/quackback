@@ -1,4 +1,10 @@
 {
+  "portal.settings.linked.title": "Métodos de login vinculados",
+  "portal.settings.linked.description": "Vincule outra conta para entrar neste perfil.",
+  "portal.settings.linked.connected": "Vinculado",
+  "portal.settings.linked.connecting": "Vinculando…",
+  "portal.settings.linked.connect": "Vincular",
+  "portal.settings.linked.error": "Não foi possível iniciar a vinculação. Tente novamente.",
   "files.upload.error.totalLimit": "O total de anexos não pode ultrapassar 40 MB.",
   "files.upload.error.singleLimit": "Cada arquivo deve ter no máximo {size} MB.",
   "portal.settings.accountError.invalidPassword": "A senha atual está incorreta.",

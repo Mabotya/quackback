@@ -1,4 +1,10 @@
 {
+  "portal.settings.linked.title": "Méthodes de connexion associées",
+  "portal.settings.linked.description": "Associez un autre compte pour vous connecter à ce profil.",
+  "portal.settings.linked.connected": "Associé",
+  "portal.settings.linked.connecting": "Association en cours…",
+  "portal.settings.linked.connect": "Associer",
+  "portal.settings.linked.error": "Impossible de commencer l’association. Veuillez réessayer.",
   "files.upload.error.totalLimit": "Le total des pièces jointes ne peut pas dépasser 40 Mo.",
   "files.upload.error.singleLimit": "Chaque fichier doit faire au maximum {size} Mo.",
   "portal.settings.accountError.invalidPassword": "Votre mot de passe actuel est incorrect.",

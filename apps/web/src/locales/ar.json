@@ -1,4 +1,10 @@
 {
+  "portal.settings.linked.title": "طرق تسجيل الدخول المرتبطة",
+  "portal.settings.linked.description": "اربط حسابًا آخر لتسجيل الدخول إلى هذا الملف الشخصي.",
+  "portal.settings.linked.connected": "مرتبط",
+  "portal.settings.linked.connecting": "جارٍ الربط…",
+  "portal.settings.linked.connect": "ربط",
+  "portal.settings.linked.error": "تعذّر بدء الربط. يُرجى المحاولة مجددًا.",
   "files.upload.error.totalLimit": "يجب ألا يتجاوز مجموع المرفقات 40 ميغابايت.",
   "files.upload.error.singleLimit": "يجب ألا يتجاوز حجم الملف {size} ميغابايت.",
   "portal.settings.accountError.invalidPassword": "كلمة المرور الحالية غير صحيحة.",

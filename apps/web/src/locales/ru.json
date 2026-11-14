@@ -1,4 +1,10 @@
 {
+  "portal.settings.linked.title": "Связанные способы входа",
+  "portal.settings.linked.description": "Свяжите другой аккаунт для входа в этот профиль.",
+  "portal.settings.linked.connected": "Связано",
+  "portal.settings.linked.connecting": "Подключение…",
+  "portal.settings.linked.connect": "Связать",
+  "portal.settings.linked.error": "Не удалось начать подключение. Попробуйте ещё раз.",
   "files.upload.error.totalLimit": "Общий размер вложений не должен превышать 40 МБ.",
   "files.upload.error.singleLimit": "Размер каждого файла не должен превышать {size} МБ.",
   "portal.settings.accountError.invalidPassword": "Текущий пароль неверен.",
