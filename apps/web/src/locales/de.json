@@ -1,6 +1,7 @@
 {
   "portal.translation.translate": "In {language} übersetzen",
   "portal.translation.original": "Original ansehen",
+  "portal.translation.disclaimer": "(Hinweis: Die Übersetzung ist möglicherweise ungenau.)",
   "portal.translation.loading": "Übersetzung läuft…",
   "portal.translation.error": "Übersetzung fehlgeschlagen. Bitte erneut versuchen.",
   "ui.editor.heading1": "Überschrift 1",

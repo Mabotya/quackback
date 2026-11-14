@@ -98,6 +98,11 @@ export function useContentTranslation({ kind, id, sourceKey }: {
             ? intl.formatMessage({ id: 'portal.translation.original', defaultMessage: 'See original' })
             : intl.formatMessage({ id: 'portal.translation.translate', defaultMessage: 'Translate to {language}' }, { language })}
       </button>
+      {showTranslation && (
+        <span className="ms-1 text-muted-foreground">
+          {intl.formatMessage({ id: 'portal.translation.disclaimer', defaultMessage: '(Note: translation accuracy may be limited.)' })}
+        </span>
+      )}
       {error && <p role="alert" className="mt-1 text-destructive">{intl.formatMessage({ id: 'portal.translation.error', defaultMessage: 'Could not translate. Please try again.' })}</p>}
     </div>
   )

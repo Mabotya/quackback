@@ -1,6 +1,7 @@
 {
   "portal.translation.translate": "แปลเป็น{language}",
   "portal.translation.original": "ดูต้นฉบับ",
+  "portal.translation.disclaimer": "(หมายเหตุ: คำแปลอาจไม่แม่นยำ)",
   "portal.translation.loading": "กำลังแปล…",
   "portal.translation.error": "แปลไม่สำเร็จ โปรดลองอีกครั้ง",
   "ui.editor.heading1": "ส่วนหัว 1",

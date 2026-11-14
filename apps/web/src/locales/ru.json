@@ -1,6 +1,7 @@
 {
   "portal.translation.translate": "Перевести на {language}",
   "portal.translation.original": "Показать оригинал",
+  "portal.translation.disclaimer": "(Примечание: перевод может быть неточным.)",
   "portal.translation.loading": "Перевод…",
   "portal.translation.error": "Не удалось перевести. Попробуйте ещё раз.",
   "ui.editor.heading1": "Заголовок 1",

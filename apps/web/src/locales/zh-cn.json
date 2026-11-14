@@ -1,6 +1,7 @@
 {
   "portal.translation.translate": "翻译成{language}",
   "portal.translation.original": "查看原文",
+  "portal.translation.disclaimer": "（注意：翻译结果可能不够准确。）",
   "portal.translation.loading": "翻译中…",
   "portal.translation.error": "无法翻译，请重试。",
   "ui.editor.heading1": "标题1",

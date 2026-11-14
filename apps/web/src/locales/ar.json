@@ -1,6 +1,7 @@
 {
   "portal.translation.translate": "الترجمة إلى {language}",
   "portal.translation.original": "عرض الأصل",
+  "portal.translation.disclaimer": "(تنبيه: قد لا تكون الترجمة دقيقة.)",
   "portal.translation.loading": "جارٍ الترجمة…",
   "portal.translation.error": "تعذرت الترجمة. حاول مرة أخرى.",
   "ui.editor.heading1": "عنوان 1",

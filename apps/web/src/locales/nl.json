@@ -1,6 +1,7 @@
 {
   "portal.translation.translate": "Vertalen naar {language}",
   "portal.translation.original": "Origineel bekijken",
+  "portal.translation.disclaimer": "(Let op: de vertaling is mogelijk niet nauwkeurig.)",
   "portal.translation.loading": "Vertalen…",
   "portal.translation.error": "Vertalen mislukt. Probeer het opnieuw.",
   "ui.editor.heading1": "Kop 1",
