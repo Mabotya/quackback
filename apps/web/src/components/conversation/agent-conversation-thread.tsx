@@ -725,7 +725,7 @@ export function AgentConversationThread({
       queryClient.setQueryData(threadKey, (prev: AgentThreadCache | undefined) =>
         prependOlderAgentMessages(prev, page)
       ),
-    onError: () => toast.error('Failed to load older messages'),
+    onError: () => toast.error('過去のメッセージを読み込めませんでした'),
   })
   const [ticketLoadingOlder, setTicketLoadingOlder] = useState(false)
   const loadOlderTicket = useCallback(async () => {
@@ -737,7 +737,7 @@ export function AgentConversationThread({
         prependOlderTicketMessages(prev, page)
       )
     } catch {
-      toast.error('Failed to load older messages')
+      toast.error('過去のメッセージを読み込めませんでした')
     } finally {
       setTicketLoadingOlder(false)
     }
@@ -1105,7 +1105,7 @@ export function AgentConversationThread({
         })
         return
       }
-      toast.error('Failed to send message')
+      toast.error('メッセージを送信できませんでした')
     },
   })
 
@@ -1148,7 +1148,7 @@ export function AgentConversationThread({
     },
     onError: (_error, vars) => {
       vars.restoreDraft?.()
-      toast.error('Failed to add note')
+      toast.error('メモを追加できませんでした')
     },
   })
 
@@ -1185,7 +1185,7 @@ export function AgentConversationThread({
     mutationFn: (messageId: ConversationMessageId) =>
       deleteConversationMessageFn({ data: { messageId } }),
     onSuccess: (_r, messageId) => removeActiveMessage(messageId),
-    onError: () => toast.error('Failed to delete message'),
+    onError: () => toast.error('メッセージを削除できませんでした'),
   })
 
   const handleEditMessage = useCallback(
@@ -1200,7 +1200,7 @@ export function AgentConversationThread({
         patchActiveMessage(message.id, () => message)
         onChanged()
       } catch {
-        toast.error('Failed to edit message')
+        toast.error('メッセージを編集できませんでした')
         throw new Error('Failed to edit message')
       }
     },
@@ -1228,7 +1228,7 @@ export function AgentConversationThread({
     onSuccess: (data, vars) =>
       patchActiveMessage(vars.messageId, (m) => ({ ...m, reactions: data.reactions })),
     onError: () => {
-      toast.error('Failed to update reaction')
+      toast.error('リアクションを更新できませんでした')
       invalidateActiveThread()
     },
   })
@@ -1250,7 +1250,7 @@ export function AgentConversationThread({
       void queryClient.invalidateQueries({ queryKey: conversationKeys.agentFlagged() })
     },
     onError: () => {
-      toast.error('Failed to update flag')
+      toast.error('フラグを更新できませんでした')
       invalidateActiveThread()
     },
   })
@@ -1264,10 +1264,10 @@ export function AgentConversationThread({
         data: { conversationId: conversationId ?? INACTIVE_CONVERSATION_ID },
       }),
     onSuccess: () => {
-      toast.success('SLA removed')
+      toast.success('SLA を解除しました')
       refreshThread()
     },
-    onError: () => toast.error('Failed to remove SLA'),
+    onError: () => toast.error('SLA を解除できませんでした'),
   })
 
   // Mark unread from a message. The conversation and ticket fns each need their
@@ -1286,7 +1286,7 @@ export function AgentConversationThread({
             data: { conversationId: conversationId ?? INACTIVE_CONVERSATION_ID, messageId },
           }),
     onSuccess: () => onChanged(),
-    onError: () => toast.error('Failed to mark unread'),
+    onError: () => toast.error('未読にできませんでした'),
   })
   const retryGithubMutation = useMutation({
     mutationFn: async (messageId: ConversationMessageId) => {
@@ -1372,7 +1372,7 @@ export function AgentConversationThread({
         data: { conversationId: conversationId ?? INACTIVE_CONVERSATION_ID, until },
       }),
     onSuccess: () => refreshThread(),
-    onError: () => toast.error('Failed to snooze conversation'),
+    onError: () => toast.error('会話をスヌーズできませんでした'),
   })
   const snooze = (until: string | null) => snoozeMutation.mutate(until)
 
@@ -1385,7 +1385,7 @@ export function AgentConversationThread({
   const blockMutation = useMutation({
     mutationFn: () => blockPersonFn({ data: { principalId: conversation!.visitor.principalId } }),
     onSuccess: () => {
-      toast.success('Person blocked')
+      toast.success('ユーザーをブロックしました')
       void queryClient.invalidateQueries({ queryKey: blockStatusKey })
     },
     onError: (e) => toastError(e, 'Failed to block'),
@@ -1393,7 +1393,7 @@ export function AgentConversationThread({
   const unblockMutation = useMutation({
     mutationFn: () => unblockPersonFn({ data: { principalId: conversation!.visitor.principalId } }),
     onSuccess: () => {
-      toast.success('Person unblocked')
+      toast.success('ユーザーのブロックを解除しました')
       void queryClient.invalidateQueries({ queryKey: blockStatusKey })
     },
     onError: (e) => toastError(e, 'Failed to unblock'),
@@ -1413,7 +1413,7 @@ export function AgentConversationThread({
             })
       )
     } catch {
-      toast.error('Could not export the transcript. Please try again.')
+      toast.error('会話履歴をエクスポートできませんでした。もう一度お試しください。')
     } finally {
       setExporting(false)
     }
@@ -1423,8 +1423,8 @@ export function AgentConversationThread({
   const copyLink = useCallback(() => {
     const url = `${window.location.origin}/admin/inbox?i=${item.id}`
     void navigator.clipboard.writeText(url).then(
-      () => toast.success('Link copied'),
-      () => toast.error('Could not copy the link')
+      () => toast.success('リンクをコピーしました'),
+      () => toast.error('リンクをコピーできませんでした')
     )
   }, [item.id])
 
@@ -1452,10 +1452,10 @@ export function AgentConversationThread({
     mutationFn: (statusId: string) =>
       setTicketStatusFn({ data: { ticketId: ticketId ?? INACTIVE_TICKET_ID, statusId } }),
     onSuccess: () => {
-      toast.success('Ticket resolved')
+      toast.success('チケットを解決済みにしました')
       onChanged()
     },
-    onError: () => toast.error('Failed to resolve ticket'),
+    onError: () => toast.error('チケットを解決済みにできませんでした'),
   })
   // Closing a conversation that still links an OPEN customer ticket asks
   // first (the one-row rule would then hide that open ticket from every
@@ -1476,7 +1476,7 @@ export function AgentConversationThread({
     if (isTicket) {
       const closedStatusId = resolveDefaultClosedStatusId(ticketStatusList)
       if (!closedStatusId) {
-        toast.error('No closed ticket status is configured')
+        toast.error('完了済みのチケットステータスが設定されていません')
         return
       }
       resolveTicketMutation.mutate(closedStatusId)
@@ -1523,7 +1523,7 @@ export function AgentConversationThread({
     if (!closeConfirmTicket) return
     const statusId = resolveResolvedStatusId(ticketStatusList)
     if (!statusId) {
-      toast.error('No closed ticket status is configured')
+      toast.error('完了済みのチケットステータスが設定されていません')
       return
     }
     try {
@@ -1532,7 +1532,7 @@ export function AgentConversationThread({
         statusId: statusId as TicketStatusId,
       })
     } catch {
-      toast.error('Failed to resolve ticket')
+      toast.error('チケットを解決済みにできませんでした')
       return
     }
     setCloseConfirmTicket(null)
@@ -1744,7 +1744,7 @@ export function AgentConversationThread({
           drafts.set('reply', merged)
           setReplyKey((k) => k + 1)
         }
-        toast.error('Failed to send message — kept below your new typing')
+        toast.error('送信できませんでした。メッセージは入力中の文章の下に残しています')
       }
       // The restore remounts the editor (destroying the focused node), so hand
       // focus back once the new instance commits.

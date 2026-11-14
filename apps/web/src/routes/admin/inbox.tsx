@@ -1016,7 +1016,7 @@ function InboxPage() {
         if (res.failed.length === 0) clearSelection()
         else setBulkMenu(null)
       } catch {
-        toast.error('Bulk action failed')
+        toast.error('一括操作に失敗しました')
       }
     },
     [selectedIds, bulk, summarize, clearSelection]
@@ -1245,7 +1245,7 @@ function InboxPage() {
     if (hasSelection) {
       const { ticketIds } = splitByKind(selectedIds)
       if (ticketIds.length > 0 && !closedStatusId) {
-        toast.error('No closed ticket status is configured')
+        toast.error('完了済みのチケットステータスが設定されていません')
       }
       try {
         // `runMixedBulk` already does the succeeded/failed merge, the summary
@@ -1280,14 +1280,14 @@ function InboxPage() {
           ])
         }
       } catch {
-        toast.error('Bulk action failed')
+        toast.error('一括操作に失敗しました')
       }
       return
     }
     if (!selectedRef) return
     if (selectedRef.kind === 'ticket') {
       if (!closedStatusId) {
-        toast.error('No closed ticket status is configured')
+        toast.error('完了済みのチケットステータスが設定されていません')
         return
       }
       return runSolo(
@@ -1303,11 +1303,11 @@ function InboxPage() {
     try {
       await setConversationStatusFn({ data: { conversationId: selectedRef.id, status: 'closed' } })
       refreshInbox()
-      toast.success('Conversation closed')
+      toast.success('会話を終了しました')
     } catch (error) {
       const message = error instanceof Error ? error.message : null
       if (message && isMissingRequiredAttributesMessage(message)) setCloseBlocked([message])
-      else toast.error('Failed to close conversation')
+      else toast.error('会話を終了できませんでした')
     }
   }, [
     hasSelection,

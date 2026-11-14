@@ -55,8 +55,8 @@ function BoardsSettingsPage() {
           <EmptyState
             size="compact"
             icon={ChatBubbleLeftIcon}
-            title="No boards yet"
-            description="Create a board to start collecting feedback."
+            title="ボードはまだありません"
+            description="ボードを作成してフィードバックを集めましょう。"
             action={<CreateBoardDialog />}
           />
         ) : (

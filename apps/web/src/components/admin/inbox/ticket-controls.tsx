@@ -82,7 +82,7 @@ export function TicketStatusControl({
     if (statusId === ticket.status.id) return
     mutation.mutate(
       { ticketId: ticket.id, statusId },
-      { onSuccess: () => onChanged?.(), onError: () => toast.error('Failed to update status') }
+      { onSuccess: () => onChanged?.(), onError: () => toast.error('ステータスを更新できませんでした') }
     )
   }
   return (
@@ -141,7 +141,7 @@ export function TicketAssigneeControl({
   const run = (vars: { assigneePrincipalId?: string | null; assigneeTeamId?: string | null }) =>
     mutation.mutate(
       { ticketId: ticket.id, ...vars },
-      { onSuccess: () => onChanged?.(), onError: () => toast.error('Failed to assign ticket') }
+      { onSuccess: () => onChanged?.(), onError: () => toast.error('チケットの担当者を設定できませんでした') }
     )
 
   const label = assignee.principalId
@@ -219,7 +219,7 @@ export function TicketPriorityControl({
   const select = (priority: ConversationPriority) =>
     mutation.mutate(
       { ticketId: ticket.id, priority },
-      { onSuccess: () => onChanged?.(), onError: () => toast.error('Failed to set priority') }
+      { onSuccess: () => onChanged?.(), onError: () => toast.error('優先度を設定できませんでした') }
     )
   return (
     <DropdownMenu>
@@ -288,7 +288,7 @@ export function TicketWatchControl({ ticketId }: { ticketId: TicketId }) {
           {!watching && (
             <DropdownMenuItem
               onClick={() =>
-                watch.mutate({ ticketId }, { onError: () => toast.error('Failed to watch ticket') })
+                watch.mutate({ ticketId }, { onError: () => toast.error('チケットをウォッチできませんでした') })
               }
             >
               <BellIcon className="size-4" /> Watch
@@ -299,7 +299,7 @@ export function TicketWatchControl({ ticketId }: { ticketId: TicketId }) {
               onClick={() =>
                 unwatch.mutate(
                   { ticketId },
-                  { onError: () => toast.error('Failed to unwatch ticket') }
+                  { onError: () => toast.error('チケットのウォッチを解除できませんでした') }
                 )
               }
             >
@@ -311,7 +311,7 @@ export function TicketWatchControl({ ticketId }: { ticketId: TicketId }) {
               onClick={() =>
                 mute.mutate(
                   { ticketId, days: 7 },
-                  { onError: () => toast.error('Failed to mute ticket') }
+                  { onError: () => toast.error('チケットをミュートできませんでした') }
                 )
               }
             >
@@ -323,7 +323,7 @@ export function TicketWatchControl({ ticketId }: { ticketId: TicketId }) {
               onClick={() =>
                 unmute.mutate(
                   { ticketId },
-                  { onError: () => toast.error('Failed to unmute ticket') }
+                  { onError: () => toast.error('チケットのミュートを解除できませんでした') }
                 )
               }
             >
@@ -436,7 +436,7 @@ function WatcherManagePanel({
                   onClick={() =>
                     removeWatcher.mutate(
                       { ticketId, principalId: w.principalId },
-                      { onError: () => toast.error('Failed to remove watcher') }
+                      { onError: () => toast.error('ウォッチャーを削除できませんでした') }
                     )
                   }
                   disabled={
@@ -460,7 +460,7 @@ function WatcherManagePanel({
           onValueChange={(principalId) =>
             addWatcher.mutate(
               { ticketId, principalId: principalId as PrincipalId },
-              { onError: () => toast.error('Failed to add watcher') }
+              { onError: () => toast.error('ウォッチャーを追加できませんでした') }
             )
           }
         >

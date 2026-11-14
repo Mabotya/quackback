@@ -1,4 +1,10 @@
 {
+  "portal.settings.accountError.invalidPassword": "Uw huidige wachtwoord is onjuist.",
+  "portal.settings.accountError.rateLimited": "Te veel pogingen. Probeer het later opnieuw.",
+  "portal.settings.accountError.sameEmail": "Dit is al uw e-mailadres.",
+  "portal.settings.accountError.invalidCode": "De code is onjuist of verlopen.",
+  "portal.settings.accountError.currentCodeRequired": "Bevestig eerst uw huidige e-mailadres.",
+  "portal.settings.accountError.invalidEmail": "Voer een geldig e-mailadres in.",
   "ui.editor.uploadImageFailed": "Afbeelding uploaden mislukt. Probeer het opnieuw.",
   "ui.editor.uploadVideoFailed": "Video uploaden mislukt. Probeer het opnieuw.",
   "widget.shell.heading.feedback": "Plaats feedback",

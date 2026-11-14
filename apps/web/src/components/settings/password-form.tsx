@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { FormError } from '@/components/shared/form-error'
 import { authClient } from '@/lib/client/auth-client'
 import { setPasswordFn } from '@/lib/server/functions/invitations'
-import { errorText } from '@/lib/client/error-text'
+import { accountErrorMessage } from './account-error-message'
 
 interface PasswordFormProps {
   /** Whether the user already has a `credential` account row. Drives
@@ -70,13 +70,7 @@ export function PasswordForm({ hasPassword, onSaved }: PasswordFormProps) {
           revokeOtherSessions: true,
         })
         if (result.error) {
-          throw new Error(
-            result.error.message ||
-              intl.formatMessage({
-                id: 'portal.settings.password.error.changeFailed',
-                defaultMessage: 'Failed to change password',
-              })
-          )
+          throw result.error
         }
         toast.success(
           intl.formatMessage({
@@ -99,8 +93,9 @@ export function PasswordForm({ hasPassword, onSaved }: PasswordFormProps) {
       onSaved?.()
     } catch (err) {
       setError(
-        errorText(
+        accountErrorMessage(
           err,
+          intl,
           intl.formatMessage({
             id: 'portal.settings.password.error.updateFailed',
             defaultMessage: 'Failed to update password',

@@ -58,9 +58,12 @@ export function PostingToBoard({
               })}
             />
           </SelectTrigger>
-          <SelectContent align="start">
+          <SelectContent
+            align="start"
+            className="w-max max-w-[calc(100vw-2rem)] overflow-x-auto"
+          >
             {boards.map((board) => (
-              <SelectItem key={board.id} value={board.id}>
+              <SelectItem key={board.id} value={board.id} className="whitespace-nowrap">
                 {board.name}
               </SelectItem>
             ))}

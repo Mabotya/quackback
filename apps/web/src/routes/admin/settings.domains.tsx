@@ -140,7 +140,7 @@ function OperatorHostnames({
         window.location.assign(target)
         return
       }
-      toast.success('Workspace URL saved')
+      toast.success('ワークスペースの URL を保存しました')
       await router.invalidate()
     },
   })
@@ -158,7 +158,7 @@ function OperatorHostnames({
         window.location.assign(target)
         return
       }
-      toast.success('Domain updated')
+      toast.success('ドメインを更新しました')
       const next = await getCloudCustomDomainsFn().catch(() => domains)
       setDomains(next)
       setHostname('')

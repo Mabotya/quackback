@@ -1,4 +1,10 @@
 {
+  "portal.settings.accountError.invalidPassword": "現在のパスワードが正しくありません。",
+  "portal.settings.accountError.rateLimited": "試行回数が多すぎます。しばらくしてからもう一度お試しください。",
+  "portal.settings.accountError.sameEmail": "そのメールアドレスは既に設定されています。",
+  "portal.settings.accountError.invalidCode": "確認コードが正しくないか、有効期限が切れています。",
+  "portal.settings.accountError.currentCodeRequired": "まず現在のメールアドレスを確認してください。",
+  "portal.settings.accountError.invalidEmail": "有効なメールアドレスを入力してください。",
   "ui.editor.uploadImageFailed": "画像をアップロードできませんでした。もう一度お試しください。",
   "ui.editor.uploadVideoFailed": "動画をアップロードできませんでした。もう一度お試しください。",
   "widget.shell.heading.feedback": "フィードバックを投稿する",

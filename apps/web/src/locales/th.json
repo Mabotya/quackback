@@ -1,4 +1,10 @@
 {
+  "portal.settings.accountError.invalidPassword": "รหัสผ่านปัจจุบันไม่ถูกต้อง",
+  "portal.settings.accountError.rateLimited": "พยายามหลายครั้งเกินไป โปรดลองอีกครั้งภายหลัง",
+  "portal.settings.accountError.sameEmail": "ที่อยู่นี้เป็นอีเมลปัจจุบันของคุณอยู่แล้ว",
+  "portal.settings.accountError.invalidCode": "รหัสไม่ถูกต้องหรือหมดอายุแล้ว",
+  "portal.settings.accountError.currentCodeRequired": "โปรดยืนยันที่อยู่อีเมลปัจจุบันก่อน",
+  "portal.settings.accountError.invalidEmail": "กรุณากรอกที่อยู่อีเมลที่ถูกต้อง",
   "ui.editor.uploadImageFailed": "อัปโหลดรูปภาพไม่สำเร็จ โปรดลองอีกครั้ง",
   "ui.editor.uploadVideoFailed": "อัปโหลดวิดีโอไม่สำเร็จ โปรดลองอีกครั้ง",
   "widget.shell.heading.feedback": "โพสต์ความคิดเห็น",

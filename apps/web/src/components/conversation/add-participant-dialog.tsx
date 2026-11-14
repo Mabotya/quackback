@@ -54,7 +54,7 @@ export const AddParticipantDialog = memo(function AddParticipantDialog({
     setPending(true)
     try {
       await addConversationParticipantFn({ data: { conversationId, email: trimmed } })
-      toast.success('Customer added — they will receive future replies by email')
+      toast.success('参加者を追加しました。今後の返信はメールで届きます')
       setEmail('')
       void participantsQuery.refetch()
     } catch (err) {
@@ -69,7 +69,7 @@ export const AddParticipantDialog = memo(function AddParticipantDialog({
     setRemovingId(principalId)
     try {
       await removeConversationParticipantFn({ data: { conversationId, principalId } })
-      toast.success('Customer removed — they no longer receive replies')
+      toast.success('参加者を削除しました。今後の返信は届きません')
       void participantsQuery.refetch()
     } catch (err) {
       toastError(err, 'Failed to remove customer')

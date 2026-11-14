@@ -1,4 +1,10 @@
 {
+  "portal.settings.accountError.invalidPassword": "Ihr aktuelles Passwort ist falsch.",
+  "portal.settings.accountError.rateLimited": "Zu viele Versuche. Bitte später erneut versuchen.",
+  "portal.settings.accountError.sameEmail": "Das ist bereits Ihre E-Mail-Adresse.",
+  "portal.settings.accountError.invalidCode": "Der Code ist falsch oder abgelaufen.",
+  "portal.settings.accountError.currentCodeRequired": "Bestätigen Sie zuerst Ihre aktuelle E-Mail-Adresse.",
+  "portal.settings.accountError.invalidEmail": "Geben Sie eine gültige E-Mail-Adresse ein.",
   "ui.editor.uploadImageFailed": "Bild konnte nicht hochgeladen werden. Bitte erneut versuchen.",
   "ui.editor.uploadVideoFailed": "Video konnte nicht hochgeladen werden. Bitte erneut versuchen.",
   "widget.shell.heading.feedback": "Feedback posten",

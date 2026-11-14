@@ -1,4 +1,10 @@
 {
+  "portal.settings.accountError.invalidPassword": "Obecne hasło jest nieprawidłowe.",
+  "portal.settings.accountError.rateLimited": "Zbyt wiele prób. Spróbuj ponownie później.",
+  "portal.settings.accountError.sameEmail": "To już jest Twój adres e-mail.",
+  "portal.settings.accountError.invalidCode": "Kod jest nieprawidłowy lub wygasł.",
+  "portal.settings.accountError.currentCodeRequired": "Najpierw potwierdź obecny adres e-mail.",
+  "portal.settings.accountError.invalidEmail": "Wpisz prawidłowy adres e-mail.",
   "ui.editor.uploadImageFailed": "Nie udało się przesłać obrazu. Spróbuj ponownie.",
   "ui.editor.uploadVideoFailed": "Nie udało się przesłać filmu. Spróbuj ponownie.",
   "widget.shell.heading.feedback": "Dodaj zgłoszenie",

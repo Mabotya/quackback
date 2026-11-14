@@ -1,4 +1,10 @@
 {
+  "portal.settings.accountError.invalidPassword": "目前的密碼不正確。",
+  "portal.settings.accountError.rateLimited": "嘗試次數過多，請稍後再試。",
+  "portal.settings.accountError.sameEmail": "這已經是您目前的電子郵件地址。",
+  "portal.settings.accountError.invalidCode": "驗證碼不正確或已過期。",
+  "portal.settings.accountError.currentCodeRequired": "請先驗證您目前的電子郵件地址。",
+  "portal.settings.accountError.invalidEmail": "請輸入有效的電子郵件地址。",
   "ui.editor.uploadImageFailed": "無法上傳圖片，請再試一次。",
   "ui.editor.uploadVideoFailed": "無法上傳影片，請再試一次。",
   "widget.shell.heading.feedback": "發佈意見回饋",

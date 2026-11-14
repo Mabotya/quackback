@@ -1,4 +1,10 @@
 {
+  "portal.settings.accountError.invalidPassword": "A senha atual está incorreta.",
+  "portal.settings.accountError.rateLimited": "Muitas tentativas. Tente novamente mais tarde.",
+  "portal.settings.accountError.sameEmail": "Esse já é o seu endereço de e-mail.",
+  "portal.settings.accountError.invalidCode": "O código está incorreto ou expirou.",
+  "portal.settings.accountError.currentCodeRequired": "Primeiro confirme seu endereço de e-mail atual.",
+  "portal.settings.accountError.invalidEmail": "Digite um endereço de e-mail válido.",
   "ui.editor.uploadImageFailed": "Não foi possível enviar a imagem. Tente novamente.",
   "ui.editor.uploadVideoFailed": "Não foi possível enviar o vídeo. Tente novamente.",
   "widget.shell.heading.feedback": "Publique seu feedback",

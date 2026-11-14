@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
+import { accountErrorMessage } from './account-error-message'
 import {
   getEmailChangeStateFn,
   sendCurrentAddressCodeFn,
@@ -22,9 +23,6 @@ import {
  * starting over, which is what Cancel does.
  */
 type Step = 'idle' | 'address' | 'verify'
-
-const message = (err: unknown, fallback: string) =>
-  err instanceof Error && err.message ? err.message : fallback
 
 /**
  * Set or change the account's email address.
@@ -94,7 +92,7 @@ export function EmailField({
     try {
       await action()
     } catch (err) {
-      toast.error(message(err, fallback))
+      toast.error(accountErrorMessage(err, intl, fallback))
     } finally {
       setBusy(false)
     }

@@ -1,4 +1,10 @@
 {
+  "portal.settings.accountError.invalidPassword": "كلمة المرور الحالية غير صحيحة.",
+  "portal.settings.accountError.rateLimited": "محاولات كثيرة جدًا. يرجى المحاولة لاحقًا.",
+  "portal.settings.accountError.sameEmail": "هذا هو عنوان بريدك الإلكتروني بالفعل.",
+  "portal.settings.accountError.invalidCode": "الرمز غير صحيح أو انتهت صلاحيته.",
+  "portal.settings.accountError.currentCodeRequired": "أكد عنوان بريدك الإلكتروني الحالي أولاً.",
+  "portal.settings.accountError.invalidEmail": "أدخل عنوان بريد إلكتروني صالحًا.",
   "ui.editor.uploadImageFailed": "تعذر تحميل الصورة. حاول مرة أخرى.",
   "ui.editor.uploadVideoFailed": "تعذر تحميل الفيديو. حاول مرة أخرى.",
   "widget.shell.heading.feedback": "انشر ملاحظاتك",

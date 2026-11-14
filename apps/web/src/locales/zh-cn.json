@@ -1,4 +1,10 @@
 {
+  "portal.settings.accountError.invalidPassword": "当前密码不正确。",
+  "portal.settings.accountError.rateLimited": "尝试次数过多，请稍后再试。",
+  "portal.settings.accountError.sameEmail": "该邮箱地址已是您的当前地址。",
+  "portal.settings.accountError.invalidCode": "验证码不正确或已过期。",
+  "portal.settings.accountError.currentCodeRequired": "请先验证您当前的邮箱地址。",
+  "portal.settings.accountError.invalidEmail": "请输入有效的邮箱地址。",
   "ui.editor.uploadImageFailed": "无法上传图片，请重试。",
   "ui.editor.uploadVideoFailed": "无法上传视频，请重试。",
   "widget.shell.heading.feedback": "发布反馈",

@@ -1,4 +1,10 @@
 {
+  "portal.settings.accountError.invalidPassword": "Поточний пароль неправильний.",
+  "portal.settings.accountError.rateLimited": "Забагато спроб. Повторіть пізніше.",
+  "portal.settings.accountError.sameEmail": "Це вже ваша адреса електронної пошти.",
+  "portal.settings.accountError.invalidCode": "Код неправильний або термін його дії минув.",
+  "portal.settings.accountError.currentCodeRequired": "Спочатку підтвердьте поточну адресу електронної пошти.",
+  "portal.settings.accountError.invalidEmail": "Введіть дійсну адресу електронної пошти.",
   "ui.editor.uploadImageFailed": "Не вдалося завантажити зображення. Спробуйте ще раз.",
   "ui.editor.uploadVideoFailed": "Не вдалося завантажити відео. Спробуйте ще раз.",
   "widget.shell.heading.feedback": "Опублікуйте відгук",
