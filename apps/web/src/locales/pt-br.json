@@ -1,4 +1,6 @@
 {
+  "ui.editor.uploadImageFailed": "Não foi possível enviar a imagem. Tente novamente.",
+  "ui.editor.uploadVideoFailed": "Não foi possível enviar o vídeo. Tente novamente.",
   "widget.shell.heading.feedback": "Publique seu feedback",
   "widget.shell.heading.help": "Central de Ajuda",
   "widget.shell.heading.changelog": "Novidades",

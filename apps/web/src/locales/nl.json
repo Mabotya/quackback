@@ -1,4 +1,6 @@
 {
+  "ui.editor.uploadImageFailed": "Afbeelding uploaden mislukt. Probeer het opnieuw.",
+  "ui.editor.uploadVideoFailed": "Video uploaden mislukt. Probeer het opnieuw.",
   "widget.shell.heading.feedback": "Plaats feedback",
   "widget.shell.heading.help": "Help & ondersteuning",
   "widget.shell.heading.changelog": "Wat is er nieuw",

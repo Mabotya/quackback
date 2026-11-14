@@ -1,4 +1,6 @@
 {
+  "ui.editor.uploadImageFailed": "تعذر تحميل الصورة. حاول مرة أخرى.",
+  "ui.editor.uploadVideoFailed": "تعذر تحميل الفيديو. حاول مرة أخرى.",
   "widget.shell.heading.feedback": "انشر ملاحظاتك",
   "widget.shell.heading.help": "المساعدة والدعم",
   "widget.shell.heading.changelog": "آخر المستجدات",

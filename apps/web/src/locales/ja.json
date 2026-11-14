@@ -1,4 +1,6 @@
 {
+  "ui.editor.uploadImageFailed": "画像をアップロードできませんでした。もう一度お試しください。",
+  "ui.editor.uploadVideoFailed": "動画をアップロードできませんでした。もう一度お試しください。",
   "widget.shell.heading.feedback": "フィードバックを投稿する",
   "widget.shell.heading.help": "ヘルプとサポート",
   "widget.shell.heading.changelog": "新機能",

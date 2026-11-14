@@ -62,6 +62,7 @@ import {
   useRef,
 } from 'react'
 import { cn } from '@/lib/shared/utils'
+import { useOptionalIntl } from './use-optional-intl'
 import { resolveVideoMimeType, VIDEO_FILE_ACCEPT } from '@/lib/shared/storage-config'
 import { resizableImageInsertAttrs } from '@/lib/client/resizable-image-insert-attrs'
 // The emoji dataset + shortcode lookup live in their own module, which the
@@ -178,17 +179,24 @@ lowlight.registerAlias({
  *
  * NOTE: StarterKit v3 bundles Underline by default — do NOT add it separately.
  */
+type UploadErrors = { image: string; video: string }
+const DEFAULT_UPLOAD_ERRORS: UploadErrors = {
+  image: "Couldn't upload image. Try again.",
+  video: "Couldn't upload video. Try again.",
+}
+
 export function buildExtensions(
   features: EditorFeatures,
   options: {
     placeholder: string
+    uploadErrors?: UploadErrors
     onImageUpload?: (file: File) => Promise<string>
     onVideoUpload?: (file: File) => Promise<string>
     /** When set, Enter submits (chat-send) instead of splitting the block. */
     onSubmit?: () => void
   }
 ) {
-  const { placeholder, onImageUpload, onVideoUpload, onSubmit } = options
+  const { placeholder, onImageUpload, onVideoUpload, onSubmit, uploadErrors = DEFAULT_UPLOAD_ERRORS } = options
   return [
     StarterKit.configure({
       heading: features.headings ? { levels: [1, 2, 3] } : false,
@@ -303,7 +311,7 @@ export function buildExtensions(
         ]
       : []),
     ...(features.slashMenu !== false
-      ? [createSlashCommands(features, onImageUpload, onVideoUpload)]
+      ? [createSlashCommands(features, onImageUpload, onVideoUpload, uploadErrors)]
       : []),
     ...(features.emojiPicker !== false ? [createEmojiExtension()] : []),
     // Enter-key bindings, highest precedence first. createSubmitOnEnter registers
@@ -612,7 +620,8 @@ interface SlashMenuItem {
 function getSlashMenuItems(
   features: EditorFeatures,
   onImageUpload?: (file: File) => Promise<string>,
-  onVideoUpload?: (file: File) => Promise<string>
+  onVideoUpload?: (file: File) => Promise<string>,
+  uploadErrors: UploadErrors = DEFAULT_UPLOAD_ERRORS
 ): SlashMenuItem[] {
   const items: SlashMenuItem[] = [
     // Text group - always available
@@ -765,7 +774,7 @@ function getSlashMenuItems(
           } catch (error) {
             console.error('Failed to upload image:', error)
             const { toast } = await import('sonner')
-            toast.error("Couldn't upload image. Try again.")
+            toast.error(uploadErrors.image)
           }
         }
         input.click()
@@ -805,7 +814,7 @@ function getSlashMenuItems(
           } catch (error) {
             console.error('Failed to upload video:', error)
             const { toast } = await import('sonner')
-            toast.error("Couldn't upload video. Try again.")
+            toast.error(uploadErrors.video)
           }
         }
         input.click()
@@ -1027,12 +1036,13 @@ SlashMenuList.displayName = 'SlashMenuList'
 function createSlashCommands(
   features: EditorFeatures,
   onImageUpload?: (file: File) => Promise<string>,
-  onVideoUpload?: (file: File) => Promise<string>
+  onVideoUpload?: (file: File) => Promise<string>,
+  uploadErrors: UploadErrors = DEFAULT_UPLOAD_ERRORS
 ) {
   // Compute once per extension instance. Since buildExtensions() is wrapped in
   // useMemo, this only re-runs when features or onImageUpload actually changes —
   // NOT on every keystroke.
-  const allItems = getSlashMenuItems(features, onImageUpload, onVideoUpload)
+  const allItems = getSlashMenuItems(features, onImageUpload, onVideoUpload, uploadErrors)
 
   return Extension.create({
     name: 'slashCommands',
@@ -1425,15 +1435,21 @@ function RichTextEditorBase({
   onSubmit,
   editorRef,
 }: RichTextEditorProps) {
+  const intl = useOptionalIntl()
+  const uploadErrors = useMemo(() => ({
+    image: intl.formatMessage({ id: 'ui.editor.uploadImageFailed', defaultMessage: "Couldn't upload image. Try again." }),
+    video: intl.formatMessage({ id: 'ui.editor.uploadVideoFailed', defaultMessage: "Couldn't upload video. Try again." }),
+  }), [intl])
   // Memoize extensions keyed on individual feature flags.
   // TipTap v3's useEditor calls editor.setOptions() whenever the extensions
   // array reference changes (uses reference equality via compareOptions).
   // Rebuilding the array on every render causes setOptions→transaction→onUpdate
   // on every keystroke, resulting in 300–400 ms input violations.
   const extensions = useMemo(
-    () => buildExtensions(features, { placeholder, onImageUpload, onVideoUpload, onSubmit }),
+    () => buildExtensions(features, { placeholder, onImageUpload, onVideoUpload, onSubmit, uploadErrors }),
 
     [
+      uploadErrors,
       features.headings,
       features.codeBlocks,
       features.blockquotes,
@@ -1471,14 +1487,16 @@ function RichTextEditorBase({
         (features.images && onImageUpload) || (features.videos && onVideoUpload)
           ? handleMediaDrop(
               features.images ? onImageUpload : undefined,
-              features.videos ? onVideoUpload : undefined
+              features.videos ? onVideoUpload : undefined,
+              uploadErrors
             )
           : undefined,
       handlePaste:
         (features.images && onImageUpload) || (features.videos && onVideoUpload)
           ? handleMediaPaste(
               features.images ? onImageUpload : undefined,
-              features.videos ? onVideoUpload : undefined
+              features.videos ? onVideoUpload : undefined,
+              uploadErrors
             )
           : undefined,
       handleDOMEvents: {
@@ -1487,7 +1505,7 @@ function RichTextEditorBase({
       },
     }),
 
-    [features.images, features.videos, onImageUpload, onVideoUpload, borderless, minHeight]
+    [features.images, features.videos, onImageUpload, onVideoUpload, borderless, minHeight, uploadErrors]
   )
 
   // Stores the last JSON emitted by onUpdate so the value-sync useEffect can
@@ -1955,7 +1973,8 @@ export function resolveEditorMediaKind(
  */
 function handleMediaDrop(
   onImageUpload?: (file: File) => Promise<string>,
-  onVideoUpload?: (file: File) => Promise<string>
+  onVideoUpload?: (file: File) => Promise<string>,
+  uploadErrors: UploadErrors = DEFAULT_UPLOAD_ERRORS
 ): (
   view: import('@tiptap/pm/view').EditorView,
   event: DragEvent,
@@ -2008,7 +2027,7 @@ function handleMediaDrop(
         .catch((err) => {
           console.error('[RichTextEditor] Media drop upload failed:', err)
           void import('sonner').then(({ toast }) =>
-            toast.error(`Couldn't upload ${isVideo ? 'video' : 'image'}. Try again.`)
+            toast.error(isVideo ? uploadErrors.video : uploadErrors.image)
           )
         })
     })
@@ -2022,7 +2041,8 @@ function handleMediaDrop(
  */
 function handleMediaPaste(
   onImageUpload?: (file: File) => Promise<string>,
-  onVideoUpload?: (file: File) => Promise<string>
+  onVideoUpload?: (file: File) => Promise<string>,
+  uploadErrors: UploadErrors = DEFAULT_UPLOAD_ERRORS
 ): (view: import('@tiptap/pm/view').EditorView, event: ClipboardEvent, slice: unknown) => boolean {
   return (view, event) => {
     const media = Array.from(event.clipboardData?.items ?? [])
@@ -2067,7 +2087,7 @@ function handleMediaPaste(
         .catch((err) => {
           console.error('[RichTextEditor] Media paste upload failed:', err)
           void import('sonner').then(({ toast }) =>
-            toast.error(`Couldn't upload ${isVideo ? 'video' : 'image'}. Try again.`)
+            toast.error(isVideo ? uploadErrors.video : uploadErrors.image)
           )
         })
     })
@@ -2633,6 +2653,11 @@ function MenuBar({
   variant = 'top',
   borderless = false,
 }: MenuBarProps) {
+  const intl = useOptionalIntl()
+  const uploadErrors = useMemo(() => ({
+    image: intl.formatMessage({ id: 'ui.editor.uploadImageFailed', defaultMessage: "Couldn't upload image. Try again." }),
+    video: intl.formatMessage({ id: 'ui.editor.uploadVideoFailed', defaultMessage: "Couldn't upload video. Try again." }),
+  }), [intl])
   const isBottom = variant === 'bottom'
   // Muted ghost buttons on the transparent bottom row; filled active-state on top.
   const btn = isBottom ? ('quiet' as const) : ('default' as const)
@@ -2674,11 +2699,11 @@ function MenuBar({
       } catch (error) {
         console.error('Failed to upload image:', error)
         const { toast } = await import('sonner')
-        toast.error("Couldn't upload image. Try again.")
+        toast.error(uploadErrors.image)
       }
     }
     input.click()
-  }, [editor, onImageUpload])
+  }, [editor, onImageUpload, uploadErrors])
 
   const insertVideo = useCallback(() => {
     if (!onVideoUpload) return
@@ -2706,11 +2731,11 @@ function MenuBar({
       } catch (error) {
         console.error('Failed to upload video:', error)
         const { toast } = await import('sonner')
-        toast.error("Couldn't upload video. Try again.")
+        toast.error(uploadErrors.video)
       }
     }
     input.click()
-  }, [editor, onVideoUpload])
+  }, [editor, onVideoUpload, uploadErrors])
 
   return (
     <div

@@ -1,4 +1,6 @@
 {
+  "ui.editor.uploadImageFailed": "Couldn't upload image. Try again.",
+  "ui.editor.uploadVideoFailed": "Couldn't upload video. Try again.",
   "widget.shell.heading.feedback": "Post feedback",
   "widget.shell.heading.help": "Help & Support",
   "widget.shell.heading.changelog": "What's new",

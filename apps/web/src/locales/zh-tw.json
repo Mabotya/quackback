@@ -1,4 +1,6 @@
 {
+  "ui.editor.uploadImageFailed": "無法上傳圖片，請再試一次。",
+  "ui.editor.uploadVideoFailed": "無法上傳影片，請再試一次。",
   "widget.shell.heading.feedback": "發佈意見回饋",
   "widget.shell.heading.help": "說明與支援",
   "widget.shell.heading.changelog": "最新消息",

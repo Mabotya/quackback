@@ -1,4 +1,6 @@
 {
+  "ui.editor.uploadImageFailed": "无法上传图片，请重试。",
+  "ui.editor.uploadVideoFailed": "无法上传视频，请重试。",
   "widget.shell.heading.feedback": "发布反馈",
   "widget.shell.heading.help": "帮助与支持",
   "widget.shell.heading.changelog": "最新动态",
