@@ -9,7 +9,7 @@
  */
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Profiler } from 'react'
-import { act, cleanup, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { IntlProvider } from 'react-intl'
 import {
@@ -130,11 +130,28 @@ const activeTabs = (container: HTMLElement) =>
 describe('PortalHeader renders', () => {
   it('exposes the requested language selection to portal visitors', async () => {
     await mount()
-    const picker = screen.getByRole('combobox', { name: 'Language / 言語' })
-    expect([...picker.querySelectorAll('option')].map((option) => option.value)).toEqual([
-      'ja', 'en', 'zh-tw', 'zh-cn',
+    const picker = screen.getByRole('button', { name: 'Language / 言語' })
+    fireEvent.click(picker)
+    const choices = await screen.findAllByRole('menuitemradio')
+    expect(choices.map((choice) => choice.textContent)).toEqual([
+      '日本語', 'English', '繁體中文', '简体中文',
     ])
+    expect(screen.getByRole('menuitemradio', { name: 'English' }).getAttribute('aria-checked')).toBe('true')
+    fireEvent.click(screen.getByRole('menuitemradio', { name: '日本語' }))
+    expect(document.cookie).toContain('td_locale=ja')
+    document.cookie = 'td_locale=; path=/; max-age=0'
     expect(screen.queryByRole('link', { name: 'Source code' })).toBeNull()
+  })
+
+  it('opens and dismisses the language menu with the keyboard', async () => {
+    await mount()
+    const picker = screen.getByRole('button', { name: 'Language / 言語' })
+    picker.focus()
+    fireEvent.keyDown(picker, { key: 'ArrowDown' })
+    const selected = await screen.findByRole('menuitemradio', { name: 'English' })
+    fireEvent.keyDown(selected, { key: 'Escape' })
+    await waitFor(() => expect(screen.queryByRole('menuitemradio', { name: 'English' })).toBeNull())
+    await waitFor(() => expect(document.activeElement).toBe(picker))
   })
 
   it('renders nothing for a search-only navigation', async () => {

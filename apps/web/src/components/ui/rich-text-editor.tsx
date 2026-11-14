@@ -2139,7 +2139,7 @@ const ToolbarButton = memo(function ToolbarButton({
         'h-7 w-7 p-0',
         variant === 'quiet'
           ? cn(
-              'text-muted-foreground/60 hover:text-foreground',
+              'text-muted-foreground hover:text-foreground',
               isActive && 'bg-muted/60 text-foreground'
             )
           : isActive && 'bg-muted'
@@ -2748,7 +2748,7 @@ function MenuBar({
           ? // Quiet transparent row sitting on the editor background. Drops its
             // own horizontal padding when borderless so the consumer's padding
             // keeps the icons flush with the content's left edge.
-            cn('gap-0.5 pt-1', borderless ? 'px-0 pb-0' : 'px-3 pb-2')
+            cn('gap-1 pt-2', borderless ? 'px-0 pb-0' : 'px-3 pb-2')
           : 'gap-1 px-2 py-1.5 border-b border-input bg-muted/30'
       )}
     >
@@ -2761,7 +2761,7 @@ function MenuBar({
             onClick={commands.heading1}
             disabled={disabled}
             isActive={active.heading1}
-            title="Heading 1"
+            title={intl.formatMessage({ id: 'ui.editor.heading1', defaultMessage: 'Heading 1' })}
           />
           <ToolbarButton
             variant={btn}
@@ -2769,7 +2769,7 @@ function MenuBar({
             onClick={commands.heading2}
             disabled={disabled}
             isActive={active.heading2}
-            title="Heading 2"
+            title={intl.formatMessage({ id: 'ui.editor.heading2', defaultMessage: 'Heading 2' })}
           />
           <ToolbarButton
             variant={btn}
@@ -2777,7 +2777,7 @@ function MenuBar({
             onClick={commands.heading3}
             disabled={disabled}
             isActive={active.heading3}
-            title="Heading 3"
+            title={intl.formatMessage({ id: 'ui.editor.heading3', defaultMessage: 'Heading 3' })}
           />
           <ToolbarDivider />
         </>
@@ -2790,7 +2790,7 @@ function MenuBar({
         onClick={commands.bold}
         disabled={disabled}
         isActive={active.bold}
-        title="Bold"
+        title={intl.formatMessage({ id: 'ui.editor.bold', defaultMessage: 'Bold' })}
       />
       <ToolbarButton
         variant={btn}
@@ -2798,7 +2798,7 @@ function MenuBar({
         onClick={commands.italic}
         disabled={disabled}
         isActive={active.italic}
-        title="Italic"
+        title={intl.formatMessage({ id: 'ui.editor.italic', defaultMessage: 'Italic' })}
       />
       <ToolbarDivider />
 
@@ -2809,7 +2809,7 @@ function MenuBar({
         onClick={commands.bulletList}
         disabled={disabled}
         isActive={active.bulletList}
-        title="Bullet List"
+        title={intl.formatMessage({ id: 'ui.editor.bulletList', defaultMessage: 'Bullet List' })}
       />
       <ToolbarButton
         variant={btn}
@@ -2817,7 +2817,7 @@ function MenuBar({
         onClick={commands.orderedList}
         disabled={disabled}
         isActive={active.orderedList}
-        title="Ordered List"
+        title={intl.formatMessage({ id: 'ui.editor.orderedList', defaultMessage: 'Ordered List' })}
       />
       <ToolbarDivider />
 
@@ -2828,7 +2828,7 @@ function MenuBar({
         onClick={setLink}
         disabled={disabled}
         isActive={active.link}
-        title="Insert Link"
+        title={intl.formatMessage({ id: 'ui.editor.insertLink', defaultMessage: 'Insert Link' })}
       />
 
       {/* Code block button */}
@@ -2839,7 +2839,7 @@ function MenuBar({
           onClick={commands.codeBlock}
           disabled={disabled}
           isActive={active.codeBlock}
-          title="Code Block"
+          title={intl.formatMessage({ id: 'ui.editor.codeBlock', defaultMessage: 'Code Block' })}
         />
       )}
 
@@ -2850,7 +2850,7 @@ function MenuBar({
           icon={ImagePlus}
           onClick={insertImage}
           disabled={disabled}
-          title="Insert Image"
+          title={intl.formatMessage({ id: 'ui.editor.insertImage', defaultMessage: 'Insert Image' })}
         />
       )}
 
@@ -2860,7 +2860,7 @@ function MenuBar({
           icon={VideoIcon}
           onClick={insertVideo}
           disabled={disabled}
-          title="Insert Video"
+          title={intl.formatMessage({ id: 'ui.editor.insertVideo', defaultMessage: 'Insert Video' })}
         />
       )}
 
@@ -2874,14 +2874,14 @@ function MenuBar({
         icon={ArrowUturnLeftIcon}
         onClick={commands.undo}
         disabled={disabled || !active.canUndo}
-        title="Undo"
+        title={intl.formatMessage({ id: 'ui.editor.undo', defaultMessage: 'Undo' })}
       />
       <ToolbarButton
         variant={btn}
         icon={ArrowUturnRightIcon}
         onClick={commands.redo}
         disabled={disabled || !active.canRedo}
-        title="Redo"
+        title={intl.formatMessage({ id: 'ui.editor.redo', defaultMessage: 'Redo' })}
       />
     </div>
   )

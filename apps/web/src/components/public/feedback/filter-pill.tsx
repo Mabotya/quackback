@@ -40,8 +40,8 @@ export function FilterPill({
       title={title}
       onClick={onClick}
       className={cn(
-        'inline-flex max-w-full items-center gap-1.5 rounded-full border font-medium transition-colors',
-        size === 'md' ? 'h-9 px-3 text-sm' : 'h-7 px-2.5 text-xs',
+        'inline-flex max-w-full items-center gap-2 rounded-full border font-medium transition-colors',
+        size === 'md' ? 'h-9 px-3 text-sm' : 'h-7 px-3 text-xs',
         pressed
           ? 'border-foreground bg-foreground text-background'
           : 'border-border bg-card text-foreground/80 hover:bg-muted/60 hover:text-foreground'
@@ -54,8 +54,8 @@ export function FilterPill({
           style={{ backgroundColor: color }}
         />
       )}
-      <span className="min-w-0 truncate">{children}</span>
-      {count && <span className="shrink-0 font-normal tabular-nums opacity-70">{count}</span>}
+      <span className="min-w-0 truncate leading-none [html[lang=ja]_&]:-translate-y-px">{children}</span>
+      {count && <span className="shrink-0 font-normal tabular-nums leading-none opacity-70 [html[lang=ja]_&]:-translate-y-px">{count}</span>}
     </button>
   )
 }

@@ -18,7 +18,7 @@ export function StatusBadge({ name, color, className }: StatusBadgeProps): React
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 text-xs font-medium text-foreground',
+        'inline-flex items-center gap-2 text-xs font-medium text-foreground',
         !color && 'text-muted-foreground',
         className
       )}
@@ -28,7 +28,7 @@ export function StatusBadge({ name, color, className }: StatusBadgeProps): React
         style={dotStyles}
         aria-hidden="true"
       />
-      {name}
+      <span className="leading-none [html[lang=ja]_&]:-translate-y-px">{name}</span>
     </span>
   )
 }

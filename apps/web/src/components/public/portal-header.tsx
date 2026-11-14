@@ -18,6 +18,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
@@ -25,6 +27,7 @@ import { Avatar } from '@/components/ui/avatar'
 import { UserStatsBar } from '@/components/shared/user-stats'
 import {
   ArrowRightStartOnRectangleIcon,
+  CheckIcon,
   ChevronDownIcon,
   Cog6ToothIcon,
   ComputerDesktopIcon,
@@ -60,6 +63,54 @@ interface PortalHeaderProps {
   }
   /** Whether to show the theme toggle (hidden when admin forces a specific theme) */
   showThemeToggle?: boolean
+}
+
+const LANGUAGES = [
+  { value: 'ja', label: '日本語', lang: 'ja' },
+  { value: 'en', label: 'English', lang: 'en' },
+  { value: 'zh-tw', label: '繁體中文', lang: 'zh-Hant' },
+  { value: 'zh-cn', label: '简体中文', lang: 'zh-Hans' },
+] as const
+
+function LanguageMenu({ locale }: { locale: string }) {
+  const selected = LANGUAGES.find((language) => language.value === locale.toLowerCase()) ?? LANGUAGES[1]
+
+  function selectLanguage(value: string) {
+    if (value === selected.value) return
+    document.cookie = `td_locale=${value}; path=/; max-age=31536000; samesite=lax${location.protocol === 'https:' ? '; secure' : ''}`
+    window.location.reload()
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          type="button"
+          aria-label="Language / 言語"
+          className="me-1 inline-flex h-10 items-center gap-2 rounded-full px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <GlobeAltIcon className="size-4 shrink-0" aria-hidden="true" />
+          <span lang={selected.lang} className="text-foreground [html[lang=ja]_&]:-translate-y-px">{selected.label}</span>
+          <ChevronDownIcon className="size-3 shrink-0" aria-hidden="true" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" sideOffset={4} className="w-44 max-w-[calc(100vw-2rem)] p-1.5" aria-label="Language / 言語">
+        <DropdownMenuRadioGroup value={selected.value} onValueChange={selectLanguage}>
+          {LANGUAGES.map((language) => (
+            <DropdownMenuRadioItem
+              key={language.value}
+              value={language.value}
+              lang={language.lang}
+              className="min-h-10 gap-3 px-3 [&>span:first-child]:hidden"
+            >
+              <span className="flex-1 leading-5">{language.label}</span>
+              {selected.value === language.value && <CheckIcon className="size-4 text-primary" aria-hidden="true" />}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
 }
 
 export function PortalHeader({
@@ -191,24 +242,7 @@ export function PortalHeader({
   // render of the header would tear these menus down and build them again.
   const authButtons = (
     <div className="flex items-center">
-      <label className="me-1 inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-within:ring-2 focus-within:ring-ring">
-        <GlobeAltIcon className="h-4 w-4 shrink-0" aria-hidden="true" />
-        <select
-          aria-label="Language / 言語"
-          value={['ja', 'en', 'zh-cn', 'zh-tw'].includes(intl.locale.toLowerCase()) ? intl.locale.toLowerCase() : 'en'}
-          onChange={(event) => {
-            document.cookie = `td_locale=${event.target.value}; path=/; max-age=31536000; samesite=lax${location.protocol === 'https:' ? '; secure' : ''}`
-            window.location.reload()
-          }}
-          className="max-w-[7rem] cursor-pointer appearance-none border-0 bg-transparent p-0 text-sm font-medium leading-none text-foreground outline-none [html[lang=ja]_&]:-translate-y-px"
-        >
-          <option value="ja" style={{ backgroundColor: 'var(--popover)', color: 'var(--popover-foreground)' }}>日本語</option>
-          <option value="en" style={{ backgroundColor: 'var(--popover)', color: 'var(--popover-foreground)' }}>English</option>
-          <option value="zh-tw" style={{ backgroundColor: 'var(--popover)', color: 'var(--popover-foreground)' }}>繁體中文</option>
-          <option value="zh-cn" style={{ backgroundColor: 'var(--popover)', color: 'var(--popover-foreground)' }}>简体中文</option>
-        </select>
-        <ChevronDownIcon className="pointer-events-none h-3 w-3 shrink-0" aria-hidden="true" />
-      </label>
+      <LanguageMenu locale={intl.locale} />
       {/* Theme Toggle (when admin allows user choice) */}
       {showThemeToggle && <ThemeToggle />}
 

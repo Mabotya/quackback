@@ -136,14 +136,14 @@ export function FeedbackToolbar({
                 aria-pressed={isActive}
                 onClick={() => onSortChange(option.value)}
                 className={cn(
-                  'flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-full text-sm transition-colors cursor-pointer',
+                  'inline-flex h-8 items-center gap-2 rounded-full px-3 text-sm transition-colors cursor-pointer',
                   isActive
                     ? 'bg-muted text-foreground font-medium'
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                 )}
               >
-                <Icon className={cn('h-3.5 w-3.5', isActive && 'text-primary')} />
-                <span className="[html[lang=ja]_&]:-translate-y-px">
+                <Icon className={cn('h-3.5 w-3.5 shrink-0', isActive && 'text-primary')} />
+                <span className="leading-none [html[lang=ja]_&]:-translate-y-px">
                   {intl.formatMessage({
                     id: option.messageId,
                     defaultMessage: option.defaultMessage,
