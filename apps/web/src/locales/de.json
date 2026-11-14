@@ -528,6 +528,7 @@
   "portal.auth.otp.resendIn": "Erneut senden in {seconds} s",
   "portal.auth.otp.error.invalid": "Dieser Code stimmt nicht. Prüfe die E-Mail und versuche es erneut, oder fordere einen neuen Code an.",
   "portal.auth.otp.error.expired": "Dieser Code ist abgelaufen. Fordere einen neuen an.",
+  "portal.auth.emailUnavailable": "E-Mails sind vorübergehend nicht verfügbar. Bitte versuche es später erneut.",
   "portal.auth.otp.error.tooMany": "Zu viele Versuche. Fordere einen neuen Code an.",
   "portal.auth.invite.title": "Du wurdest eingeladen!",
   "portal.auth.invite.body": "Erstelle dein Konto, um {workspace} beizutreten",

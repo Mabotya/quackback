@@ -528,6 +528,7 @@
   "portal.auth.otp.resendIn": "Renvoyer dans {seconds} s",
   "portal.auth.otp.error.invalid": "Ce code n'est pas correct. Vérifiez l'e-mail et réessayez, ou envoyez un nouveau code.",
   "portal.auth.otp.error.expired": "Ce code a expiré. Envoyez-en un nouveau.",
+  "portal.auth.emailUnavailable": "Le service de messagerie est temporairement indisponible. Réessayez plus tard.",
   "portal.auth.otp.error.tooMany": "Trop de tentatives. Envoyez un nouveau code.",
   "portal.auth.invite.title": "Vous avez reçu une invitation !",
   "portal.auth.invite.body": "Créez votre compte pour rejoindre {workspace}",

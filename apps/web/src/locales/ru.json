@@ -528,6 +528,7 @@
   "portal.auth.otp.resendIn": "Отправить снова через {seconds} с",
   "portal.auth.otp.error.invalid": "Этот код неверный. Проверьте письмо и попробуйте ещё раз или отправьте новый код.",
   "portal.auth.otp.error.expired": "Срок действия кода истёк. Отправьте новый.",
+  "portal.auth.emailUnavailable": "Отправка писем временно недоступна. Попробуйте позже.",
   "portal.auth.otp.error.tooMany": "Слишком много попыток. Отправьте новый код.",
   "portal.auth.invite.title": "Вас пригласили!",
   "portal.auth.invite.body": "Создайте аккаунт, чтобы присоединиться к {workspace}",

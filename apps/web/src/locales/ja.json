@@ -528,6 +528,7 @@
   "portal.auth.otp.resendIn": "{seconds}秒後に再送信",
   "portal.auth.otp.error.invalid": "そのコードは正しくありません。メールを確認して再試行するか、新しいコードを送信してください。",
   "portal.auth.otp.error.expired": "コードの有効期限が切れました。新しいコードを送信してください。",
+  "portal.auth.emailUnavailable": "アクセスが集中しているため、現在メールを送信できません。しばらくしてからお試しください。",
   "portal.auth.otp.error.tooMany": "試行回数の上限に達しました。新しいコードを送信してください。",
   "portal.auth.invite.title": "招待が届きました",
   "portal.auth.invite.body": "アカウントを作成して {workspace} に参加してください",

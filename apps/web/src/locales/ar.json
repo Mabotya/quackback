@@ -528,6 +528,7 @@
   "portal.auth.otp.resendIn": "إعادة الإرسال خلال {seconds} ث",
   "portal.auth.otp.error.invalid": "هذا الرمز غير صحيح. تحقق من البريد الإلكتروني وحاول مرة أخرى، أو أرسل رمزًا جديدًا.",
   "portal.auth.otp.error.expired": "انتهت صلاحية هذا الرمز. أرسل رمزًا جديدًا.",
+  "portal.auth.emailUnavailable": "البريد الإلكتروني غير متاح مؤقتًا. يرجى المحاولة مجددًا لاحقًا.",
   "portal.auth.otp.error.tooMany": "محاولات كثيرة جدًا. أرسل رمزًا جديدًا.",
   "portal.auth.invite.title": "لقد تمت دعوتك!",
   "portal.auth.invite.body": "أنشئ حسابك للانضمام إلى {workspace}",

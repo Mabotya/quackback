@@ -1635,6 +1635,7 @@
   "onboarding.workspace.create": "สร้างเวิร์กสเปซ",
   "portal.auth.otp.error.invalid": "รหัสไม่ถูกต้อง ตรวจสอบอีเมลแล้วลองอีกครั้ง หรือส่งรหัสใหม่",
   "portal.auth.otp.error.expired": "รหัสหมดอายุแล้ว ส่งรหัสใหม่",
+  "portal.auth.emailUnavailable": "ไม่สามารถส่งอีเมลได้ชั่วคราว โปรดลองอีกครั้งในภายหลัง",
   "portal.auth.otp.error.tooMany": "ลองหลายครั้งเกินไป ส่งรหัสใหม่",
   "widget.messenger.defaultGreeting": "สวัสดี! 👋 วันนี้ให้เราช่วยอะไรดี?",
   "onboarding.goals.title": "คุณอยากเริ่มใช้อะไรก่อน?",

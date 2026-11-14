@@ -111,8 +111,8 @@ export function EmailField({
         setStep('address')
       },
       intl.formatMessage({
-        id: 'portal.settings.email.error.sendCurrent',
-        defaultMessage: 'Could not send a code to your current address.',
+        id: 'portal.auth.emailUnavailable',
+        defaultMessage: 'Email is temporarily unavailable. Please try again later.',
       })
     )
   }
@@ -126,8 +126,8 @@ export function EmailField({
         setStep('verify')
       },
       intl.formatMessage({
-        id: 'portal.settings.email.error.sendNew',
-        defaultMessage: 'Could not send a code to that address.',
+        id: 'portal.auth.emailUnavailable',
+        defaultMessage: 'Email is temporarily unavailable. Please try again later.',
       })
     )
 

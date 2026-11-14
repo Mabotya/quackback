@@ -556,23 +556,19 @@ export function PortalAuthFormInline({
       })
       if (result.error) {
         throw new Error(
-          result.error.message ||
-            intl.formatMessage({
-              id: 'portal.auth.error.resetLinkFailed',
-              defaultMessage: 'Failed to send reset link',
-            })
+          intl.formatMessage({
+            id: 'portal.auth.emailUnavailable',
+            defaultMessage: 'Email is temporarily unavailable. Please try again later.',
+          })
         )
       }
       setView({ stage: 'methods-step', step: 'reset' })
-    } catch (err) {
+    } catch {
       setError(
-        errorText(
-          err,
-          intl.formatMessage({
-            id: 'portal.auth.error.resetLinkFailed',
-            defaultMessage: 'Failed to send reset link',
-          })
-        )
+        intl.formatMessage({
+          id: 'portal.auth.emailUnavailable',
+          defaultMessage: 'Email is temporarily unavailable. Please try again later.',
+        })
       )
     } finally {
       setLoadingAction(null)

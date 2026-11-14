@@ -7,7 +7,7 @@
  * was invisible; on a page that stays mounted it is a screen that has signed
  * you in and still says it is working.
  */
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderHook, act, waitFor } from '@testing-library/react'
 
 const hoisted = vi.hoisted(() => ({ emailOtp: vi.fn() }))
@@ -23,6 +23,42 @@ const wrapper = ({ children }: { children: ReactNode }) =>
   createElement(IntlProvider, { locale: 'en' }, children)
 
 beforeEach(() => vi.clearAllMocks())
+afterEach(() => vi.unstubAllGlobals())
+
+describe('useEmailSignin.requestEmail delivery failures', () => {
+  it.each([429, 500, 503])('reports a temporary failure for HTTP %s', async (status) => {
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn()
+        .mockResolvedValue(
+          new Response(JSON.stringify({ error: 'private provider details' }), { status })
+        )
+    )
+    const { result } = renderHook(() => useEmailSignin({ callbackUrl: '/', onSuccess: vi.fn() }), {
+      wrapper,
+    })
+    let answer: { ok: boolean; error?: string } | undefined
+    await act(async () => {
+      answer = await result.current.requestEmail('someone@example.com')
+    })
+    expect(answer).toEqual({
+      ok: false,
+      error: 'Email is temporarily unavailable. Please try again later.',
+    })
+    expect(result.current.resendCooldown).toBe(0)
+  })
+  it('reports a temporary failure when the network fails', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('network failure')))
+    const { result } = renderHook(() => useEmailSignin({ callbackUrl: '/', onSuccess: vi.fn() }), {
+      wrapper,
+    })
+    await act(async () => {
+      await result.current.requestEmail('someone@example.com')
+    })
+    expect(result.current.error).toBe('Email is temporarily unavailable. Please try again later.')
+  })
+})
 
 describe('useEmailSignin.verify', () => {
   it('stops loading once the code is accepted', async () => {

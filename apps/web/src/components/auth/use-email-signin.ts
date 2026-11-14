@@ -85,12 +85,29 @@ export function useEmailSignin({
       })
       if (!res.ok) {
         const body = (await res.json().catch(() => ({}))) as { error?: string }
-        throw new Error(body.error || 'Failed to send sign-in email')
+        throw new Error(
+          res.status === 429 || res.status >= 500
+            ? intl.formatMessage({
+                id: 'portal.auth.emailUnavailable',
+                defaultMessage: 'Email is temporarily unavailable. Please try again later.',
+              })
+            : body.error ||
+                intl.formatMessage({
+                  id: 'portal.auth.emailUnavailable',
+                  defaultMessage: 'Email is temporarily unavailable. Please try again later.',
+                })
+        )
       }
       setResendCooldown(60)
       return { ok: true }
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to send sign-in email'
+      const message =
+        err instanceof Error && !(err instanceof TypeError)
+          ? err.message
+          : intl.formatMessage({
+              id: 'portal.auth.emailUnavailable',
+              defaultMessage: 'Email is temporarily unavailable. Please try again later.',
+            })
       setError(message)
       return { ok: false, error: message }
     } finally {
