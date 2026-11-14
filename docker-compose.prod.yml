@@ -82,6 +82,7 @@ services:
     environment:
       LT_LOAD_ONLY: en,ja,ko,zh,zt
       LT_UPDATE_MODELS: 'true'
+      LT_THREADS: '1'
     volumes:
       - libretranslate_models:/home/libretranslate/.local
 
