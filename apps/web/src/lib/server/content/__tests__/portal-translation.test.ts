@@ -1,6 +1,7 @@
 import { describe, expect, it, vi, afterEach } from 'vitest'
 import type { JSONContent } from '@tiptap/core'
 import { translateDocument } from '../portal-translation'
+import { railwayGlossary } from '../railway-glossary'
 
 afterEach(() => {
   vi.unstubAllGlobals()
@@ -8,6 +9,16 @@ afterEach(() => {
 })
 
 describe('public content translation', () => {
+  it('selects relevant railway terminology and ledger station names in both directions', () => {
+    const terms = railwayGlossary(['綾急の蓮田茶屋道から森嶋線へ直通運転'])
+    expect(terms).toEqual(expect.arrayContaining([
+      expect.objectContaining({ ja: '蓮田茶屋道', en: 'Hasuda-Chayamichi' }),
+      expect.objectContaining({ ja: '森嶋線', en: 'Morishima Line' }),
+      expect.objectContaining({ ja: '直通運転', en: 'through service' }),
+    ]))
+    expect(railwayGlossary(['Hasuda-Chayamichi']).some((t) => t.ja === '蓮田茶屋道')).toBe(true)
+    expect(railwayGlossary(['xHasuda-Chayamichix']).some((t) => t.ja === '蓮田茶屋道')).toBe(false)
+  })
   it('uses OpenAI with low effort and does not store responses', async () => {
     vi.stubEnv('TRANSLATION_OPENAI_API_KEY', 'test-key')
     const fetcher = vi
